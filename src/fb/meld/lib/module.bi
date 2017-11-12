@@ -53,6 +53,9 @@ declare sub moduleDelete(modulePtr as any ptr)
 declare function moduleRequest () as any ptr
 declare function moduleRelease () as integer
 
+/''
+ '
+ '/
 function moduleNew(interface as InterfaceHeader ptr) as Module ptr
 	dim as Module ptr modulePtr = NULL
 	dim as integer moduleSize = sizeof(Module)
@@ -62,13 +65,22 @@ function moduleNew(interface as InterfaceHeader ptr) as Module ptr
 	return modulePtr
 end function
 
+/''
+ '
+ '/
 sub moduleDelete(modulePtr as any ptr)
 end sub
 
+/''
+ '
+ '/
 function moduleRequest () as any ptr
 	return NULL
 end function
 
+/''
+ '
+ '/
 function moduleRelease () as integer
 	return TRUE
 end function
