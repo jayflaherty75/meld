@@ -32,6 +32,8 @@ function meldInitialize (config as zstring ptr) as integer
         return FALSE
     end if
 
+	errorInitialize(meldCore.mutexId)
+
     meldCore.isRunning = TRUE
 
     return TRUE
@@ -43,6 +45,8 @@ end function
  ' calling meldUninitialize.
  '/
 sub meldUninitialize()
+	errorUninitialize()
+
     mutexlock(meldCore.mutexId)
     meldCore.isRunning = FALSE
     mutexunlock(meldCore.mutexId)
