@@ -6,15 +6,15 @@ dim as zstring*64 Config = command(1)
 dim as integer secondsToLive = 5
 
 if meldInitialize(@config) then
-    while (meldIsRunning() andalso secondsToLive > 0)
-        sleep(1000)
-        secondsToLive -= 1
-    wend
+	while (meldIsRunning() andalso secondsToLive > 0)
+		sleep(1000)
+		secondsToLive -= 1
+	wend
 else
-    ' TODO: Use Meld error handling
-    print ("Error: Failed to initialize Meld")
-    meldUninitialize()
-    end(1)
+	' TODO: Use Meld error handling
+	print ("Error: Failed to initialize Meld")
+	meldUninitialize()
+	end(1)
 end if
 
 meldUninitialize()
