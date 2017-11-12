@@ -1,12 +1,19 @@
 
+#include once "../../../modules/headers/meld/meld.bi"
 #include once "../shared/constants.bi"
+#include once "lib/module.bi"
+#include once "lib/error.bi"
 
-type MeldCoreType
+' TODO: Read application config based on command line argument
+' TODO: Register functions
+' TODO: Add shutdown hook
+
+type MeldCoreState
     isRunning as integer
     mutexId as any ptr
 end type
 
-dim shared meldCore as meldCoreType
+dim shared meldCore as meldCoreState
 
 declare function meldInitialize (config as zstring ptr) as integer
 declare sub meldUninitialize()
