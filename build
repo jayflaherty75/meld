@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fbc -mt -C './src/fb/meld/meld.bas' -x './meld'
