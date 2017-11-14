@@ -6,35 +6,33 @@ type ErrorState
 	errors(ERROR_MAX_TYPES) as ErrorHeader
 	errorCount as uinteger
 	handlers(ERROR_MAX_TYPES) as ErrorHandler
+	uncaughtError as integer
+	internalSystemError as integer
+	typeLimitErrorMsg as string
 end type
 
-static shared as zstring*64 defaultError = "UnCaughtError"
-static shared as zstring*64 inteneraltError = "InternalSystemError"
+static shared as zstring*64 uncaughtError = "UnCaughtError"
+static shared as zstring*64 internalSystemError = "InternalSystemError"
 static shared as zstring*64 moduleFile = __FILE__
-
-static shared as zstring*512 typeLimitError = "Can not create new error types.  The system has reached the limit it can handle."
 
 dim shared as ErrorState errState
 
 declare function errorInitialize (mutexId as any ptr) as integer
 declare sub errorUninitialize()
-
-declare function errorNew (_
+declare function errorRegisterType (errName as zstring ptr) as integer
+declare function errorAssignHandler (errCode as integer, handler as ErrorHandler) as integer
+declare function errorGetCode (errName as zstring ptr) as integer
+declare sub errorThrow (_
+	errName as zstring ptr, _
 	errCode as integer, _
 	byref message as string, _
 	filename as zstring ptr, _
-	linenum as integer _
-) as ErrorMessage ptr
-declare sub errorDelete (errMsg as ErrorMessage ptr)
-
-declare function errorRegisterType (errName as zstring ptr) as integer
-declare function errorAssignHandler (errName as zstring ptr, handler as ErrorHandler) as integer
-declare function errorGetCode (errName as zstring ptr) as integer
-declare sub errorThrow (errMsg as ErrorMessage ptr)
+	linenum as integer _	
+)
 
 declare sub _errorClearAll()
-declare sub _errorHandleError (errMsg as ErrorMessage PTR)
-declare sub _errorHandleWarning (errMsg as ErrorMessage ptr)
+declare sub _errorHandleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+declare sub _errorHandleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 
 declare sub _errorLog (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
 declare function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
@@ -44,13 +42,15 @@ declare function _errorFormat (errName as zstring ptr, filename as zstring ptr, 
  ' @param {any ptr} mutexId - Takes the system mutex ID for thread safety
  '/
 function errorInitialize (mutexId as any ptr) as integer
+	errState.typeLimitErrorMsg = "Can not create new error types.  The system has reached the limit it can handle."
+
 	errState.mutexId = mutexId
 	errState.errorCount = 0
 
-	errorRegisterType(@defaultError)
-	errorRegisterType(@inteneraltError)
-	errorAssignHandler(@defaultError, @_errorHandleError)
-	errorAssignHandler(@inteneraltError, @_errorHandleError)
+	errState.uncaughtError = errorRegisterType(@uncaughtError)
+	errState.internalSystemError = errorRegisterType(@internalSystemError)
+	errorAssignHandler(errState.uncaughtError, @_errorHandleError)
+	errorAssignHandler(errState.internalSystemError, @_errorHandleError)
 
 	return TRUE
 end function
@@ -75,7 +75,7 @@ end sub
  '	with __LINE__.
  ' @returns {ErrorMessage ptr}
  '/
-function errorNew (errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer) as ErrorMessage ptr
+/'function errorNew (errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer) as ErrorMessage ptr
 	dim as integer msgLen = sizeof(errorHeader) + sizeof(errorData) + len(message)
 	dim as ErrorMessage ptr errObj
 
@@ -92,19 +92,19 @@ function errorNew (errCode as integer, byref message as string, filename as zstr
 	end if
 
 	return errObj
-end function
+end function'/
 
 /''
  ' Deallocates an error message created with errorNew
  ' @param {ErrorMessage ptr} errMsg
  '/
-sub errorDelete (errMsg as ErrorMessage ptr)
+/'sub errorDelete (errMsg as ErrorMessage ptr)
 	if errMsg then
 		deallocate(errMsg)
 	else
 		_errorLog (@"ErrorNullPointerDelete", @moduleFile, __LINE__, "Attempt to delete null error")
 	end if
-end sub
+end sub'/
 
 /''
  ' Registers a new error type and returns the assigned error code.
@@ -127,7 +127,13 @@ function errorRegisterType (errName as zstring ptr) as integer
 		errPtr->name = *errName
 		errPtr->code = errCode
 	else
-		errorThrow(errorNew(errorGetCode(@inteneraltError), typeLimitError, @moduleFile, __LINE__))
+		errorThrow(_
+			@internalSystemError, _
+			errState.internalSystemError, _
+			errState.typeLimitErrorMsg, _
+			@moduleFile, _
+			__LINE__ _
+		)
 	end if
 
 	return errCode
@@ -135,12 +141,11 @@ end function
 
 /''
  ' Assigns a handler for a specific registered error type.
- ' @param {zstring ptr} errName
+ ' @param {integer} errCode
  ' @param {errorHandler} handler
  ' @returns {integer}
  '/
-function errorAssignHandler (errName as zstring ptr, handler as ErrorHandler) as integer
-	DIM as integer errCode = errorGetCode (errName)
+function errorAssignHandler (errCode as integer, handler as ErrorHandler) as integer
 	DIM as integer result = TRUE
 
 	mutexlock (errState.mutexId)
@@ -177,6 +182,30 @@ function errorGetCode (errName as zstring ptr) as integer
 end function
 
 /''
+ ' Pass an error to be handled.  Make sure you do trust exercises with whoever
+ ' writes your error handlers.
+ ' @param {zstring ptr} errName
+ ' @param {integer} errCode - Error code deciding what error handler will be
+ '	triggered, can be retrieved with errorGetCode
+ ' @param {string} message - Contains full error message
+ ' @param {zstring ptr} filename - Pointer to a string containing the current
+ '	filename.  Can be set to a constant containing __FILE__.
+ ' @param {integer} lineNum - Line number where error occurred.  Can be set
+ '	with __LINE__.
+ '/
+sub errorThrow (errName as zstring ptr, errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer)
+	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
+		andalso errState.handlers(errCode) then
+
+		errState.handlers(errCode) (errName, message, filename, lineNum)
+	else
+		' All unhandled errors go to uncaught handler defined during
+		' initialization of error system.
+		errState.handlers(0) (errName, message, filename, lineNum)
+	end if
+end sub
+
+/''
  ' Thread-safe clearing of all error types and handlers
  ' @private
  '/
@@ -196,65 +225,37 @@ sub _errorClearAll()
 end sub
 
 /''
- ' Pass an error to be handled.  Make sure you do trust exercises with whoever
- ' writes your error handlers.
- ' @param {ErrorMessage ptr} errMsg
- '/
-sub errorThrow (errMsg as ErrorMessage ptr)
-	dim as integer errCode
-
-	if errMsg then
-		errCode = errMsg->info.code
-		if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
-			andalso errState.handlers(errCode) then
-
-			errState.handlers(errCode) (errMsg)
-		else
-			' All unhandled errors go to uncaught handler defined during
-			' initialization of error system.
-			errState.handlers(0) (errMsg)
-		end if
-
-		' TODO: look into a better way of doing releasing the error message.
-		errorDelete (errMsg)
-	else
-		' TODO: Log a warning here.
-	end if
-end sub
-
-/''
  ' Default error handler for uncaught errors.
- ' @param {ErrorMessage ptr} errMsg
+ ' @private
  '/
-sub _errorHandleError (errMsg as ErrorMessage ptr)
-	dim as integer lineNum = errMsg->trace.lineNum
-
+sub _errorHandleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 	' TODO: Implement a logging system and call it here
-	_errorLog (@errMsg->info.name, errMsg->trace.filename, lineNum, errMsg->message)
+	_errorLog (*errName, *filename, lineNum, message)
 
+	' TODO: Implement interfaces and call meld
+	' meld->shutdown(1)
 	end(1)
 end sub
 
 /''
  ' Handler for logging warnings.
- ' @param {ErrorMessage ptr} errMsg
+ ' @private
  '/
-sub _errorHandleWarning (errMsg as ErrorMessage ptr)
-	dim as integer lineNum = errMsg->trace.lineNum
-
+sub _errorHandleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 	' TODO: Implement a logging system and call it here
-	_errorLog (@errMsg->info.name, errMsg->trace.filename, lineNum, errMsg->message)
+	_errorLog (*errName, *filename, lineNum, message)
 end sub
 
 /''
  ' TODO: Add logging and remove this temporary logging handler.
+ ' @private
  '/
 sub _errorLog (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
 	print (_errorFormat(errName, filename, lineNum, message))
 end sub
 
 /''
- '
+ ' @private
  '/
 function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
 	return errName & ": " & filename & " (" & lineNum & ") \n" & message

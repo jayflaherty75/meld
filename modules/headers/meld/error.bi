@@ -20,4 +20,4 @@ type ErrorMessage
 	message as zstring*ERROR_MESSAGE_DEFAULT_LENGTH
 end type
 
-type ErrorHandler as sub(err as ErrorMessage ptr)
+type ErrorHandler as sub(errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)

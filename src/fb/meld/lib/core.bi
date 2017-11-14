@@ -10,6 +10,7 @@
 
 type MeldCoreState
     isRunning as integer
+	status as integer
     mutexId as any ptr
 end type
 
@@ -18,7 +19,8 @@ dim shared meldCore as meldCoreState
 declare function meldInitialize (config as zstring ptr) as integer
 declare sub meldUninitialize()
 declare function meldIsRunning() as integer
-declare sub meldShutdown()
+declare function meldGetStatus() as integer
+declare sub meldShutdown(status as integer)
 
 /''
  ' Sets up everything needed by the Meld system and returns false on failure.
@@ -35,6 +37,7 @@ function meldInitialize (config as zstring ptr) as integer
 	errorInitialize(meldCore.mutexId)
 
     meldCore.isRunning = TRUE
+	meldCore.status = 0
 
     return TRUE
 end function
@@ -71,11 +74,19 @@ function meldIsRunning() as integer
 end function
 
 /''
+ ' Return the status for the system.
+ '/
+function meldGetStatus() as integer
+	return meldCore.status
+end function
+
+/''
  ' Signals that Meld should stop running. It is up to the caller to check
  ' meldIsRunning and shut down the application when ready.
  '/
-sub meldShutdown()
+sub meldShutdown(status as integer)
     mutexlock(meldCore.mutexId)
     meldCore.isRunning = FALSE
+	meldCore.status = status
     mutexunlock(meldCore.mutexId)
 end sub

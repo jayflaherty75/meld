@@ -25,7 +25,8 @@ type MeldInterface
     initialize as function (config as zstring ptr) as integer
     uninitialize as sub()
     isRunning as function() as integer
-    shutdown as sub()
+	getStatus as function() as integer
+    shutdown as sub(status as integer)
 end type
 
 dim shared as MeldInterface PTR meldPtr

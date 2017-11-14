@@ -14,9 +14,9 @@ else
 	' TODO: Use Meld error handling
 	print ("Error: Failed to initialize Meld")
 	meldUninitialize()
-	end(1)
+	meldShutdown(1)
 end if
 
 meldUninitialize()
 
-end(0)
+end(meldGetStatus())
