@@ -1,7 +1,7 @@
 
 #include once "../../../../modules/headers/meld/meld.bi"
 #include once "../../shared/constants.bi"
-#include once "module.bi"
+#include once "../interfaces/interfaces.bi"
 #include once "error.bi"
 
 ' TODO: Read application config based on command line argument
