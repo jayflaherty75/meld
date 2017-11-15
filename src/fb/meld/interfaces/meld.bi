@@ -57,10 +57,3 @@ meldInterfaceDescriptor.func5.returnType = ''
 meldInterfaceDescriptor.func5.argCount = 1
 meldInterfaceDescriptor.func5.arg1.name = "status"
 meldInterfaceDescriptor.func5.arg1.argType = "integer"
-'type MeldInterface
-'    initialize as function (config as zstring ptr) as integer
-'    uninitialize as sub()
-'    isRunning as function() as integer
-'	getStatus as function() as integer
-'    shutdown as sub(status as integer)
-'end type
