@@ -1,29 +1,29 @@
 
-type listNode
-	nextPtr as listNode ptr
-	prevPtr as listNode ptr
+type ListNode
+	nextPtr as ListNode ptr
+	prevPtr as ListNode ptr
 	element as any ptr
 end type
 
-type list
-	first as listNode ptr
-	last as listNode ptr
+type List
+	first as ListNode ptr
+	last as ListNode ptr
 end type
 
-declare function listNew() as list ptr
-declare sub listDelete (listPtr as list ptr)
-declare sub listInsert (listPtr as list ptr, element as any ptr, nodePtr as listNode ptr = NULL)
-declare sub listRemove (listPtr as list ptr, element as any ptr)
-declare function listGetFirst (listPtr as list ptr) as listNode ptr
-declare function listGetLast (listPtr as list ptr) as listNode ptr
-declare function listGetNext (listPtr as list ptr, node as listNode ptr) as listNode ptr
+declare function listNew() as List ptr
+declare sub listDelete (listPtr as List ptr)
+declare sub listInsert (listPtr as List ptr, element as any ptr, nodePtr as ListNode ptr = NULL)
+declare sub listRemove (listPtr as List ptr, element as any ptr)
+declare function listGetFirst (listPtr as List ptr) as ListNode ptr
+declare function listGetLast (listPtr as List ptr) as ListNode ptr
+declare function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 
 /''
  ' Creates a new list instance.
- ' @returns {list ptr}
+ ' @returns {List ptr}
  '/
-function listNew() as list ptr
-	dim as list ptr listPtr = allocate (sizeof(list))
+function listNew() as List ptr
+	dim as List ptr listPtr = allocate (sizeof(list))
 
 	if listPtr <> NULL then
 		listPtr->first = NULL
@@ -36,9 +36,9 @@ end function
 
 /''
  ' Deletes a previously created list instance.
- ' @param {list ptr} listPtr
+ ' @param {List ptr} listPtr
  '/
-sub listDelete (listPtr as list ptr)
+sub listDelete (listPtr as List ptr)
 	if listPtr <> NULL then
 		deallocate (listPtr)
 	else
@@ -49,12 +49,12 @@ end sub
 /''
  ' Inserts a node after the prevPtr node.  If prevPtr is not supplied or null,
  ' the new node is inserted as the first element.
- ' @param {list ptr} listPtr
+ ' @param {List ptr} listPtr
  ' @param {any ptr} element
- ' @param {listNode ptr} prevPtr
+ ' @param {ListNode ptr} prevPtr
  '/
-sub listInsert (listPtr as list ptr, element as any ptr, prevPtr as listNode ptr = NULL)
-	dim as listNode ptr nodePtr
+sub listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNode ptr = NULL)
+	dim as ListNode ptr nodePtr
 
 	if element = NULL then
 		' TODO: throw error
@@ -93,12 +93,12 @@ end sub
 
 /''
  ' Removes a node from the list.
- ' @param {list ptr} listPtr
- ' @param {listNode ptr} node
+ ' @param {List ptr} listPtr
+ ' @param {ListNode ptr} node
  '/
-sub listRemove (listPtr as list ptr, node as listNode ptr)
-	dim as listNode ptr nextPtr
-	dim as listNode ptr prevPtr
+sub listRemove (listPtr as List ptr, node as ListNode ptr)
+	dim as ListNode ptr nextPtr
+	dim as ListNode ptr prevPtr
 
 	if element = NULL then
 		' TODO: throw error
@@ -128,10 +128,10 @@ end sub
 
 /''
  ' Returns the first node of a list.
- ' @param {list ptr} listPtr
- ' @returns {listNode ptr}
+ ' @param {List ptr} listPtr
+ ' @returns {ListNode ptr}
  '/
-function listGetFirst (listPtr as list ptr) as listNode ptr
+function listGetFirst (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
 		return NULL
@@ -142,10 +142,10 @@ end function
 
 /''
  ' Returns the last node of a list.
- ' @param {list ptr} listPtr
- ' @returns {listNode ptr}
+ ' @param {List ptr} listPtr
+ ' @returns {ListNode ptr}
  '/
-function listGetLast (listPtr as list ptr) as listNode ptr
+function listGetLast (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
 		return NULL
@@ -156,11 +156,11 @@ end function
 
 /''
  ' Returns the node after the given node.
- ' @param {list ptr} listPtr
- ' @param {listNode ptr} node
- ' @returns {listNode ptr}
+ ' @param {List ptr} listPtr
+ ' @param {ListNode ptr} node
+ ' @returns {ListNode ptr}
  '/
-function listGetNext (listPtr as list ptr, node as listNode ptr) as listNode ptr
+function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
 		return NULL
