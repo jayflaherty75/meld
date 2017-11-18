@@ -1,3 +1,18 @@
 #!/bin/bash
 
-fbc -mt -C './src/fb/meld/meld.bas' -x './meld'
+echo 'Starting Meld Core build';
+echo '';
+
+fbc -mt -C './src/fb/tester/tester.bas' -x './tester' || { echo ''; echo 'Test compilation failed, build terminating'; exit 1; }
+
+echo '';
+
+./tester || { echo ''; echo 'Test failed, build terminating'; exit 1; }
+
+echo '';
+
+fbc -mt -C './src/fb/meld/meld.bas' -x './meld' || { echo ''; echo 'Build failed'; exit 1; }
+
+echo '';
+
+echo 'Build successful!';

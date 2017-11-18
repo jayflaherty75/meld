@@ -1,12 +1,12 @@
 
 #include once "../../../../modules/headers/meld/meld.bi"
-#include once "../../shared/constants.bi"
+#include once "../../../../modules/headers/constants/v1.bi"
 
 #define MELD_MAX_MODULES			16
 
 type lifecycleInterface
 	' Called when the file is loaded, setting any data global to the service
-	load as function (meldPtr as meldInterface ptr, mutexId as any ptr = NULL) as integer
+	load as function (meldPtr as meldInterface ptr) as integer
 	' Called when instantiated.  This creates any state required by the service instance
 	construct as function () as any ptr
 	' Called when installed by another service and receives it's resourceId

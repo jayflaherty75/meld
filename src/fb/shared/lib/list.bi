@@ -1,4 +1,6 @@
 
+#include once "../../../../modules/headers/constants/v1.bi"
+
 type ListNode
 	nextPtr as ListNode ptr
 	prevPtr as ListNode ptr
@@ -13,7 +15,7 @@ end type
 declare function listNew() as List ptr
 declare sub listDelete (listPtr as List ptr)
 declare sub listInsert (listPtr as List ptr, element as any ptr, nodePtr as ListNode ptr = NULL)
-declare sub listRemove (listPtr as List ptr, element as any ptr)
+declare sub listRemove (listPtr as List ptr, node as ListNode ptr)
 declare function listGetFirst (listPtr as List ptr) as ListNode ptr
 declare function listGetLast (listPtr as List ptr) as ListNode ptr
 declare function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
@@ -100,18 +102,18 @@ sub listRemove (listPtr as List ptr, node as ListNode ptr)
 	dim as ListNode ptr nextPtr
 	dim as ListNode ptr prevPtr
 
-	if element = NULL then
-		' TODO: throw error
-		return
-	end if
-
 	if listPtr = NULL then
 		' TODO: throw error
 		return
 	end if
 
-	nextPtr = element->nextPtr
-	prevPtr = element->prevPtr
+	if node = NULL then
+		' TODO: throw error
+		return
+	end if
+
+	nextPtr = node->nextPtr
+	prevPtr = node->prevPtr
 
 	if nextPtr <> NULL then
 		nextPtr->prevPtr = prevPtr
