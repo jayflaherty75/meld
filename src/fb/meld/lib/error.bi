@@ -1,4 +1,5 @@
 
+#include once "../../../../modules/headers/constants/v1.bi"
 #include once "../../../../modules/headers/meld/error.bi"
 
 type ErrorState
@@ -11,7 +12,7 @@ type ErrorState
 	typeLimitErrorMsg as string
 end type
 
-static shared as zstring*64 uncaughtError = "UnCaughtError"
+static shared as zstring*64 uncaughtError = "UncaughtError"
 static shared as zstring*64 internalSystemError = "InternalSystemError"
 static shared as zstring*64 moduleFile = __FILE__
 
@@ -63,48 +64,6 @@ sub errorUninitialize()
 
 	errState.mutexId = NULL
 end sub
-
-/''
- ' Generates a new error instance for the given message and error code.
- ' @param {integer} errCode - Error code deciding what error handler will be
- '	triggered, can be retrieved with errorGetCode
- ' @param {string} message - Contains full error message
- ' @param {zstring ptr} filename - Pointer to a string containing the current
- '	filename.  Can be set to a constant containing __FILE__.
- ' @param {integer} lineNum - Line number where error occurred.  Can be set
- '	with __LINE__.
- ' @returns {ErrorMessage ptr}
- '/
-/'function errorNew (errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer) as ErrorMessage ptr
-	dim as integer msgLen = sizeof(errorHeader) + sizeof(errorData) + len(message)
-	dim as ErrorMessage ptr errObj
-
-	errObj = allocate(msgLen)
-
-	if errObj then
-		errObj->info.name = errState.errors(errCode).name
-		errObj->info.code = errCode
-		errObj->trace.filename = filename
-		errObj->trace.lineNum = lineNum
-	else
-		_errorLog (@"ErrorMessageAllocationFailure", @moduleFile, __LINE__, "Attempt to delete null error")
-		_errorLog (@"ErrorOrigin", filename, lineNum, message)
-	end if
-
-	return errObj
-end function'/
-
-/''
- ' Deallocates an error message created with errorNew
- ' @param {ErrorMessage ptr} errMsg
- '/
-/'sub errorDelete (errMsg as ErrorMessage ptr)
-	if errMsg then
-		deallocate(errMsg)
-	else
-		_errorLog (@"ErrorNullPointerDelete", @moduleFile, __LINE__, "Attempt to delete null error")
-	end if
-end sub'/
 
 /''
  ' Registers a new error type and returns the assigned error code.
