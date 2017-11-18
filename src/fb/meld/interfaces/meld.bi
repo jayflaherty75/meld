@@ -1,5 +1,5 @@
 
-#include once "../../../modules/headers/meld/meld.bi"
+#include once "../../../modules/headers/meld/meld-v1.bi"
 
 type MeldFuncInitialize
 	header as FunctionHeader

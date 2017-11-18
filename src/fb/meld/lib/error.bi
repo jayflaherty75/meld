@@ -1,6 +1,6 @@
 
-#include once "../../../../modules/headers/constants/v1.bi"
-#include once "../../../../modules/headers/meld/error.bi"
+#include once "../../../../modules/headers/constants/constants-v1.bi"
+#include once "../../../../modules/headers/error/error-v1.bi"
 
 type ErrorState
 	mutexId as any ptr

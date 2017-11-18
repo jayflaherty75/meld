@@ -1,6 +1,6 @@
 
-#include once "../../../../modules/headers/meld/meld.bi"
-#include once "../../../../modules/headers/constants/v1.bi"
+#include once "../../../../modules/headers/meld/meld-v1.bi"
+#include once "../../../../modules/headers/constants/constants-v1.bi"
 
 #define MELD_MAX_MODULES			16
 
