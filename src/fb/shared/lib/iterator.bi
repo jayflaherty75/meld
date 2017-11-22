@@ -1,84 +1,130 @@
 
-type IteratorHandler as function(iPtr as Iterator ptr, target as any ptr ptr) as BOOLEAN
+#include once "../../../../modules/headers/constants/constants-v1.bi"
 
 type Iterator
 	dataSet as any ptr
 	index as integer
+	length as integer
 	current as any ptr
-	handler as IteratorHandler
+	handler as function (iter as Iterator ptr, target as any ptr) as integer
 end type
 
-declare function iteratorNew(dataSet as any ptr = NULL) as Iterator ptr
-declare sub iteratorDelete (iPtr as Iterator ptr)
-declare sub iteratorSetHandler (iPtr as Iterator ptr, cb as function(iPtr as Iterator ptr) as any ptr)
-declare sub iteratorSetDataSet (iPtr as Iterator ptr, dataSet as any ptr)
-declare sub iteratorSetCurrent (iPtr as Iterator ptr, current as any ptr)
-declare function iteratorNext (iPtr as Iterator ptr, target as any ptr ptr) as BOOLEAN
+type IteratorHandler as function (iter as Iterator ptr, target as any ptr) as integer
 
-function iteratorNew(dataSet as any ptr = NULL) as Iterator ptr
-	dim as iPtr = allocate (sizeof(Iterator))
+declare function iteratorNew(dataSet as any ptr = NULL, length as integer = -1) as Iterator ptr
+declare sub iteratorDelete (iter as Iterator ptr)
+declare sub iteratorSetHandler (iter as Iterator ptr, cb as IteratorHandler)
+declare sub iteratorSetDataSet (iter as Iterator ptr, dataSet as any ptr, length as integer = -1)
+declare function iteratorNext (iter as Iterator ptr, target as any ptr) as integer
+declare sub iteratorReset (iter as Iterator ptr)
 
-	if iPtr <> NULL then
-		iPtr->dataSet = dataSet
-		iPtr->index = 0
-		iPtr->current = NULL
+declare function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as integer
+
+function iteratorNew(dataSet as any ptr = NULL, length as integer = -1) as Iterator ptr
+	dim as Iterator ptr iter = allocate (sizeof(Iterator))
+
+	if iter <> NULL then
+		iter->index = 0
+		iter->length = length
+		iter->current = NULL
+		iter->handler = @_iteratorDefaultHandler
+
+		if dataSet <> NULL then
+			iteratorSetDataSet (iter, dataSet, length)
+		else
+			iter->dataSet = NULL
+		end if
 	else
 		' TODO: throw error
+		print ("iteratorNew: Failed to allocation error object")
 	end if
 
-	return iPtr
+	return iter
 end function
 
-sub iteratorDelete (iPtr as Iterator ptr)
-	if iPtr <> NULL then
-		deallocate (iPtr)
+sub iteratorDelete (iter as Iterator ptr)
+	if iter <> NULL then
+		deallocate (iter)
 	else
 		' TODO: throw error
+		print ("iteratorDelete: Invalid iterator")
 	end if
 end sub
 
-sub iteratorSetHandler (iPtr as Iterator ptr, cb as IteratorHandler)
-	if iPtr = NULL then
+sub iteratorSetHandler (iter as Iterator ptr, cb as IteratorHandler)
+	if iter = NULL then
 		' TODO: throw error
-		return NULL
+		print ("iteratorSetHandler: Invalid iterator")
+		exit sub
 	end if
 
 	if cb = NULL then
 		' TODO: throw error
-		return NULL
+		print ("iteratorSetHandler: Invalid handler")
+		exit sub
 	end if
 
-	iPtr->handler = cb
+	iter->handler = cb
 end sub
 
-sub iteratorSetDataSet (iPtr as Iterator ptr, dataSet as any ptr)
-	if iPtr = NULL then
+sub iteratorSetDataSet (iter as Iterator ptr, dataSet as any ptr, length as integer = -1)
+	if iter = NULL then
 		' TODO: throw error
-		return NULL
+		print ("iteratorSetDataSet: Invalid iterator")
+		exit sub
 	end if
 
-	iPtr->dataSet = dataSet
+	iter->dataSet = dataSet
+	iter->length = length
+
+	iteratorReset(iter)
 end sub
 
-sub iteratorSetCurrent (iPtr as Iterator ptr, current as any ptr)
-	if iPtr = NULL then
+function iteratorNext (iter as Iterator ptr, target as any ptr) as integer
+	if iter = NULL then
 		' TODO: throw error
-		return NULL
-	end if
-
-	iPtr->current = current
-end sub
-
-function iteratorNext (iPtr as Iterator ptr, target as any ptr ptr) as BOOLEAN
-	if iPtr = NULL then
-		' TODO: throw error
+		print ("iteratorNext: Invalid iterator")
 		return NULL
 	end if
 
 	if target = NULL then
 		' TODO: throw error
+		print ("iteratorNext: Invalid target")
 		return NULL
 	end if
 
-	return iPtr->handler (iPtr, target)
+	return iter->handler (iter, target)
+end function
+
+sub iteratorReset (iter as Iterator ptr)
+	dim as integer result
+
+	if iter = NULL then
+		' TODO: throw error
+		print ("iteratorNext: Invalid iterator")
+		exit sub
+	end if
+
+	result = iter->handler (iter, NULL)
+end sub
+
+function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as integer
+	dim as integer ptr current
+
+	if target = NULL then
+		iter->current = iter->dataSet
+		iter->index = 0
+	else
+		if iter->index <= iter->length then
+			*cptr(integer ptr, target) = cptr(integer ptr, iter->dataSet)[iter->index]
+
+			iter->index += 1
+		end if
+		
+		if iter->index > iter->length then
+			return false
+		end if
+	end if
+
+	return true
 end function

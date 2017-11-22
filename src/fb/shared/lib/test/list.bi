@@ -3,6 +3,8 @@
 
 ' TODO: Test errors are thrown; requires interfaces/modules
 
+namespace listTest
+
 declare function listTestModule (describe as describeCallback) as integer
 declare function listTestCreate (it as itCallback) as integer
 declare function listTestCreate1 () as integer
@@ -265,3 +267,5 @@ function listTestCreate19 () as integer
 
 	return TRUE
 end function
+
+end namespace

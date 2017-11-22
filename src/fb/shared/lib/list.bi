@@ -36,6 +36,7 @@ function listNew() as List ptr
 		listPtr->length = 0
 	else
 		' TODO: throw error
+		print ("listNew: Failed to allocate list object")
 	end if
 
 	return listPtr
@@ -61,6 +62,7 @@ sub listDelete (listPtr as List ptr)
 		deallocate (listPtr)
 	else
 		' TODO: throw error
+		print ("listDelete: Invalid list")
 	end if
 end sub
 
@@ -74,13 +76,15 @@ end sub
 function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNode ptr = NULL) as ListNode ptr
 	dim as ListNode ptr nodePtr = NULL
 
-	if element = NULL then
+	if listPtr = NULL then
 		' TODO: throw error
+		print ("listInsert: Invalid list")
 		exit function
 	end if
 
-	if listPtr = NULL then
+	if element = NULL then
 		' TODO: throw error
+		print ("listInsert: Invalid element")
 		exit function
 	end if
 
@@ -108,6 +112,7 @@ function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNod
 		listPtr->length += 1
 	else
 		' TODO: throw error
+		print ("listInsert: Failed to allocate node")
 	end if
 
 	return nodePtr
@@ -124,11 +129,13 @@ sub listRemove (listPtr as List ptr, node as ListNode ptr)
 
 	if listPtr = NULL then
 		' TODO: throw error
+		print ("listRemove: Invalid list")
 		exit sub
 	end if
 
 	if node = NULL then
 		' TODO: throw error
+		print ("listRemove: Invalid node")
 		exit sub
 	end if
 
@@ -159,6 +166,7 @@ end sub
 function listGetFirst (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
+		print ("listGetFirst: Invalid list")
 		return NULL
 	end if
 
@@ -173,6 +181,7 @@ end function
 function listGetLast (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
+		print ("listGetLast: Invalid list")
 		return NULL
 	end if
 
@@ -188,6 +197,7 @@ end function
 function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
+		print ("listGetNext: Invalid list")
 		return NULL
 	end if
 
@@ -212,6 +222,7 @@ function listSearch (listPtr as List ptr, element as any ptr, compare as functio
 
 	if listPtr = NULL then
 		' TODO: throw error
+		print ("listSearch: Invalid list")
 		return NULL
 	end if
 
