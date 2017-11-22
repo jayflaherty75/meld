@@ -1,6 +1,13 @@
 
+#include once "../../../../modules/headers/meld/meld-v1.bi"
 #include once "../../../../modules/headers/constants/constants-v1.bi"
 #include once "../../../../modules/headers/error/error-v1.bi"
+
+#define ERROR_MAX_TYPES                     256
+
+type ErrorDependencies
+	meld as MeldInterface ptr
+end type
 
 type ErrorState
 	mutexId as any ptr
@@ -10,14 +17,17 @@ type ErrorState
 	uncaughtError as integer
 	internalSystemError as integer
 	typeLimitErrorMsg as string
+	methods as ErrorInterface
+	deps as ErrorDependencies
 end type
 
-static shared as zstring*64 uncaughtError = "UncaughtError"
-static shared as zstring*64 internalSystemError = "InternalSystemError"
+static shared as zstring*64 uncaughtError = "MeldInternalUncaughtError"
+static shared as zstring*64 internalSystemError = "MeldInternalSystemError"
 static shared as zstring*64 moduleFile = __FILE__
 
 dim shared as ErrorState errState
 
+declare function errorLoad (meldPtr as MeldInterface ptr) as integer
 declare function errorInitialize (mutexId as any ptr) as integer
 declare sub errorUninitialize()
 declare function errorRegisterType (errName as zstring ptr) as integer
@@ -37,6 +47,30 @@ declare sub _errorHandleWarning (errName as zstring ptr, byref message as string
 
 declare sub _errorLog (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
 declare function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
+
+/''
+ ' @param {MeldInterface ptr} meldPtr
+ '/
+function errorLoad (meld as MeldInterface ptr) as integer
+	if meld <> NULL then
+		errState.methods.initialize = @errorInitialize
+		errState.methods.uninitialize = @errorUninitialize
+		errState.methods.registerType = @errorRegisterType
+		errState.methods.assignHandler = @errorAssignHandler
+		errState.methods.getCode = @errorGetCode
+		errState.methods.throw = @errorThrow
+
+		if not meld->register("error", @errState.methods) then
+			return false
+		end if
+
+		errState.deps.meld = meld
+
+		return true
+	else
+		return false
+	end if
+end function
 
 /''
  ' Error system setup.
@@ -217,5 +251,7 @@ end sub
  ' @private
  '/
 function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
-	return errName & ": " & filename & " (" & lineNum & ") \n" & message
+	dim as MeldInterface ptr meld = errState.deps.meld
+
+	return Time () & errName & ": " & filename & " (" & lineNum & ") " & meld->newline & message
 end function

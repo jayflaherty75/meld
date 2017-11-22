@@ -26,7 +26,10 @@ type MeldInterface
     uninitialize as sub()
     isRunning as function() as integer
 	getStatus as function() as integer
+	register as function(moduleName as zstring, interface as any ptr) as integer
     shutdown as sub(status as integer)
+	newline as zstring ptr
+	dirsep as zstring ptr
 end type
 
 dim shared as MeldInterface PTR meldPtr

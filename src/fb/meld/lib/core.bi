@@ -12,6 +12,9 @@ type MeldCoreState
     isRunning as integer
 	status as integer
     mutexId as any ptr
+	systemNewLine as string
+	systemDirChar as string
+	methods as MeldInterface
 end type
 
 dim shared meldCore as meldCoreState
@@ -20,6 +23,7 @@ declare function meldInitialize (config as zstring ptr) as integer
 declare sub meldUninitialize()
 declare function meldIsRunning() as integer
 declare function meldGetStatus() as integer
+declare function meldRegister(moduleName as zstring, interface as any ptr) as integer
 declare sub meldShutdown(status as integer)
 
 /''
@@ -28,12 +32,31 @@ declare sub meldShutdown(status as integer)
  ' @returns {integer}
  '/
 function meldInitialize (config as zstring ptr) as integer
+	#IFDEF __FB_WIN32__
+		meldCore.systemNewLine = "\r\n"
+		meldCore.systemDirChar = "\\"
+	#ELSE
+		meldCore.systemNewLine = "\n"
+		meldCore.systemDirChar = "/"
+	#ENDIF
+
+    meldCore.methods.initialize = @meldInitialize
+    meldCore.methods.uninitialize = @meldUninitialize
+    meldCore.methods.isRunning = @meldIsRunning
+	meldCore.methods.getStatus = @meldGetStatus
+	meldCore.methods.register = @meldRegister
+    meldCore.methods.shutdown = @meldShutdown
+
+	meldCore.methods.newline = strptr(meldCore.systemNewLine)
+	meldCore.methods.dirsep = strptr(meldCore.systemDirChar)
+
     meldCore.mutexId = mutexcreate()
 
     if meldCore.mutexId = NULL then
         return FALSE
     end if
 
+	errorLoad(@meldCore.methods)
 	errorInitialize(meldCore.mutexId)
 
     meldCore.isRunning = TRUE
@@ -78,6 +101,14 @@ end function
  '/
 function meldGetStatus() as integer
 	return meldCore.status
+end function
+
+/''
+ ' @param {zstring} name
+ ' @param {any ptr} interface
+ '/
+function meldRegister(moduleName as zstring, interface as any ptr) as integer
+	return TRUE
 end function
 
 /''
