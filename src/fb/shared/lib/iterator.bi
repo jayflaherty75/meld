@@ -109,19 +109,15 @@ sub iteratorReset (iter as Iterator ptr)
 end sub
 
 function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as integer
-	dim as integer ptr current
-
 	if target = NULL then
 		iter->current = iter->dataSet
 		iter->index = 0
 	else
-		if iter->index <= iter->length then
+		if iter->index < iter->length then
 			*cptr(integer ptr, target) = cptr(integer ptr, iter->dataSet)[iter->index]
 
 			iter->index += 1
-		end if
-		
-		if iter->index > iter->length then
+		else
 			return false
 		end if
 	end if

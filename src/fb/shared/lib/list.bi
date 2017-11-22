@@ -1,5 +1,8 @@
 
 #include once "../../../../modules/headers/constants/constants-v1.bi"
+#include once "iterator.bi"
+
+' TODO: Write loader function and use iterator interface instead of direct include
 
 type ListNode
 	nextPtr as ListNode ptr
@@ -20,8 +23,11 @@ declare sub listRemove (listPtr as List ptr, node as ListNode ptr)
 declare function listGetFirst (listPtr as List ptr) as ListNode ptr
 declare function listGetLast (listPtr as List ptr) as ListNode ptr
 declare function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
+declare function listGetLength (listPtr as List ptr) as integer
 declare function listSearch (listPtr as List ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as ListNode ptr
 declare function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
+declare function listIterator (listPtr as List ptr) as Iterator ptr
+declare function _listIterationHandler (iter as Iterator ptr, target as any ptr) as integer
 
 /''
  ' Creates a new list instance.
@@ -208,6 +214,16 @@ function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 	end if
 end function
 
+function listGetLength (listPtr as List ptr) as integer
+	if listPtr = NULL then
+		' TODO: throw error
+		print ("listGetNext: Invalid list")
+		return NULL
+	end if
+
+	return listPtr->length
+end function
+
 /''
  ' Search for an element in the list using the given compare function.  If
  ' searching for integer values, just pass listDefaultCompare.
@@ -252,4 +268,58 @@ function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
 	else
 		return FALSE
 	end if
+end function
+
+/''
+ ' Provides an Iterator instance that will return the element pointers of each
+ ' node in the given list.
+ ' @param {List ptr} listPtr
+ ' @returns {Iterator ptr}
+ '/
+function listIterator (listPtr as List ptr) as Iterator ptr
+	dim as Iterator ptr iter = iteratorNew()
+
+	if listPtr = NULL then
+		' TODO: throw error
+		print ("listSearch: Invalid list")
+		return NULL
+	end if
+
+	iter->handler = @_listIterationHandler
+
+	iteratorSetDataSet(iter, listPtr)
+
+	return iter
+end function
+
+/''
+ ' Iteration handler for lists.
+ ' @params {Iterator ptr} iter
+ ' @params {any ptr} target
+ ' @returns {integer}
+ ' @private
+ '/
+function _listIterationHandler (iter as Iterator ptr, target as any ptr) as integer
+	dim as List ptr listPtr = iter->dataSet
+	dim as ListNode ptr current
+
+	if target = NULL then
+		iter->index = 0
+		iter->current = listPtr
+		iter->length = listPtr->length
+		iter->current = listPtr->first
+	else
+		if iter->index < iter->length then
+			current = iter->current
+
+			*cptr(any ptr ptr, target) = current->element
+
+			iter->current = current->nextPtr
+			iter->index += 1
+		else
+			return false
+		end if
+	end if
+
+	return true
 end function

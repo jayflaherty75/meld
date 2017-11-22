@@ -10,6 +10,7 @@ declare function listTestCreate (it as itCallback) as integer
 declare function listTestCreate1 () as integer
 declare function listTestCreate2 () as integer
 declare function listTestCreate3 () as integer
+declare function listTestCreate3_1 () as integer
 declare function listTestCreate4 () as integer
 declare function listTestCreate5 () as integer
 declare function listTestCreate6 () as integer
@@ -46,6 +47,7 @@ function listTestCreate (it as itCallback) as integer
 	result = result ANDALSO it ("creates a new list instance", @listTestCreate1)
 	result = result ANDALSO it ("inserts a set of nodes", @listTestCreate2)
 	result = result ANDALSO it ("returns the correct list length", @listTestCreate3)
+	result = result ANDALSO it ("Creates a working iterator", @listTestCreate3_1)
 	result = result ANDALSO it ("successfully searches a node inside the list", @listTestCreate4)
 	result = result ANDALSO it ("removes inside node", @listTestCreate5)
 	result = result ANDALSO it ("successfully searches a node at the beginning of the list", @listTestCreate6)
@@ -95,9 +97,31 @@ function listTestCreate2 () as integer
 end function
 
 function listTestCreate3 () as integer
-	if listPtr->length <> 8 then
+	if listGetLength(listPtr) <> 8 then
 		return FALSE
 	end if
+
+	return TRUE
+end function
+
+function listTestCreate3_1 () as integer
+	dim as Iterator ptr iter = listIterator(listPtr)
+	dim as integer ptr valPtr
+	dim as string result = ""
+
+	if iter = NULL then
+		return FALSE
+	end if
+
+	while (iteratorNext(iter, @valPtr))
+		result = result & (*valPtr)
+	wend
+
+	if result <> "12345678" then
+		return FALSE
+	end if
+
+	iteratorDelete(iter)
 
 	return TRUE
 end function
@@ -115,7 +139,7 @@ end function
 function listTestCreate5 () as integer
 	listRemove (listPtr, nodePtr)
 
-	if listPtr->length <> 7 then
+	if listGetLength(listPtr) <> 7 then
 		return FALSE
 	end if
 
@@ -135,7 +159,7 @@ end function
 function listTestCreate7 () as integer
 	listRemove (listPtr, nodePtr)
 
-	if listPtr->length <> 6 then
+	if listGetLength(listPtr) <> 6 then
 		return FALSE
 	end if
 
@@ -155,7 +179,7 @@ end function
 function listTestCreate9 () as integer
 	listRemove (listPtr, nodePtr)
 
-	if listPtr->length <> 5 then
+	if listGetLength(listPtr) <> 5 then
 		return FALSE
 	end if
 
@@ -187,7 +211,7 @@ end function
 function listTestCreate12 () as integer
 	listRemove (listPtr, nodePtr)
 
-	if listPtr->length <> 4 then
+	if listGetLength(listPtr) <> 4 then
 		return FALSE
 	end if
 
@@ -207,7 +231,7 @@ end function
 function listTestCreate14 () as integer
 	listRemove (listPtr, nodePtr)
 
-	if listPtr->length <> 3 then
+	if listGetLength(listPtr) <> 3 then
 		return FALSE
 	end if
 
@@ -258,7 +282,7 @@ function listTestCreate19 () as integer
 	dim as integer length
 
 	listDelete (listPtr)
-	length = listPtr->length
+	length = listGetLength(listPtr)
 	listPtr = NULL
 
 	if length <> 0 then
