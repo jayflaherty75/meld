@@ -19,9 +19,9 @@ declare function testSuite (byref description as string, test as testFunc) as in
  '/
 function testRunner (tests as testModule ptr, count as integer) as integer
 	dim as integer i = 0
-	dim as integer result = TRUE
+	dim as integer result = true
 
-	while (i < count AND result = TRUE)
+	while (i < count AND result = true)
 		result = tests[i] (@testDescribe)
 		i += 1
 	wend

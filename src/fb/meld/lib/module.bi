@@ -82,5 +82,5 @@ end function
  '
  '/
 function moduleRelease () as integer
-	return TRUE
+	return true
 end function

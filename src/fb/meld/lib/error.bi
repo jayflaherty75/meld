@@ -87,7 +87,7 @@ function errorInitialize (mutexId as any ptr) as integer
 	errorAssignHandler(errState.uncaughtError, @_errorHandleError)
 	errorAssignHandler(errState.internalSystemError, @_errorHandleError)
 
-	return TRUE
+	return true
 end function
 
 /''
@@ -139,12 +139,12 @@ end function
  ' @returns {integer}
  '/
 function errorAssignHandler (errCode as integer, handler as ErrorHandler) as integer
-	DIM as integer result = TRUE
+	DIM as integer result = true
 
 	mutexlock (errState.mutexId)
 
 	if not errCode ORELSE not errState.errors(errCode).code then
-		result = FALSE
+		result = true
 	else
 		errState.handlers(errCode) = handler
 	end if

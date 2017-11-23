@@ -7,7 +7,7 @@ declare function errorTestCreate1 () as integer
 declare function errorTestCreate2 () as integer
 
 function errorTestModule (describe as describeCallback) as integer
-	dim as integer result = TRUE
+	dim as integer result = true
 
 	result = result ANDALSO describe ("The Error module", @errorTestCreate)
 
@@ -15,7 +15,7 @@ function errorTestModule (describe as describeCallback) as integer
 end function
 
 function errorTestCreate (it as itCallback) as integer
-	dim as integer result = TRUE
+	dim as integer result = true
 
 	result = result ANDALSO it ("does a little of this", @errorTestCreate1)
 	result = result ANDALSO it ("does a little of that", @errorTestCreate2)
@@ -24,9 +24,9 @@ function errorTestCreate (it as itCallback) as integer
 end function
 
 function errorTestCreate1 () as integer
-	return TRUE
+	return true
 end function
 
 function errorTestCreate2 () as integer
-	return TRUE
+	return true
 end function
