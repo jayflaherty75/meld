@@ -305,7 +305,6 @@ function _listIterationHandler (iter as Iterator ptr, target as any ptr) as inte
 
 	if target = NULL then
 		iter->index = 0
-		iter->current = listPtr
 		iter->length = listPtr->length
 		iter->current = listPtr->first
 	else
