@@ -144,7 +144,7 @@ function errorAssignHandler (errCode as integer, handler as ErrorHandler) as int
 	mutexlock (errState.mutexId)
 
 	if not errCode ORELSE not errState.errors(errCode).code then
-		result = true
+		result = false
 	else
 		errState.handlers(errCode) = handler
 	end if

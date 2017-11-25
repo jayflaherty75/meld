@@ -41,7 +41,7 @@ function test1 () as integer
 	btreePtr = bintreeNew()
 
 	if btreePtr = NULL then
-		return true
+		return false
 	end if
 
 	return true
@@ -56,7 +56,7 @@ function test2 () as integer
 		nodePtr = bintreeInsert(btreePtr, @testData(i))
 
 		if nodePtr = NULL then
-			result = true
+			result = false
 			exit for
 		end if
 	next
@@ -66,7 +66,7 @@ end function
 
 function test3 () as integer
 	if bintreeGetLength(btreePtr) <> 8 then
-		return true
+		return false
 	end if
 
 	return true
@@ -76,7 +76,7 @@ function test4() as integer
 	dim as BinTreeNode ptr nodePtr = bintreeSearch (btreePtr, @testData(3))
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testData(3) then
-		return true
+		return false
 	end if
 
 	return true
@@ -90,7 +90,7 @@ function test30 () as integer
 	btreePtr = NULL
 
 	if length <> 0 then
-		return true
+		return false
 	end if
 
 	return true

@@ -53,7 +53,7 @@ function meldInitialize (config as zstring ptr) as integer
     meldCore.mutexId = mutexcreate()
 
     if meldCore.mutexId = NULL then
-        return true
+        return false
     end if
 
 	errorLoad(@meldCore.methods)
@@ -74,7 +74,7 @@ sub meldUninitialize()
 	errorUninitialize()
 
     mutexlock(meldCore.mutexId)
-    meldCore.isRunning = true
+    meldCore.isRunning = false
     mutexunlock(meldCore.mutexId)
 
     if meldCore.mutexId then
@@ -117,7 +117,7 @@ end function
  '/
 sub meldShutdown(status as integer)
     mutexlock(meldCore.mutexId)
-    meldCore.isRunning = true
+    meldCore.isRunning = false
 	meldCore.status = status
     mutexunlock(meldCore.mutexId)
 end sub

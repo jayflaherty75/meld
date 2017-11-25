@@ -36,7 +36,7 @@ function test1 () as integer
 	iter = iteratorNew(@testData(0), 8)
 
 	if iter = NULL then
-		return true
+		return false
 	end if
 
 	return true
@@ -51,7 +51,7 @@ function test2 () as integer
 	wend
 
 	if result <> "12345678" then
-		return true
+		return false
 	end if
 
 	return true
@@ -68,7 +68,7 @@ function test3 () as integer
 	wend
 
 	if result <> "12345678" then
-		return true
+		return false
 	end if
 
 	return true
