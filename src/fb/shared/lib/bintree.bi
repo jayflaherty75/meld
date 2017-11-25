@@ -50,6 +50,11 @@ sub bintreeDelete (btreePtr as BinTree ptr)
 			_bintreeDeleteNode(btreePtr, btreePtr->root)
 		end if
 
+		if btreePtr->length <> 0 then
+			' TODO: throw error
+			print("bintreeDelete: Failed to correctly release all resources")
+		end if
+
 		deallocate(btreePtr)
 	else
 		' TODO: throw error
@@ -176,7 +181,7 @@ sub _bintreeDeleteNode (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr)
 			' Deleted node: of which care has been taken
 			' Parent: Can be reset with replacement
 			' replacement: becomes the new node
-			'	Get parent of replacement
+			' Get parent of replacement
 			replacement = _bintreeNextRecurse(btreePtr, nodePtr->rightPtr)
 		elseif rightPtr <> NULL then
 			replacement = rightPtr

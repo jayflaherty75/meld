@@ -34,7 +34,7 @@ declare function _listIterationHandler (iter as Iterator ptr, target as any ptr)
  ' @returns {List ptr}
  '/
 function listNew() as List ptr
-	dim as List ptr listPtr = allocate (sizeof(list))
+	dim as List ptr listPtr = allocate(sizeof(list))
 
 	if listPtr <> NULL then
 		listPtr->first = NULL
@@ -65,10 +65,15 @@ sub listDelete (listPtr as List ptr)
 			nodePtr = nextPtr
 		wend
 
+		if listPtr->length <> 0 then
+			' TODO: throw error
+			print("listDelete: Failed to correctly release all resources")
+		end if
+
 		deallocate (listPtr)
 	else
 		' TODO: throw error
-		print ("listDelete: Invalid list")
+		print("listDelete: Invalid list")
 	end if
 end sub
 
@@ -84,17 +89,17 @@ function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNod
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listInsert: Invalid list")
+		print("listInsert: Invalid list")
 		exit function
 	end if
 
 	if element = NULL then
 		' TODO: throw error
-		print ("listInsert: Invalid element")
+		print("listInsert: Invalid element")
 		exit function
 	end if
 
-	nodePtr = allocate (sizeof(listNode))
+	nodePtr = allocate(sizeof(listNode))
 
 	if nodePtr <> NULL then
 		nodePtr->element = element
@@ -118,7 +123,7 @@ function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNod
 		listPtr->length += 1
 	else
 		' TODO: throw error
-		print ("listInsert: Failed to allocate node")
+		print("listInsert: Failed to allocate node")
 	end if
 
 	return nodePtr
@@ -135,13 +140,13 @@ sub listRemove (listPtr as List ptr, node as ListNode ptr)
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listRemove: Invalid list")
+		print("listRemove: Invalid list")
 		exit sub
 	end if
 
 	if node = NULL then
 		' TODO: throw error
-		print ("listRemove: Invalid node")
+		print("listRemove: Invalid node")
 		exit sub
 	end if
 
@@ -161,7 +166,7 @@ sub listRemove (listPtr as List ptr, node as ListNode ptr)
 	end if
 
 	listPtr->length -= 1
-	deallocate (node)
+	deallocate(node)
 end sub
 
 /''
@@ -172,7 +177,7 @@ end sub
 function listGetFirst (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listGetFirst: Invalid list")
+		print("listGetFirst: Invalid list")
 		return NULL
 	end if
 
@@ -187,7 +192,7 @@ end function
 function listGetLast (listPtr as List ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listGetLast: Invalid list")
+		print("listGetLast: Invalid list")
 		return NULL
 	end if
 
@@ -203,7 +208,7 @@ end function
 function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listGetNext: Invalid list")
+		print("listGetNext: Invalid list")
 		return NULL
 	end if
 
@@ -217,7 +222,7 @@ end function
 function listGetLength (listPtr as List ptr) as integer
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listGetNext: Invalid list")
+		print("listGetNext: Invalid list")
 		return NULL
 	end if
 
@@ -238,14 +243,14 @@ function listSearch (listPtr as List ptr, element as any ptr, compare as functio
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listSearch: Invalid list")
+		print("listSearch: Invalid list")
 		return NULL
 	end if
 
 	nodePtr = listGetFirst(listPtr)
 
 	while (nodePtr <> NULL ANDALSO result = NULL)
-		if compare (element, nodePtr->element) = true then
+		if compare(element, nodePtr->element) = true then
 			result = nodePtr
 		else
 			nodePtr = listGetNext(listPtr, nodePtr)
@@ -281,7 +286,7 @@ function listIterator (listPtr as List ptr) as Iterator ptr
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print ("listSearch: Invalid list")
+		print("listSearch: Invalid list")
 		return NULL
 	end if
 

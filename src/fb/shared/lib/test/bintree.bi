@@ -12,7 +12,6 @@ declare function test4 () as integer
 
 declare function test30 () as integer
 
-'dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
 dim shared as integer testData(8-1) = { 5, 1, 6, 7, 2, 3, 4, 8 }
 dim shared as BinTree ptr btreePtr
 
@@ -86,12 +85,7 @@ function test30 () as integer
 	dim as integer length
 
 	bintreeDelete (btreePtr)
-	length = btreePtr->length
 	btreePtr = NULL
-
-	if length <> 0 then
-		return false
-	end if
 
 	return true
 end function
