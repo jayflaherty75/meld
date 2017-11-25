@@ -122,6 +122,7 @@ function listTestCreate3_1 () as integer
 	end if
 
 	iteratorDelete(iter)
+	iter = NULL
 
 	return TRUE
 end function

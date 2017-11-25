@@ -23,6 +23,7 @@ declare function bintreeGetLength (btreePtr as BinTree ptr) as integer
 declare function bintreeIterator (btreePtr as BinTree ptr) as Iterator ptr
 declare function bintreeDefaultCompare(criteria as any ptr, element as any ptr) as integer
 declare function _bintreeSearchRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr, element as any ptr) as BinTreeNode ptr
+declare function _bintreeNextRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr) as BinTreeNode ptr
 declare function _bintreeCreateNode (btreePtr as BinTree ptr, element as any ptr) as BinTreeNode ptr
 declare sub _bintreeDeleteNode (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr)
 declare function _bintreeIterationHandler (iter as Iterator ptr, target as any ptr) as integer
@@ -151,26 +152,6 @@ function bintreeDefaultCompare(criteria as any ptr, element as any ptr) as integ
 	return sgn(*cptr(integer ptr, element) - *cptr(integer ptr, criteria))
 end function
 
-function _bintreeSearchRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr, element as any ptr) as BinTreeNode ptr
-	dim as integer compare = btreePtr->compare(nodePtr->element, element)
-
-	if compare = 1 then
-		if nodePtr->rightPtr <> NULL then
-			return _bintreeSearchRecurse(btreePtr, nodePtr->rightPtr, element)
-		else
-			return nodePtr
-		end if
-	elseif compare = -1 then
-		if nodePtr->leftPtr <> NULL then
-			return _bintreeSearchRecurse(btreePtr, nodePtr->leftPtr, element)
-		else
-			return nodePtr
-		end if
-	else
-		return nodePtr
-	end if
-end function
-
 function _bintreeCreateNode (btreePtr as BinTree ptr, element as any ptr) as BinTreeNode ptr
 	dim as BinTreeNode ptr nodePtr = allocate(sizeof(BinTreeNode))
 
@@ -189,22 +170,24 @@ sub _bintreeDeleteNode (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr)
 		dim as BinTreeNode ptr parent = nodePtr->parent
 		dim as BinTreeNode ptr rightPtr = nodePtr->rightPtr
 		dim as BinTreeNode ptr leftPtr = nodePtr->leftPtr
-		dim as BinTreeNode ptr newParent = NULL
+		dim as BinTreeNode ptr replacement = NULL
 
 		if rightPtr <> NULL andalso leftPtr <> NULL then
-			' TODO: Finish complex case of removing a fully connected node
-			' and consider decoupling this logic from deallocation as it may be
-			' reusable tree balancing.
+			' Deleted node: of which care has been taken
+			' Parent: Can be reset with replacement
+			' replacement: becomes the new node
+			'	Get parent of replacement
+			replacement = _bintreeNextRecurse(btreePtr, nodePtr->rightPtr)
 		elseif rightPtr <> NULL then
-			newParent = rightPtr
+			replacement = rightPtr
 		elseif leftPtr <> NULL then
-			newParent = leftPtr
+			replacement = leftPtr
 		end if
 
 		if nodePtr = parent->rightPtr then
-			parent->rightPtr = newParent
+			parent->rightPtr = replacement
 		elseif nodePtr = parent->leftPtr then
-			parent->leftPtr = newParent
+			parent->leftPtr = replacement
 		end if
 	else
 		if nodePtr->rightPtr <> NULL then
@@ -231,6 +214,45 @@ sub _bintreeDeleteNode (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr)
 
 	deallocate(nodePtr)
 end sub
+
+function _bintreeSearchRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr, element as any ptr) as BinTreeNode ptr
+	dim as integer compare = btreePtr->compare(nodePtr->element, element)
+
+	if compare = 1 then
+		if nodePtr->rightPtr <> NULL then
+			return _bintreeSearchRecurse(btreePtr, nodePtr->rightPtr, element)
+		else
+			return nodePtr
+		end if
+	elseif compare = -1 then
+		if nodePtr->leftPtr <> NULL then
+			return _bintreeSearchRecurse(btreePtr, nodePtr->leftPtr, element)
+		else
+			return nodePtr
+		end if
+	else
+		return nodePtr
+	end if
+end function
+
+/''
+ ' This routine initially expects the right pointer of the starting node and
+ ' traverses left from there.  In a BST, this will always produce the next
+ ' highest value, not including the parent.  This can be used to great purpose
+ ' in many processes dealing with BSTs, such as removing nodes, balancing the
+ ' tree, etc.
+ ' @params {BinTree ptr} btreePtr
+ ' @params {BinTreeNode ptr} nodePtr
+ ' @returns {BinTreeNode ptr}
+ ' @private
+ '/
+function _bintreeNextRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr) as BinTreeNode ptr
+	if nodePtr->leftPtr <> NULL then
+		return _bintreeNextRecurse(btreePtr, nodePtr->leftPtr)
+	else
+		return nodePtr
+	end if
+end function
 
 function _bintreeIterationHandler (iter as Iterator ptr, target as any ptr) as integer
 	dim as BinTree ptr btreePtr = iter->dataSet

@@ -246,9 +246,9 @@ function listSearch (listPtr as List ptr, element as any ptr, compare as functio
 
 	while (nodePtr <> NULL ANDALSO result = NULL)
 		if compare (element, nodePtr->element) = true then
-			nodePtr = listGetNext(listPtr, nodePtr)
-		else
 			result = nodePtr
+		else
+			nodePtr = listGetNext(listPtr, nodePtr)
 		end if
 	wend
 
@@ -266,7 +266,7 @@ function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
 	if *cptr(integer ptr, criteria) = *cptr(integer ptr, current) then
 		return true
 	else
-		return true
+		return false
 	end if
 end function
 
