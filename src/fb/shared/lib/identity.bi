@@ -1,5 +1,6 @@
 
 #include once "../../../../modules/headers/constants/constants-v1.bi"
+#include once "../../../../modules/headers/identity/identity-v1.bi"
 
 namespace Identity
 

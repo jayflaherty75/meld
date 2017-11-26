@@ -52,24 +52,26 @@ declare function _errorFormat (errName as zstring ptr, filename as zstring ptr, 
  ' @param {MeldInterface ptr} meldPtr
  '/
 function errorLoad (meld as MeldInterface ptr) as integer
-	if meld <> NULL then
-		errState.methods.initialize = @errorInitialize
-		errState.methods.uninitialize = @errorUninitialize
-		errState.methods.registerType = @errorRegisterType
-		errState.methods.assignHandler = @errorAssignHandler
-		errState.methods.getCode = @errorGetCode
-		errState.methods.throw = @errorThrow
-
-		if not meld->register("error", @errState.methods) then
-			return false
-		end if
-
-		errState.deps.meld = meld
-
-		return true
-	else
+	if meld = NULL then
+		' TODO: Throw error
+		print ("errorLoad: Invalid meld interface pointer")
 		return false
 	end if
+
+	errState.methods.initialize = @errorInitialize
+	errState.methods.uninitialize = @errorUninitialize
+	errState.methods.registerType = @errorRegisterType
+	errState.methods.assignHandler = @errorAssignHandler
+	errState.methods.getCode = @errorGetCode
+	errState.methods.throw = @errorThrow
+
+	if not meld->register("error", @errState.methods) then
+		return false
+	end if
+
+	errState.deps.meld = meld
+
+	return true
 end function
 
 /''

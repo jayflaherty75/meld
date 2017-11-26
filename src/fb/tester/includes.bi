@@ -4,8 +4,9 @@
 #include once "../shared/lib/test/list.bi"
 #include once "../shared/lib/test/iterator.bi"
 #include once "../shared/lib/test/bintree.bi"
+#include once "../shared/lib/test/paged-array.bi"
 
-#define TEST_COUNT			4
+#define TEST_COUNT			5
 
 dim shared as testModule tests(TEST_COUNT - 1)
 
@@ -13,3 +14,4 @@ tests(0) = @errorTestModule
 tests(1) = @listTest.listTestModule
 tests(2) = @iteratorTest.iteratorTestModule
 tests(3) = @binTreeTest.binTreeTestModule
+tests(4) = @PagedArrayTest.pagedArrayTestModule
