@@ -1,4 +1,6 @@
 
+#include once "../../../modules/headers/constants/constants-v1.bi"
+
 type testFunc as function() as integer
 type itCallback as function (byref description as string, test as testFunc) as integer
 type suiteFunc as function (it as itCallback) as integer
@@ -22,8 +24,13 @@ function testRunner (tests as testModule ptr, count as integer) as integer
 	dim as integer result = true
 
 	while (i < count AND result = true)
-		result = tests[i] (@testDescribe)
-		i += 1
+		if tests[i] <> NULL then
+			result = tests[i] (@testDescribe)
+			i += 1
+		else
+			print ("testRunner: WARNING! Null test function found.")
+			result = false
+		end if
 	wend
 
 	return result
@@ -38,6 +45,11 @@ end function
 function testDescribe (byref description as string, callback as suiteFunc) as integer
 	print (description & "...")
 
+	if callback = NULL then
+		print ("testDescribe: WARNING! Null test function found.")
+		return false
+	end if
+
 	return callback (@testSuite)
 end function
 
@@ -49,6 +61,11 @@ end function
  '/
 function testSuite (byref description as string, test as testFunc) as integer
 	print ("  ..." & description)
+
+	if test = NULL then
+		print ("testSuite: WARNING! Null test function found.")
+		return false
+	end if
 
 	return test()
 end function
