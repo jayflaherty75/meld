@@ -15,7 +15,7 @@ function construct(dataSet as any ptr = NULL, length as integer = -1) as Iterato
 		iter->handler = @_defaultHandler
 
 		if dataSet <> NULL then
-			setDataSet (iter, dataSet, length)
+			setData (iter, dataSet, length)
 		else
 			iter->dataSet = NULL
 		end if
@@ -52,7 +52,7 @@ sub setHandler (iter as IteratorObj ptr, cb as IteratorHandler)
 	iter->handler = cb
 end sub
 
-sub setDataSet (iter as IteratorObj ptr, dataSet as any ptr, length as integer = -1)
+sub setData (iter as IteratorObj ptr, dataSet as any ptr, length as integer = -1)
 	if iter = NULL then
 		' TODO: throw error
 		print ("iteratorSetDataSet: Invalid iterator")

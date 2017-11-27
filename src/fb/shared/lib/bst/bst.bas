@@ -129,7 +129,7 @@ function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
 
 	iter->handler = @_iterationHandler
 
-	Iterator.setDataSet(iter, btreePtr)
+	Iterator.setData(iter, btreePtr)
 
 	return iter
 end function

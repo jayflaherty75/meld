@@ -268,7 +268,7 @@ function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
 
 	iter->handler = @_iterationHandler
 
-	Iterator.setDataSet(iter, listPtr)
+	Iterator.setData(iter, listPtr)
 
 	return iter
 end function
