@@ -2,7 +2,7 @@
 #include once "../../../../modules/headers/meld/meld-v1.bi"
 #include once "../../../../modules/headers/constants/constants-v1.bi"
 '#include once "../interfaces/interfaces.bi"
-#include once "error/error.bi"
+#include once "fault/fault.bi"
 
 ' TODO: Read application config based on command line argument
 ' TODO: Register functions

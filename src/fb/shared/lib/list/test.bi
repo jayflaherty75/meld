@@ -5,7 +5,7 @@
 
 namespace ListTest
 
-declare function listTestModule (describe as describeCallback) as integer
+declare function testModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
 declare function test1 () as integer
 declare function test2 () as integer
@@ -33,7 +33,7 @@ dim shared as integer testResult(5-1) = { 3, 5, 6 }
 dim shared as ListObj ptr listPtr
 dim shared as List.Node ptr nodePtr
 
-function listTestModule (describe as describeCallback) as integer
+function testModule (describe as describeCallback) as integer
 	dim as integer result = TRUE
 
 	result = result ANDALSO describe ("The List library", @create)
@@ -47,7 +47,7 @@ function create (it as itCallback) as integer
 	result = result ANDALSO it ("creates a new list instance", @test1)
 	result = result ANDALSO it ("inserts a set of nodes", @test2)
 	result = result ANDALSO it ("returns the correct list length", @test3)
-	result = result ANDALSO it ("Creates a working iterator", @test3_1)
+	result = result ANDALSO it ("creates a working iterator", @test3_1)
 	result = result ANDALSO it ("successfully searches a node inside the list", @test4)
 	result = result ANDALSO it ("removes inside node", @test5)
 	result = result ANDALSO it ("successfully searches a node at the beginning of the list", @test6)

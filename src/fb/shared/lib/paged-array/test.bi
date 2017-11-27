@@ -8,7 +8,7 @@ namespace PagedArrayTest
 #define PAGED_ARRAY_TEST_LENGTH				1024
 #define PAGED_ARRAY_TEST_DATATYPE			integer
 
-declare function pagedArrayTestModule (describe as describeCallback) as integer
+declare function testModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
 declare function test1 () as integer
 declare function test2 () as integer
@@ -22,7 +22,7 @@ declare function test8 () as integer
 dim shared as PAGED_ARRAY_TEST_DATATYPE testData(1024)
 dim shared as PagedArrayObj ptr arrayPtr
 
-function pagedArrayTestModule (describe as describeCallback) as integer
+function testModule (describe as describeCallback) as integer
 	dim as integer result = true
 
 	result = result ANDALSO describe ("The PagedArray module", @create)

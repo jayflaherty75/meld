@@ -1,5 +1,5 @@
 
-#include once "error.bi"
+#include once "fault.bi"
 
 namespace FaultTest
 

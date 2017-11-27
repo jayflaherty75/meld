@@ -1,5 +1,5 @@
 
-#include once "../../../../../modules/headers/error/error-v1.bi"
+#include once "../../../../../modules/headers/fault/fault-v1.bi"
 
 #define ERROR_MAX_TYPES                     256
 

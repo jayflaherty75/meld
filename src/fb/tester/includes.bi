@@ -1,6 +1,6 @@
 
 #include once "tester.bi"
-#include once "../meld/lib/error/test.bi"
+#include once "../meld/lib/fault/test.bi"
 #include once "../shared/lib/list/test.bi"
 #include once "../shared/lib/iterator/test.bi"
 #include once "../shared/lib/bst/test.bi"
@@ -12,8 +12,8 @@
 dim shared as testModule tests(TEST_COUNT - 1)
 
 tests(0) = @FaultTest.testModule
-tests(1) = @ListTest.listTestModule
-tests(2) = @IteratorTest.iteratorTestModule
-tests(3) = @BstTest.bstTestModule
-tests(4) = @PagedArrayTest.pagedArrayTestModule
-tests(5) = @IdentityTest.identityTestModule
+tests(1) = @ListTest.testModule
+tests(2) = @IteratorTest.testModule
+tests(3) = @BstTest.testModule
+tests(4) = @PagedArrayTest.testModule
+tests(5) = @IdentityTest.testModule

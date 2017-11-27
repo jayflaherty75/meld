@@ -3,7 +3,7 @@
 
 namespace BstTest
 
-declare function bstTestModule (describe as describeCallback) as integer
+declare function testModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
 declare function test1 () as integer
 declare function test2 () as integer
@@ -15,7 +15,7 @@ declare function test30 () as integer
 dim shared as integer testData(8-1) = { 5, 1, 6, 7, 2, 3, 4, 8 }
 dim shared as BstObj ptr btreePtr
 
-function bstTestModule (describe as describeCallback) as integer
+function testModule (describe as describeCallback) as integer
 	dim as integer result = true
 
 	result = result ANDALSO describe ("The BST module", @create)
