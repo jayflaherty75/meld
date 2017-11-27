@@ -31,6 +31,11 @@ declare function pop (arrayPtr as PagedArrayObj ptr) as any ptr
 declare function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 declare function _createPage (arrayPtr as PagedArrayObj ptr) as integer
 
+/''
+ ' Loading lifecycle function called by Meld framework.
+ ' @param {MeldInterface ptr} meld
+ ' @returns {integer}
+ '/
 function load (meld as MeldInterface ptr) as integer
 	if meld = NULL then
 		' TODO: Throw error
@@ -55,6 +60,14 @@ function load (meld as MeldInterface ptr) as integer
 	return true
 end function
 
+/''
+ ' Construct lifecycle function called by Meld framework.
+ ' @param {zstring} arrName
+ ' @param {integer} size
+ ' @param {integer} pageLength
+ ' @param {integer} warnLimit
+ ' @returns {PagedArrayObj ptr}
+ '/
 function construct (byref arrName as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArrayObj ptr
 	dim as PagedArrayObj ptr arrayPtr
 
@@ -104,6 +117,10 @@ function construct (byref arrName as zstring, size as integer, pageLength as int
 	return arrayPtr
 end function
 
+/''
+ ' Destruct lifecycle function called by Meld framework.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ '/
 sub destruct (arrayPtr as PagedArrayObj ptr)
 	dim as integer pageIndex
 
@@ -136,9 +153,17 @@ sub destruct (arrayPtr as PagedArrayObj ptr)
 	deallocate(arrayPtr)
 end sub
 
+/''
+ ' Unload lifecycle function called by Meld framework.
+ '/
 sub unload()
 end sub
 
+/''
+ ' Creates and returns a new index available in the paged array.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @returns {integer}
+ '/
 function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 	dim as integer result
 
@@ -161,6 +186,12 @@ function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 	return result
 end function
 
+/''
+ ' Returns the data pointer for the given index of the paged array.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @param {uinteger} index
+ ' @returns {any ptr}
+ '/
 function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 	dim as byte ptr pagePtr
 	dim as uinteger offset
@@ -187,6 +218,12 @@ function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 	return cptr(any ptr, pagePtr + (offset * arrayPtr->size))
 end function
 
+/''
+ ' Pops and releases the last created index from the paged array and stores
+ ' it at the given data pointer.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @returns {any ptr}
+ '/
 function pop (arrayPtr as PagedArrayObj ptr) as any ptr
 	dim as any ptr result
 	dim as integer index
@@ -208,6 +245,45 @@ function pop (arrayPtr as PagedArrayObj ptr) as any ptr
 	return result
 end function
 
+/''
+ ' Utility function to create a new page when the array runs out of available
+ ' elements.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @returns {integer}
+ ' @private
+ '/
+function _createPage (arrayPtr as PagedArrayObj ptr) as integer
+	dim as any ptr page = allocate(arrayPtr->size * arrayPtr->pageLength)
+
+	if page = NULL then
+		return false
+	end if
+
+	arrayPtr->currentPageMax += arrayPtr->pageLength
+	arrayPtr->pages[arrayPtr->currentPage] = page
+	arrayPtr->currentPage += 1
+
+	if arrayPtr->currentPage > arrayPtr->currentMax then
+		if not _reallocatePageIndex(arrayPtr) then
+			return false
+		end if
+	end if
+
+	if arrayPtr->currentIndex > arrayPtr->warnLimit then
+		' TODO: Throw warning
+		print ("PagedArray._createPage: PagedArray warning limit has been surpassed: " & arrayPtr->arrName)
+	end if
+
+	return true
+end function
+
+/''
+ ' Utility function to reallocate the page index, doubling it's size, when
+ ' there are no more page pointer left.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @returns {integer}
+ ' @private
+ '/
 function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 	dim as integer currentMax
 	dim as any ptr ptr pageIndexPtr
@@ -240,31 +316,6 @@ function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 
 	arrayPtr->currentMax = currentMax
 	arrayPtr->pages = pageIndexPtr
-
-	return true
-end function
-
-function _createPage (arrayPtr as PagedArrayObj ptr) as integer
-	dim as any ptr page = allocate(arrayPtr->size * arrayPtr->pageLength)
-
-	if page = NULL then
-		return false
-	end if
-
-	arrayPtr->currentPageMax += arrayPtr->pageLength
-	arrayPtr->pages[arrayPtr->currentPage] = page
-	arrayPtr->currentPage += 1
-
-	if arrayPtr->currentPage > arrayPtr->currentMax then
-		if not _reallocatePageIndex(arrayPtr) then
-			return false
-		end if
-	end if
-
-	if arrayPtr->currentIndex > arrayPtr->warnLimit then
-		' TODO: Throw warning
-		print ("PagedArray._createPage: PagedArray warning limit has been surpassed: " & arrayPtr->arrName)
-	end if
 
 	return true
 end function
