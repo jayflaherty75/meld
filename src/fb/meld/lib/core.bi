@@ -2,7 +2,7 @@
 #include once "../../../../modules/headers/meld/meld-v1.bi"
 #include once "../../../../modules/headers/constants/constants-v1.bi"
 '#include once "../interfaces/interfaces.bi"
-#include once "error.bi"
+#include once "error/error.bi"
 
 ' TODO: Read application config based on command line argument
 ' TODO: Register functions
@@ -56,8 +56,8 @@ function meldInitialize (config as zstring ptr) as integer
         return false
     end if
 
-	errorLoad(@meldCore.methods)
-	errorInitialize(meldCore.mutexId)
+	Fault.load(@meldCore.methods)
+	Fault.initialize(meldCore.mutexId)
 
     meldCore.isRunning = true
 	meldCore.status = 0
@@ -71,7 +71,7 @@ end function
  ' calling meldUninitialize.
  '/
 sub meldUninitialize()
-	errorUninitialize()
+	Fault.uninitialize()
 
     mutexlock(meldCore.mutexId)
     meldCore.isRunning = false

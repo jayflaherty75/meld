@@ -1,39 +1,39 @@
 
-#include once "../../../../modules/headers/meld/meld-v1.bi"
-#include once "../../../../modules/headers/constants/constants-v1.bi"
-#include once "../../../../modules/headers/error/error-v1.bi"
+#include once "../../../../../modules/headers/error/error-v1.bi"
 
 #define ERROR_MAX_TYPES                     256
 
-type ErrorDependencies
+namespace Fault
+
+type Dependencies
 	meld as MeldInterface ptr
 end type
 
-type ErrorState
+type State
 	mutexId as any ptr
-	errors(ERROR_MAX_TYPES) as ErrorHeader
+	errors(ERROR_MAX_TYPES) as Header
 	errorCount as uinteger
-	handlers(ERROR_MAX_TYPES) as ErrorHandler
+	handlers(ERROR_MAX_TYPES) as Handler
 	uncaughtError as integer
 	internalSystemError as integer
 	typeLimitErrorMsg as string
-	methods as ErrorInterface
-	deps as ErrorDependencies
+	methods as Interface
+	deps as Dependencies
 end type
 
 static shared as zstring*64 uncaughtError = "MeldInternalUncaughtError"
 static shared as zstring*64 internalSystemError = "MeldInternalSystemError"
 static shared as zstring*64 moduleFile = __FILE__
 
-dim shared as ErrorState errState
+dim shared as State errState
 
-declare function errorLoad (meldPtr as MeldInterface ptr) as integer
-declare function errorInitialize (mutexId as any ptr) as integer
-declare sub errorUninitialize()
-declare function errorRegisterType (errName as zstring ptr) as integer
-declare function errorAssignHandler (errCode as integer, handler as ErrorHandler) as integer
-declare function errorGetCode (errName as zstring ptr) as integer
-declare sub errorThrow (_
+declare function load (meldPtr as MeldInterface ptr) as integer
+declare function initialize (mutexId as any ptr) as integer
+declare sub uninitialize()
+declare function registerType (errName as zstring ptr) as integer
+declare function assignHandler (errCode as integer, handler as Fault.Handler) as integer
+declare function getCode (errName as zstring ptr) as integer
+declare sub throw (_
 	errName as zstring ptr, _
 	errCode as integer, _
 	byref message as string, _
@@ -41,29 +41,29 @@ declare sub errorThrow (_
 	linenum as integer _	
 )
 
-declare sub _errorClearAll()
-declare sub _errorHandleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
-declare sub _errorHandleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+declare sub _clearAll()
+declare sub _handleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+declare sub _handleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 
-declare sub _errorLog (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
-declare function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
+declare sub _log (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
+declare function _format (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
 
 /''
  ' @param {MeldInterface ptr} meldPtr
  '/
-function errorLoad (meld as MeldInterface ptr) as integer
+function load (meld as MeldInterface ptr) as integer
 	if meld = NULL then
 		' TODO: Throw error
-		print ("errorLoad: Invalid meld interface pointer")
+		print ("load: Invalid meld interface pointer")
 		return false
 	end if
 
-	errState.methods.initialize = @errorInitialize
-	errState.methods.uninitialize = @errorUninitialize
-	errState.methods.registerType = @errorRegisterType
-	errState.methods.assignHandler = @errorAssignHandler
-	errState.methods.getCode = @errorGetCode
-	errState.methods.throw = @errorThrow
+	errState.methods.initialize = @initialize
+	errState.methods.uninitialize = @uninitialize
+	errState.methods.registerType = @registerType
+	errState.methods.assignHandler = @assignHandler
+	errState.methods.getCode = @getCode
+	errState.methods.throw = @throw
 
 	if not meld->register("error", @errState.methods) then
 		return false
@@ -78,16 +78,16 @@ end function
  ' Error system setup.
  ' @param {any ptr} mutexId - Takes the system mutex ID for thread safety
  '/
-function errorInitialize (mutexId as any ptr) as integer
+function initialize (mutexId as any ptr) as integer
 	errState.typeLimitErrorMsg = "Can not create new error types.  The system has reached the limit it can handle."
 
 	errState.mutexId = mutexId
 	errState.errorCount = 0
 
-	errState.uncaughtError = errorRegisterType(@uncaughtError)
-	errState.internalSystemError = errorRegisterType(@internalSystemError)
-	errorAssignHandler(errState.uncaughtError, @_errorHandleError)
-	errorAssignHandler(errState.internalSystemError, @_errorHandleError)
+	errState.uncaughtError = registerType(@uncaughtError)
+	errState.internalSystemError = registerType(@internalSystemError)
+	assignHandler(errState.uncaughtError, @_handleError)
+	assignHandler(errState.internalSystemError, @_handleError)
 
 	return true
 end function
@@ -95,8 +95,8 @@ end function
 /''
  ' Error system shutdown.
  '/
-sub errorUninitialize()
-	_errorClearAll()
+sub uninitialize()
+	_clearAll()
 
 	errState.mutexId = NULL
 end sub
@@ -106,9 +106,9 @@ end sub
  ' @param {zstring ptr} errName
  ' @returns {integer}
  '/
-function errorRegisterType (errName as zstring ptr) as integer
+function registerType (errName as zstring ptr) as integer
 	dim as integer errCode = -1
-	dim as ErrorHeader ptr errPtr
+	dim as Fault.Header ptr errPtr
 
 	if errState.errorCount < ERROR_MAX_TYPES then
 		mutexlock(errState.mutexId)
@@ -122,7 +122,7 @@ function errorRegisterType (errName as zstring ptr) as integer
 		errPtr->name = *errName
 		errPtr->code = errCode
 	else
-		errorThrow(_
+		throw(_
 			@internalSystemError, _
 			errState.internalSystemError, _
 			errState.typeLimitErrorMsg, _
@@ -140,7 +140,7 @@ end function
  ' @param {errorHandler} handler
  ' @returns {integer}
  '/
-function errorAssignHandler (errCode as integer, handler as ErrorHandler) as integer
+function assignHandler (errCode as integer, handler as Fault.Handler) as integer
 	DIM as integer result = true
 
 	mutexlock (errState.mutexId)
@@ -159,7 +159,7 @@ end function
 /''
  ' Returns the error code for the registered error name
  '/
-function errorGetCode (errName as zstring ptr) as integer
+function getCode (errName as zstring ptr) as integer
 	dim as integer result = 0
 	dim as integer index = 0
 
@@ -181,14 +181,14 @@ end function
  ' writes your error handlers.
  ' @param {zstring ptr} errName
  ' @param {integer} errCode - Error code deciding what error handler will be
- '	triggered, can be retrieved with errorGetCode
+ '	triggered, can be retrieved with getCode
  ' @param {string} message - Contains full error message
  ' @param {zstring ptr} filename - Pointer to a string containing the current
  '	filename.  Can be set to a constant containing __FILE__.
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub errorThrow (errName as zstring ptr, errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer)
+sub throw (errName as zstring ptr, errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
@@ -204,7 +204,7 @@ end sub
  ' Thread-safe clearing of all error types and handlers
  ' @private
  '/
-sub _errorClearAll()
+sub _clearAll()
 	dim as integer i
 
 	mutexlock(errState.mutexId)
@@ -223,9 +223,9 @@ end sub
  ' Default error handler for uncaught errors.
  ' @private
  '/
-sub _errorHandleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+sub _handleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 	' TODO: Implement a logging system and call it here
-	_errorLog (*errName, *filename, lineNum, message)
+	_log (*errName, *filename, lineNum, message)
 
 	' TODO: Implement interfaces and call meld
 	' meld->shutdown(1)
@@ -236,24 +236,26 @@ end sub
  ' Handler for logging warnings.
  ' @private
  '/
-sub _errorHandleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+sub _handleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
 	' TODO: Implement a logging system and call it here
-	_errorLog (*errName, *filename, lineNum, message)
+	_log (*errName, *filename, lineNum, message)
 end sub
 
 /''
  ' TODO: Add logging and remove this temporary logging handler.
  ' @private
  '/
-sub _errorLog (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
-	print (_errorFormat(errName, filename, lineNum, message))
+sub _log (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
+	print (_format(errName, filename, lineNum, message))
 end sub
 
 /''
  ' @private
  '/
-function _errorFormat (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
+function _format (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
 	dim as MeldInterface ptr meld = errState.deps.meld
 
 	return Time () & errName & ": " & filename & " (" & lineNum & ") " & meld->newline & message
 end function
+
+end namespace
