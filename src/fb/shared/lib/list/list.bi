@@ -4,8 +4,12 @@
 
 namespace List
 
+declare function load (meld as MeldInterface ptr) as integer
+declare sub unload()
+
 declare function construct() as ListObj ptr
 declare sub destruct (listPtr as ListObj ptr)
+
 declare function insert (listPtr as ListObj ptr, element as any ptr, nodePtr as List.Node ptr = NULL) as List.Node ptr
 declare sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 declare function getFirst (listPtr as ListObj ptr) as List.Node ptr

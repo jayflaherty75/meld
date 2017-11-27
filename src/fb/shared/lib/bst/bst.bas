@@ -3,11 +3,59 @@
 
 namespace Bst
 
+type Dependencies
+	meld as MeldInterface ptr
+end type
+
+type StateType
+	deps as Dependencies
+	methods as Interface
+end type
+
+dim shared as StateType state
+
 declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+
+/''
+ ' Loading lifecycle function called by Meld framework.
+ ' @param {MeldInterface ptr} meld
+ ' @returns {integer}
+ '/
+function load (meld as MeldInterface ptr) as integer
+	if meld = NULL then
+		' TODO: Throw error
+		print ("Bst.load: Invalid meld interface pointer")
+		return false
+	end if
+
+	state.methods.load = @load
+	state.methods.construct = @construct
+	state.methods.destruct = @destruct
+	state.methods.unload = @unload
+	state.methods.insert = @insert
+	state.methods.search = @search
+	state.methods.getLength = @getLength
+	state.methods.getIterator = @getIterator
+	state.methods.defaultCompare = @defaultCompare
+
+	if not meld->register("bst", @state.methods) then
+		return false
+	end if
+
+	state.deps.meld = meld
+
+	return true
+end function
+
+/''
+ ' Unload lifecycle function called by Meld framework.
+ '/
+sub unload()
+end sub
 
 function construct() as BstObj ptr
 	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))

@@ -28,8 +28,11 @@ static shared as zstring*64 moduleFile = __FILE__
 dim shared as State errState
 
 declare function load (meldPtr as MeldInterface ptr) as integer
+declare sub unload ()
+
 declare function initialize (mutexId as any ptr) as integer
 declare sub uninitialize()
+
 declare function registerType (errName as zstring ptr) as integer
 declare function assignHandler (errCode as integer, handler as Fault.Handler) as integer
 declare function getCode (errName as zstring ptr) as integer
@@ -73,6 +76,9 @@ function load (meld as MeldInterface ptr) as integer
 
 	return true
 end function
+
+sub unload ()
+end sub
 
 /''
  ' Error system setup.

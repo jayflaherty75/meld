@@ -3,7 +3,46 @@
 
 namespace Iterator
 
+type Dependencies
+	meld as MeldInterface ptr
+end type
+
+type StateType
+	deps as Dependencies
+	methods as Interface
+end type
+
+dim shared as StateType state
+
 declare function _defaultHandler (iter as IteratorObj ptr, target as any ptr) as integer
+
+function load (meld as MeldInterface ptr) as integer
+	if meld = NULL then
+		' TODO: Throw error
+		print ("Iterator.load: Invalid meld interface pointer")
+		return false
+	end if
+
+	state.methods.load = @load
+	state.methods.unload = @unload
+	state.methods.construct = @construct
+	state.methods.destruct = @destruct
+	state.methods.setHandler = @setHandler
+	state.methods.setData = @setData
+	state.methods.getNext = @getNext
+	state.methods.reset = @reset
+
+	if not meld->register("interface", @state.methods) then
+		return false
+	end if
+
+	state.deps.meld = meld
+
+	return true
+end function
+
+sub unload()
+end sub
 
 function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr
 	dim as IteratorObj ptr iter = allocate (sizeof(IteratorObj))

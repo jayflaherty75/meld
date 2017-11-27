@@ -3,7 +3,51 @@
 
 namespace List
 
+type Dependencies
+	meld as MeldInterface ptr
+end type
+
+type StateType
+	deps as Dependencies
+	methods as Interface
+end type
+
+dim shared as StateType state
+
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+
+function load (meld as MeldInterface ptr) as integer
+	if meld = NULL then
+		' TODO: Throw error
+		print ("List.load: Invalid meld interface pointer")
+		return false
+	end if
+
+	state.methods.load = @load
+	state.methods.unload = @unload
+	state.methods.construct = @construct
+	state.methods.destruct = @destruct
+	state.methods.insert = @insert
+	state.methods.remove = @remove
+	state.methods.getFirst = @getFirst
+	state.methods.getLast = @getLast
+	state.methods.getNext = @getNext
+	state.methods.getLength = @getLength
+	state.methods.search = @search
+	state.methods.defaultCompare = @defaultCompare
+	state.methods.getIterator = @getIterator
+
+	if not meld->register("list", @state.methods) then
+		return false
+	end if
+
+	state.deps.meld = meld
+
+	return true
+end function
+
+sub unload()
+end sub
 
 /''
  ' Creates a new list instance.

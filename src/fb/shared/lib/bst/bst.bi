@@ -4,8 +4,12 @@
 
 namespace Bst
 
+declare function load (meld as MeldInterface ptr) as integer
+declare sub unload()
+
 declare function construct() as BstObj ptr
 declare sub destruct (btreePtr as BstObj ptr)
+
 declare function insert (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 declare function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 declare function getLength (btreePtr as BstObj ptr) as integer

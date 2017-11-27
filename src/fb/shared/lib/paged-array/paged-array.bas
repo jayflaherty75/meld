@@ -9,7 +9,7 @@ end type
 
 type StateType
 	deps as Dependencies
-	methods as PagedArray.Interface
+	methods as Interface
 end type
 
 dim shared as StateType state
@@ -42,6 +42,12 @@ function load (meld as MeldInterface ptr) as integer
 
 	return true
 end function
+
+/''
+ ' Unload lifecycle function called by Meld framework.
+ '/
+sub unload()
+end sub
 
 /''
  ' Construct lifecycle function called by Meld framework.
@@ -134,12 +140,6 @@ sub destruct (arrayPtr as PagedArrayObj ptr)
 	arrayPtr->currentPage = 0
 
 	deallocate(arrayPtr)
-end sub
-
-/''
- ' Unload lifecycle function called by Meld framework.
- '/
-sub unload()
 end sub
 
 /''

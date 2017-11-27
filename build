@@ -7,7 +7,7 @@ echo
 
 fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/identity/identity.bas" || { echo; echo Failed to compile identity, build terminated; exit 1; }
-fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile itorator, build terminated; exit 1; }
+fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile iterator, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/list/list.bas" || { echo; echo Failed to compile list, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/paged-array/paged-array.bas" || { echo; echo Failed to compile paged-array, build terminated; exit 1; }
 

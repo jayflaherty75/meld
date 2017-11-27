@@ -19,6 +19,8 @@ type Instance
 end type
 
 type Interface
+	load as function (meld as MeldInterface ptr) as integer
+	unload as sub()
 	construct as function() as Bst.Instance ptr
 	destruct as sub (btreePtr as Bst.Instance ptr)
 	insert as function (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
