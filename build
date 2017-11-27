@@ -18,7 +18,9 @@ echo "";
 echo;
 echo Building Meld Core...;
 
-fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" || { echo; echo Build failed; exit 1; }
+fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
+	"./src/fb/shared/lib/paged-array/paged-array.o" \
+	|| { echo; echo Build failed; exit 1; }
 
 echo;
 echo Build successful!;
