@@ -1,18 +1,24 @@
 #!/bin/bash
 
-echo 'Starting Meld Core build...';
-echo '';
+echo Starting Meld Core build...
+echo
+echo Compiling modules...
+echo
 
-fbc -mt -C './src/fb/tester/tester.bas' -x './tester' || { echo ''; echo 'Test compilation failed, build terminated'; exit 1; }
+fbc -mt -c "./src/fb/shared/lib/paged-array/paged-array.bas" || { echo; echo Failed to compile paged-array, build terminated; exit 1; }
 
-echo '';
+fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
+	"./src/fb/shared/lib/paged-array/paged-array.o" \
+	|| { echo; echo Test compilation failed, build terminated; exit 1; }
 
-./tester || { echo ''; echo 'Test failed, build terminated'; exit 1; }
+echo "";
 
-echo '';
-echo 'Building Meld Core...';
+./tester || { echo; echo Test failed, build terminated; exit 1; }
 
-fbc -mt -C './src/fb/meld/meld.bas' -x './meld' || { echo ''; echo 'Build failed'; exit 1; }
+echo;
+echo Building Meld Core...;
 
-echo '';
-echo 'Build successful!';
+fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" || { echo; echo Build failed; exit 1; }
+
+echo;
+echo Build successful!;

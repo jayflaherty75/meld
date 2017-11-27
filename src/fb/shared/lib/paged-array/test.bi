@@ -1,7 +1,7 @@
 
 #define PAGED_ARRAY_INITIAL_PAGING			8
 
-#include once "../paged-array.bi"
+#include once "paged-array.bi"
 
 namespace PagedArrayTest
 

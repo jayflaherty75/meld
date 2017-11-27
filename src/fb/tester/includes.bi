@@ -4,7 +4,7 @@
 #include once "../shared/lib/test/list.bi"
 #include once "../shared/lib/test/iterator.bi"
 #include once "../shared/lib/test/bintree.bi"
-#include once "../shared/lib/test/paged-array.bi"
+#include once "../shared/lib/paged-array/test.bi"
 
 #define TEST_COUNT			5
 
