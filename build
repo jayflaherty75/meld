@@ -5,6 +5,8 @@ echo
 echo Compiling modules...
 echo
 
+fbc -mt -c "./src/fb/meld/lib/fault/fault.bas" || { echo; echo Failed to compile fault, build terminated; exit 1; }
+
 fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/identity/identity.bas" || { echo; echo Failed to compile identity, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile iterator, build terminated; exit 1; }
@@ -12,6 +14,7 @@ fbc -mt -c "./src/fb/shared/lib/list/list.bas" || { echo; echo Failed to compile
 fbc -mt -c "./src/fb/shared/lib/paged-array/paged-array.bas" || { echo; echo Failed to compile paged-array, build terminated; exit 1; }
 
 fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
+	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
@@ -27,6 +30,7 @@ echo;
 echo Building Meld Core...;
 
 fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
+	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
