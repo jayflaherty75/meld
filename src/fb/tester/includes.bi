@@ -12,8 +12,8 @@
 dim shared as testModule tests(TEST_COUNT - 1)
 
 tests(0) = @errorTestModule
-tests(1) = @listTest.listTestModule
-tests(2) = @iteratorTest.iteratorTestModule
+tests(1) = @ListTest.listTestModule
+tests(2) = @IteratorTest.iteratorTestModule
 tests(3) = @BstTest.bstTestModule
 tests(4) = @PagedArrayTest.pagedArrayTestModule
 tests(5) = @IdentityTest.identityTestModule

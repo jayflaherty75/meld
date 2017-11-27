@@ -1,40 +1,29 @@
 
-#include once "../../../../modules/headers/constants/constants-v1.bi"
+#include once "../../../../modules/headers/list/list-v1.bi"
 #include once "iterator.bi"
 
-' TODO: Write loader function and use iterator interface instead of direct include
+namespace List
 
-type ListNode
-	nextPtr as ListNode ptr
-	prevPtr as ListNode ptr
-	element as any ptr
-end type
+declare function construct() as ListObj ptr
+declare sub destruct (listPtr as ListObj ptr)
+declare function insert (listPtr as ListObj ptr, element as any ptr, nodePtr as List.Node ptr = NULL) as List.Node ptr
+declare sub remove (listPtr as ListObj ptr, node as List.Node ptr)
+declare function getFirst (listPtr as ListObj ptr) as List.Node ptr
+declare function getLast (listPtr as ListObj ptr) as List.Node ptr
+declare function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node ptr
+declare function getLength (listPtr as ListObj ptr) as integer
+declare function search (listPtr as ListObj ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as List.Node ptr
+declare function defaultCompare (criteria as any ptr, current as any ptr) as integer
+declare function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
 
-type List
-	first as ListNode ptr
-	last as ListNode ptr
-	length as integer
-end type
-
-declare function listNew() as List ptr
-declare sub listDelete (listPtr as List ptr)
-declare function listInsert (listPtr as List ptr, element as any ptr, nodePtr as ListNode ptr = NULL) as ListNode ptr
-declare sub listRemove (listPtr as List ptr, node as ListNode ptr)
-declare function listGetFirst (listPtr as List ptr) as ListNode ptr
-declare function listGetLast (listPtr as List ptr) as ListNode ptr
-declare function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
-declare function listGetLength (listPtr as List ptr) as integer
-declare function listSearch (listPtr as List ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as ListNode ptr
-declare function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
-declare function listIterator (listPtr as List ptr) as IteratorObj ptr
-declare function _listIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 /''
  ' Creates a new list instance.
- ' @returns {List ptr}
+ ' @returns {ListObj ptr}
  '/
-function listNew() as List ptr
-	dim as List ptr listPtr = allocate(sizeof(list))
+function construct() as ListObj ptr
+	dim as ListObj ptr listPtr = allocate(sizeof(ListObj))
 
 	if listPtr <> NULL then
 		listPtr->first = NULL
@@ -42,7 +31,7 @@ function listNew() as List ptr
 		listPtr->length = 0
 	else
 		' TODO: throw error
-		print ("listNew: Failed to allocate list object")
+		print ("List.construct: Failed to allocate list object")
 	end if
 
 	return listPtr
@@ -50,56 +39,56 @@ end function
 
 /''
  ' Deletes a previously created list instance.
- ' @param {List ptr} listPtr
+ ' @param {ListObj ptr} listPtr
  '/
-sub listDelete (listPtr as List ptr)
-	dim as listNode ptr nodePtr
-	dim as listNode ptr nextPtr
+sub destruct (listPtr as ListObj ptr)
+	dim as List.Node ptr nodePtr
+	dim as List.Node ptr nextPtr
 
 	if listPtr <> NULL then
-		nodePtr = listGetFirst(listPtr)
+		nodePtr = getFirst(listPtr)
 
 		while (nodePtr <> NULL)
-			nextPtr = listGetNext(listPtr, nodePtr)
-			listRemove (listPtr, nodePtr)
+			nextPtr = getNext(listPtr, nodePtr)
+			remove (listPtr, nodePtr)
 			nodePtr = nextPtr
 		wend
 
 		if listPtr->length <> 0 then
 			' TODO: throw error
-			print("listDelete: Failed to correctly release all resources")
+			print("List.destruct: Failed to correctly release all resources")
 		end if
 
 		deallocate (listPtr)
 	else
 		' TODO: throw error
-		print("listDelete: Invalid list")
+		print("List.destruct: Invalid list")
 	end if
 end sub
 
 /''
  ' Inserts a node after the prevPtr node.  If prevPtr is not supplied or null,
  ' the new node is inserted as the first element.
- ' @param {List ptr} listPtr
+ ' @param {ListObj ptr} listPtr
  ' @param {any ptr} element
- ' @param {ListNode ptr} prevPtr
+ ' @param {List.Node ptr} prevPtr
  '/
-function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNode ptr = NULL) as ListNode ptr
-	dim as ListNode ptr nodePtr = NULL
+function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Node ptr = NULL) as List.Node ptr
+	dim as List.Node ptr nodePtr = NULL
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listInsert: Invalid list")
+		print("List.insert: Invalid list")
 		exit function
 	end if
 
 	if element = NULL then
 		' TODO: throw error
-		print("listInsert: Invalid element")
+		print("List.insert: Invalid element")
 		exit function
 	end if
 
-	nodePtr = allocate(sizeof(listNode))
+	nodePtr = allocate(sizeof(List.Node))
 
 	if nodePtr <> NULL then
 		nodePtr->element = element
@@ -123,7 +112,7 @@ function listInsert (listPtr as List ptr, element as any ptr, prevPtr as ListNod
 		listPtr->length += 1
 	else
 		' TODO: throw error
-		print("listInsert: Failed to allocate node")
+		print("List.insert: Failed to allocate node")
 	end if
 
 	return nodePtr
@@ -131,22 +120,22 @@ end function
 
 /''
  ' Removes a node from the list.
- ' @param {List ptr} listPtr
- ' @param {ListNode ptr} node
+ ' @param {ListObj ptr} listPtr
+ ' @param {List.Node ptr} node
  '/
-sub listRemove (listPtr as List ptr, node as ListNode ptr)
-	dim as ListNode ptr nextPtr
-	dim as ListNode ptr prevPtr
+sub remove (listPtr as ListObj ptr, node as List.Node ptr)
+	dim as List.Node ptr nextPtr
+	dim as List.Node ptr prevPtr
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listRemove: Invalid list")
+		print("List.remove: Invalid list")
 		exit sub
 	end if
 
 	if node = NULL then
 		' TODO: throw error
-		print("listRemove: Invalid node")
+		print("List.remove: Invalid node")
 		exit sub
 	end if
 
@@ -171,13 +160,13 @@ end sub
 
 /''
  ' Returns the first node of a list.
- ' @param {List ptr} listPtr
- ' @returns {ListNode ptr}
+ ' @param {ListObj ptr} listPtr
+ ' @returns {List.Node ptr}
  '/
-function listGetFirst (listPtr as List ptr) as ListNode ptr
+function getFirst (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listGetFirst: Invalid list")
+		print("List.getFirst: Invalid list")
 		return NULL
 	end if
 
@@ -186,13 +175,13 @@ end function
 
 /''
  ' Returns the last node of a list.
- ' @param {List ptr} listPtr
- ' @returns {ListNode ptr}
+ ' @param {ListObj ptr} listPtr
+ ' @returns {List.Node ptr}
  '/
-function listGetLast (listPtr as List ptr) as ListNode ptr
+function getLast (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listGetLast: Invalid list")
+		print("List.getLast: Invalid list")
 		return NULL
 	end if
 
@@ -201,14 +190,14 @@ end function
 
 /''
  ' Returns the node after the given node.
- ' @param {List ptr} listPtr
- ' @param {ListNode ptr} node
- ' @returns {ListNode ptr}
+ ' @param {ListObj ptr} listPtr
+ ' @param {List.Node ptr} node
+ ' @returns {List.Node ptr}
  '/
-function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
+function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node ptr
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listGetNext: Invalid list")
+		print("List.getNext: Invalid list")
 		return NULL
 	end if
 
@@ -219,10 +208,10 @@ function listGetNext (listPtr as List ptr, node as ListNode ptr) as ListNode ptr
 	end if
 end function
 
-function listGetLength (listPtr as List ptr) as integer
+function getLength (listPtr as ListObj ptr) as integer
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listGetNext: Invalid list")
+		print("List.getNext: Invalid list")
 		return NULL
 	end if
 
@@ -231,29 +220,29 @@ end function
 
 /''
  ' Search for an element in the list using the given compare function.  If
- ' searching for integer values, just pass listDefaultCompare.
- ' @param {List ptr} listPtr
+ ' searching for integer values, just pass defaultCompare.
+ ' @param {ListObj ptr} listPtr
  ' @param {any ptr} element
  ' @param {function} compare
- ' @returns {ListNode ptr}
+ ' @returns {List.Node ptr}
  '/
-function listSearch (listPtr as List ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as ListNode ptr
-	dim as ListNode ptr nodePtr = NULL
-	dim as ListNode ptr result = NULL
+function search (listPtr as ListObj ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as List.Node ptr
+	dim as List.Node ptr nodePtr = NULL
+	dim as List.Node ptr result = NULL
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listSearch: Invalid list")
+		print("List.search: Invalid list")
 		return NULL
 	end if
 
-	nodePtr = listGetFirst(listPtr)
+	nodePtr = getFirst(listPtr)
 
 	while (nodePtr <> NULL ANDALSO result = NULL)
 		if compare(element, nodePtr->element) = true then
 			result = nodePtr
 		else
-			nodePtr = listGetNext(listPtr, nodePtr)
+			nodePtr = getNext(listPtr, nodePtr)
 		end if
 	wend
 
@@ -267,7 +256,7 @@ end function
  ' @param {any ptr} current
  ' @returns {integer}
  '/
-function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
+function defaultCompare (criteria as any ptr, current as any ptr) as integer
 	if *cptr(integer ptr, criteria) = *cptr(integer ptr, current) then
 		return true
 	else
@@ -278,19 +267,19 @@ end function
 /''
  ' Provides an Iterator instance that will return the element pointers of each
  ' node in the given list.
- ' @param {List ptr} listPtr
+ ' @param {ListObj ptr} listPtr
  ' @returns {IteratorObj ptr}
  '/
-function listIterator (listPtr as List ptr) as IteratorObj ptr
+function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
 	dim as IteratorObj ptr iter = Iterator.construct()
 
 	if listPtr = NULL then
 		' TODO: throw error
-		print("listSearch: Invalid list")
+		print("List.search: Invalid list")
 		return NULL
 	end if
 
-	iter->handler = @_listIterationHandler
+	iter->handler = @_iterationHandler
 
 	Iterator.setDataSet(iter, listPtr)
 
@@ -304,9 +293,9 @@ end function
  ' @returns {integer}
  ' @private
  '/
-function _listIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
-	dim as List ptr listPtr = iter->dataSet
-	dim as ListNode ptr current
+function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+	dim as ListObj ptr listPtr = iter->dataSet
+	dim as List.Node ptr current
 
 	if target = NULL then
 		iter->index = 0
@@ -327,3 +316,5 @@ function _listIterationHandler (iter as IteratorObj ptr, target as any ptr) as i
 
 	return true
 end function
+
+end namespace

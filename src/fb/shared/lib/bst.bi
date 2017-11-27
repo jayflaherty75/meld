@@ -19,7 +19,7 @@ declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 function construct() as BstObj ptr
-	dim as BstObj ptr btreePtr = allocate(sizeof(list))
+	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))
 
 	if btreePtr <> NULL then
 		btreePtr->root = NULL

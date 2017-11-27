@@ -1,7 +1,7 @@
 
 #include once "../iterator.bi"
 
-namespace iteratorTest
+namespace IteratorTest
 
 declare function iteratorTestModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
