@@ -11,7 +11,7 @@ declare function test3 () as integer
 declare function test4 () as integer
 
 dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
-dim shared as Iterator ptr iter
+dim shared as IteratorObj ptr iter
 
 function iteratorTestModule (describe as describeCallback) as integer
 	dim as integer result = true
@@ -33,7 +33,7 @@ function create (it as itCallback) as integer
 end function
 
 function test1 () as integer
-	iter = iteratorNew(@testData(0), 8)
+	iter = Iterator.construct(@testData(0), 8)
 
 	if iter = NULL then
 		return false
@@ -46,7 +46,7 @@ function test2 () as integer
 	dim as integer value
 	dim as string result = ""
 
-	while (iteratorNext(iter, @value))
+	while (Iterator.getNext(iter, @value))
 		result = result & value
 	wend
 
@@ -61,9 +61,9 @@ function test3 () as integer
 	dim as integer value
 	dim as string result = ""
 
-	iteratorReset(iter)
+	Iterator.reset(iter)
 
-	while (iteratorNext(iter, @value))
+	while (Iterator.getNext(iter, @value))
 		result = result & value
 	wend
 
@@ -75,7 +75,7 @@ function test3 () as integer
 end function
 
 function test4 () as integer
-	iteratorDelete(iter)
+	Iterator.destruct(iter)
 	iter = NULL
 
 	return true

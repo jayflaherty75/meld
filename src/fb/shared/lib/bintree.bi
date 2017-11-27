@@ -20,13 +20,13 @@ declare sub bintreeDelete (btreePtr as BinTree ptr)
 declare function bintreeInsert (btreePtr as BinTree ptr, element as any ptr, start as BinTreeNode ptr = NULL) as BinTreeNode ptr
 declare function bintreeSearch (btreePtr as BinTree ptr, element as any ptr, start as BinTreeNode ptr = NULL) as BinTreeNode ptr
 declare function bintreeGetLength (btreePtr as BinTree ptr) as integer
-declare function bintreeIterator (btreePtr as BinTree ptr) as Iterator ptr
+declare function bintreeIterator (btreePtr as BinTree ptr) as IteratorObj ptr
 declare function bintreeDefaultCompare(criteria as any ptr, element as any ptr) as integer
 declare function _bintreeSearchRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr, element as any ptr) as BinTreeNode ptr
 declare function _bintreeNextRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr) as BinTreeNode ptr
 declare function _bintreeCreateNode (btreePtr as BinTree ptr, element as any ptr) as BinTreeNode ptr
 declare sub _bintreeDeleteNode (btreePtr as BinTree ptr, nodePtr as BinTreeNode ptr)
-declare function _bintreeIterationHandler (iter as Iterator ptr, target as any ptr) as integer
+declare function _bintreeIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 function bintreeNew() as BinTree ptr
 	dim as BinTree ptr btreePtr = allocate(sizeof(list))
@@ -137,8 +137,8 @@ function bintreeGetLength (btreePtr as BinTree ptr) as integer
 	return btreePtr->length
 end function
 
-function bintreeIterator (btreePtr as BinTree ptr) as Iterator ptr
-	dim as Iterator ptr iter = iteratorNew()
+function bintreeIterator (btreePtr as BinTree ptr) as IteratorObj ptr
+	dim as IteratorObj ptr iter = Iterator.construct()
 
 	if btreePtr = NULL then
 		' TODO: throw error
@@ -148,7 +148,7 @@ function bintreeIterator (btreePtr as BinTree ptr) as Iterator ptr
 
 	iter->handler = @_bintreeIterationHandler
 
-	iteratorSetDataSet(iter, btreePtr)
+	Iterator.setDataSet(iter, btreePtr)
 
 	return iter
 end function
@@ -259,7 +259,7 @@ function _bintreeNextRecurse (btreePtr as BinTree ptr, nodePtr as BinTreeNode pt
 	end if
 end function
 
-function _bintreeIterationHandler (iter as Iterator ptr, target as any ptr) as integer
+function _bintreeIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 	dim as BinTree ptr btreePtr = iter->dataSet
 	dim as BinTreeNode ptr current
 

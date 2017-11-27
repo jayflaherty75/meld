@@ -26,8 +26,8 @@ declare function listGetNext (listPtr as List ptr, node as ListNode ptr) as List
 declare function listGetLength (listPtr as List ptr) as integer
 declare function listSearch (listPtr as List ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as ListNode ptr
 declare function listDefaultCompare (criteria as any ptr, current as any ptr) as integer
-declare function listIterator (listPtr as List ptr) as Iterator ptr
-declare function _listIterationHandler (iter as Iterator ptr, target as any ptr) as integer
+declare function listIterator (listPtr as List ptr) as IteratorObj ptr
+declare function _listIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 /''
  ' Creates a new list instance.
@@ -279,10 +279,10 @@ end function
  ' Provides an Iterator instance that will return the element pointers of each
  ' node in the given list.
  ' @param {List ptr} listPtr
- ' @returns {Iterator ptr}
+ ' @returns {IteratorObj ptr}
  '/
-function listIterator (listPtr as List ptr) as Iterator ptr
-	dim as Iterator ptr iter = iteratorNew()
+function listIterator (listPtr as List ptr) as IteratorObj ptr
+	dim as IteratorObj ptr iter = Iterator.construct()
 
 	if listPtr = NULL then
 		' TODO: throw error
@@ -292,19 +292,19 @@ function listIterator (listPtr as List ptr) as Iterator ptr
 
 	iter->handler = @_listIterationHandler
 
-	iteratorSetDataSet(iter, listPtr)
+	Iterator.setDataSet(iter, listPtr)
 
 	return iter
 end function
 
 /''
  ' Iteration handler for lists.
- ' @params {Iterator ptr} iter
+ ' @params {IteratorObj ptr} iter
  ' @params {any ptr} target
  ' @returns {integer}
  ' @private
  '/
-function _listIterationHandler (iter as Iterator ptr, target as any ptr) as integer
+function _listIterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 	dim as List ptr listPtr = iter->dataSet
 	dim as ListNode ptr current
 

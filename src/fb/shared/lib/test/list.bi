@@ -105,7 +105,7 @@ function listTestCreate3 () as integer
 end function
 
 function listTestCreate3_1 () as integer
-	dim as Iterator ptr iter = listIterator(listPtr)
+	dim as IteratorObj ptr iter = listIterator(listPtr)
 	dim as integer ptr valPtr
 	dim as string result = ""
 
@@ -113,7 +113,7 @@ function listTestCreate3_1 () as integer
 		return FALSE
 	end if
 
-	while (iteratorNext(iter, @valPtr))
+	while (Iterator.getNext(iter, @valPtr))
 		result = result & (*valPtr)
 	wend
 
@@ -121,7 +121,7 @@ function listTestCreate3_1 () as integer
 		return FALSE
 	end if
 
-	iteratorDelete(iter)
+	Iterator.destruct(iter)
 	iter = NULL
 
 	return TRUE

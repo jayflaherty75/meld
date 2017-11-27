@@ -1,36 +1,30 @@
 
-#include once "../../../../modules/headers/constants/constants-v1.bi"
+#include once "../../../../modules/headers/iterator/iterator-v1.bi"
 
-type Iterator
-	dataSet as any ptr
-	index as integer
-	length as integer
-	current as any ptr
-	handler as function (iter as Iterator ptr, target as any ptr) as integer
-end type
+type IteratorHandler as function (iter as IteratorObj ptr, target as any ptr) as integer
 
-type IteratorHandler as function (iter as Iterator ptr, target as any ptr) as integer
+namespace Iterator
 
-declare function iteratorNew(dataSet as any ptr = NULL, length as integer = -1) as Iterator ptr
-declare sub iteratorDelete (iter as Iterator ptr)
-declare sub iteratorSetHandler (iter as Iterator ptr, cb as IteratorHandler)
-declare sub iteratorSetDataSet (iter as Iterator ptr, dataSet as any ptr, length as integer = -1)
-declare function iteratorNext (iter as Iterator ptr, target as any ptr) as integer
-declare sub iteratorReset (iter as Iterator ptr)
+declare function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr
+declare sub destruct (iter as IteratorObj ptr)
+declare sub setHandler (iter as IteratorObj ptr, cb as IteratorHandler)
+declare sub setDataSet (iter as IteratorObj ptr, dataSet as any ptr, length as integer = -1)
+declare function getNext (iter as IteratorObj ptr, target as any ptr) as integer
+declare sub reset (iter as IteratorObj ptr)
 
-declare function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as integer
+declare function _defaultHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
-function iteratorNew(dataSet as any ptr = NULL, length as integer = -1) as Iterator ptr
-	dim as Iterator ptr iter = allocate (sizeof(Iterator))
+function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr
+	dim as IteratorObj ptr iter = allocate (sizeof(IteratorObj))
 
 	if iter <> NULL then
 		iter->index = 0
 		iter->length = length
 		iter->current = NULL
-		iter->handler = @_iteratorDefaultHandler
+		iter->handler = @_defaultHandler
 
 		if dataSet <> NULL then
-			iteratorSetDataSet (iter, dataSet, length)
+			setDataSet (iter, dataSet, length)
 		else
 			iter->dataSet = NULL
 		end if
@@ -42,7 +36,7 @@ function iteratorNew(dataSet as any ptr = NULL, length as integer = -1) as Itera
 	return iter
 end function
 
-sub iteratorDelete (iter as Iterator ptr)
+sub destruct (iter as IteratorObj ptr)
 	if iter <> NULL then
 		deallocate (iter)
 	else
@@ -51,7 +45,7 @@ sub iteratorDelete (iter as Iterator ptr)
 	end if
 end sub
 
-sub iteratorSetHandler (iter as Iterator ptr, cb as IteratorHandler)
+sub setHandler (iter as IteratorObj ptr, cb as IteratorHandler)
 	if iter = NULL then
 		' TODO: throw error
 		print ("iteratorSetHandler: Invalid iterator")
@@ -67,7 +61,7 @@ sub iteratorSetHandler (iter as Iterator ptr, cb as IteratorHandler)
 	iter->handler = cb
 end sub
 
-sub iteratorSetDataSet (iter as Iterator ptr, dataSet as any ptr, length as integer = -1)
+sub setDataSet (iter as IteratorObj ptr, dataSet as any ptr, length as integer = -1)
 	if iter = NULL then
 		' TODO: throw error
 		print ("iteratorSetDataSet: Invalid iterator")
@@ -77,10 +71,10 @@ sub iteratorSetDataSet (iter as Iterator ptr, dataSet as any ptr, length as inte
 	iter->dataSet = dataSet
 	iter->length = length
 
-	iteratorReset(iter)
+	reset(iter)
 end sub
 
-function iteratorNext (iter as Iterator ptr, target as any ptr) as integer
+function getNext (iter as IteratorObj ptr, target as any ptr) as integer
 	if iter = NULL then
 		' TODO: throw error
 		print ("iteratorNext: Invalid iterator")
@@ -96,7 +90,7 @@ function iteratorNext (iter as Iterator ptr, target as any ptr) as integer
 	return iter->handler (iter, target)
 end function
 
-sub iteratorReset (iter as Iterator ptr)
+sub reset (iter as IteratorObj ptr)
 	dim as integer result
 
 	if iter = NULL then
@@ -108,7 +102,7 @@ sub iteratorReset (iter as Iterator ptr)
 	result = iter->handler (iter, NULL)
 end sub
 
-function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as integer
+function _defaultHandler (iter as IteratorObj ptr, target as any ptr) as integer
 	if target = NULL then
 		iter->current = iter->dataSet
 		iter->index = 0
@@ -124,3 +118,5 @@ function _iteratorDefaultHandler (iter as Iterator ptr, target as any ptr) as in
 
 	return true
 end function
+
+end namespace
