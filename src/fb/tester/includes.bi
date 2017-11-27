@@ -1,7 +1,7 @@
 
 #include once "tester.bi"
 #include once "../meld/lib/test/error.bi"
-#include once "../shared/lib/test/list.bi"
+#include once "../shared/lib/list/test.bi"
 #include once "../shared/lib/iterator/test.bi"
 #include once "../shared/lib/bst/test.bi"
 #include once "../shared/lib/paged-array/test.bi"

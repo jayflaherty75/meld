@@ -1,5 +1,5 @@
 
-#include once "../list.bi"
+#include once "list.bi"
 
 ' TODO: Test errors are thrown; requires interfaces/modules
 
