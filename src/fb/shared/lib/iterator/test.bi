@@ -1,5 +1,5 @@
 
-#include once "../iterator.bi"
+#include once "iterator.bi"
 
 namespace IteratorTest
 

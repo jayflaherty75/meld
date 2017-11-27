@@ -13,7 +13,7 @@ type Instance
 end type
 
 type Interface
-	construct as function (dataSet as any ptr = NULL) as Iterator.Instance ptr
+	construct as function (dataSet as any ptr = NULL, length as integer = -1) as Iterator.Instance ptr
 	destruct as sub (iPtr as Iterator.Instance ptr)
 	setHandler as sub (iPtr as Iterator.Instance ptr, cb as function(iPtr as Iterator.Instance ptr) as any ptr)
 	setDataSet as sub (iPtr as Iterator.Instance ptr, dataSet as any ptr)

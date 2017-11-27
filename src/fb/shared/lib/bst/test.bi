@@ -1,5 +1,5 @@
 
-#include once "../bst.bi"
+#include once "bst.bi"
 
 namespace BstTest
 
