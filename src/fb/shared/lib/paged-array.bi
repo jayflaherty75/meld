@@ -26,7 +26,7 @@ declare sub unload()
 
 declare function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 declare function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
-declare function pop (arrayPtr as PagedArrayObj ptr) as any ptr
+declare function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 
 declare function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 declare function _createPage (arrayPtr as PagedArrayObj ptr) as integer
@@ -224,25 +224,33 @@ end function
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @returns {any ptr}
  '/
-function pop (arrayPtr as PagedArrayObj ptr) as any ptr
+function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
+	dim as integer i
 	dim as any ptr result
 	dim as integer index
 
 	if arrayPtr = NULL then
 		' TODO: Throw error
 		print ("PagedArray.pop: Invalid PagedArray pointer: " & arrayPtr->arrName)
-		return NULL
+		return false
 	end if
 
 	if arrayPtr->currentIndex <= 0 then
-		return NULL
+		return false
 	end if
 
 	index = arrayPtr->currentIndex - 1
+
 	result = PagedArray.getIndex(arrayPtr, index)
+
+	'*cptr(integer ptr, dataPtr) = *cptr(integer ptr, result)
+	for i = 0 to arrayPtr->size \ 4 - 1
+		poke uinteger, cptr(uinteger ptr, dataPtr), *cptr(uinteger ptr, result)
+	next
+
 	arrayPtr->currentIndex = index
 
-	return result
+	return true
 end function
 
 /''

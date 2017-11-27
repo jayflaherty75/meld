@@ -6,6 +6,7 @@
 namespace PagedArrayTest
 
 #define PAGED_ARRAY_TEST_LENGTH				1024
+#define PAGED_ARRAY_TEST_DATATYPE			integer
 
 declare function pagedArrayTestModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
@@ -18,7 +19,7 @@ declare function test6 () as integer
 declare function test7 () as integer
 declare function test8 () as integer
 
-dim shared as integer testData(1024)
+dim shared as PAGED_ARRAY_TEST_DATATYPE testData(1024)
 dim shared as PagedArrayObj ptr arrayPtr
 
 function pagedArrayTestModule (describe as describeCallback) as integer
@@ -50,7 +51,7 @@ function create (it as itCallback) as integer
 end function
 
 function test1 () as integer
-	arrayPtr = PagedArray.construct("testPagedArray", sizeof(integer ptr), 8, 1018)
+	arrayPtr = PagedArray.construct("testPagedArray", sizeof(integer), 8, 1018)
 
 	if arrayPtr = NULL then
 		return false
@@ -63,7 +64,7 @@ function test2 () as integer
 	dim as integer result = true
 	dim as integer i
 	dim as integer index
-	dim as integer ptr ptr dataPtr
+	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for i = 0 to PAGED_ARRAY_TEST_LENGTH
 		index = PagedArray.createIndex(arrayPtr)
@@ -74,7 +75,7 @@ function test2 () as integer
 			exit for
 		end if
 
-		*dataPtr = @testData(i)
+		*dataPtr = testData(i)
 	next
 
 	return result
@@ -83,7 +84,7 @@ end function
 function test3 () as integer
 	dim as integer result = true
 	dim as integer index
-	dim as integer ptr ptr dataPtr
+	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for index = 0 to PAGED_ARRAY_TEST_LENGTH
 		dataPtr = PagedArray.getIndex(arrayPtr, index)
@@ -93,7 +94,7 @@ function test3 () as integer
 			exit for
 		end if
 
-		if *dataPtr <> @testData(index) then
+		if *dataPtr <> testData(index) then
 			result = false
 		end if
 	next
@@ -104,17 +105,15 @@ end function
 function test4 () as integer
 	dim as integer result = true
 	dim as integer index
-	dim as integer ptr ptr dataPtr
+	dim as PAGED_ARRAY_TEST_DATATYPE dataVal
 
 	for index = PAGED_ARRAY_TEST_LENGTH to 0 step -1
-		dataPtr = PagedArray.pop(arrayPtr)
-
-		if dataPtr = NULL then
+		if not PagedArray.pop(arrayPtr, @dataVal) then
 			result = false
 			exit for
 		end if
 
-		if *dataPtr <> @testData(index) then
+		if dataVal <> testData(index) then
 			result = false
 		end if
 	next
@@ -134,7 +133,7 @@ function test6 () as integer
 	dim as integer result = true
 	dim as integer i
 	dim as integer index
-	dim as integer ptr ptr dataPtr
+	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for i = 0 to PAGED_ARRAY_TEST_LENGTH
 		index = PagedArray.createIndex(arrayPtr)
@@ -145,7 +144,7 @@ function test6 () as integer
 			exit for
 		end if
 
-		*dataPtr = @testData(i)
+		*dataPtr = testData(i)
 	next
 
 	return result
@@ -154,7 +153,7 @@ end function
 function test7 () as integer
 	dim as integer result = true
 	dim as integer index
-	dim as integer ptr ptr dataPtr
+	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for index = 0 to PAGED_ARRAY_TEST_LENGTH
 		dataPtr = PagedArray.getIndex(arrayPtr, index)
@@ -164,7 +163,7 @@ function test7 () as integer
 			exit for
 		end if
 
-		if *dataPtr <> @testData(index) then
+		if *dataPtr <> testData(index) then
 			result = false
 		end if
 	next
@@ -173,8 +172,6 @@ function test7 () as integer
 end function
 
 function test8 () as integer
-	dim as integer length
-
 	PagedArray.destruct(arrayPtr)
 	arrayPtr = NULL
 

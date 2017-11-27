@@ -20,7 +20,7 @@ type Interface
 	unload as sub()
 	createIndex as function (arrayPtr as PagedArray.Instance ptr) as integer
 	getIndex as function (arrayPtr as PagedArray.Instance ptr, index as uinteger) as any ptr
-	pop as function (arrayPtr as PagedArray.Instance ptr) as any ptr
+	pop as function (arrayPtr as PagedArray.Instance ptr, dataPtr as any ptr) as integer
 end type
 
 end namespace
