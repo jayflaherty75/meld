@@ -2,7 +2,15 @@
 #include once "../../../../modules/headers/meld/meld-v1.bi"
 #include once "../../../../modules/headers/constants/constants-v1.bi"
 '#include once "../interfaces/interfaces.bi"
+
+' TODO: Break these out into separately compiled modules
 #include once "fault/fault.bi"
+#include once "../../shared/lib/bst/bst.bi"
+#include once "../../shared/lib/identity/identity.bi"
+#include once "../../shared/lib/iterator/iterator.bi"
+#include once "../../shared/lib/list/list.bi"
+#include once "../../shared/lib/paged-array/paged-array.bi"
+#include once "../../shared/lib/resource-container/resource-container.bi"
 
 ' TODO: Read application config based on command line argument
 ' TODO: Register functions
@@ -23,7 +31,8 @@ declare function meldInitialize (config as zstring ptr) as integer
 declare sub meldUninitialize()
 declare function meldIsRunning() as integer
 declare function meldGetStatus() as integer
-declare function meldRegister(moduleName as zstring, interface as any ptr) as integer
+declare function meldRegister (moduleName as zstring, interface as any ptr) as integer
+declare function meldRequire (moduleName as zstring) as any ptr
 declare sub meldShutdown(status as integer)
 
 /''
@@ -45,6 +54,7 @@ function meldInitialize (config as zstring ptr) as integer
     meldCore.methods.isRunning = @meldIsRunning
 	meldCore.methods.getStatus = @meldGetStatus
 	meldCore.methods.register = @meldRegister
+	meldCore.methods.require = @meldRequire
     meldCore.methods.shutdown = @meldShutdown
 
 	meldCore.methods.newline = strptr(meldCore.systemNewLine)
@@ -56,8 +66,8 @@ function meldInitialize (config as zstring ptr) as integer
         return false
     end if
 
-	Fault.load(@meldCore.methods)
-	Fault.initialize(meldCore.mutexId)
+	meldCore.methods.register = @meldRegister
+	meldCore.methods.require = @meldRequire
 
     meldCore.isRunning = true
 	meldCore.status = 0
@@ -109,6 +119,10 @@ end function
  '/
 function meldRegister(moduleName as zstring, interface as any ptr) as integer
 	return true
+end function
+
+function meldRequire (moduleName as zstring) as any ptr
+	return NULL
 end function
 
 /''

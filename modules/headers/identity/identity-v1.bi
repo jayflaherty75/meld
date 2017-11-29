@@ -1,18 +1,32 @@
 
 #include once "../constants/constants-v1.bi"
 #include once "../meld/meld-v1.bi"
+#include once "../paged-array/paged-array-v1.bi"
+#include once "../bst/bst-v1.bi"
 
 namespace Identity
 
+union resourceId
+	idArray(8) as ubyte
+	idPtr as any ptr
+	idInt as uinteger
+end union
+
 type Instance
-	id as integer
+	idArray as PagedArrayObj ptr
+	reference as BstObj ptr
+end type
+
+type Identifier
+	permanent as zstring*36
+	resource as resourceId
 end type
 
 type Interface
 	load as function (meld as MeldInterface ptr) as integer
+	unload as sub ()
 	construct as function () as Identity.Instance ptr
 	destruct as sub (idPtr as Identity.Instance ptr)
-	unload as sub ()
 	request as function (idPtr as Identity.Instance ptr, byref identifier as zstring) as integer
 end type
 

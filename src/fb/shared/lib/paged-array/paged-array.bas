@@ -51,24 +51,24 @@ end sub
 
 /''
  ' Construct lifecycle function called by Meld framework.
- ' @param {zstring} arrName
+ ' @param {zstring} id
  ' @param {integer} size
  ' @param {integer} pageLength
  ' @param {integer} warnLimit
  ' @returns {PagedArrayObj ptr}
  '/
-function construct (byref arrName as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArrayObj ptr
+function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArrayObj ptr
 	dim as PagedArrayObj ptr arrayPtr
 
 	if size <= 0 then
 		' TODO: Throw error
-		print ("PagedArray.construct: Element size must be greater than zero: " & arrName)
+		print ("PagedArray.construct: Element size must be greater than zero: " & id)
 		return NULL
 	end if
 
 	if pageLength <= 0 then
 		' TODO: Throw error
-		print ("PagedArray.construct: Page length must be greater than zero: " & arrName)
+		print ("PagedArray.construct: Page length must be greater than zero: " & id)
 		return NULL
 	end if
 
@@ -76,10 +76,11 @@ function construct (byref arrName as zstring, size as integer, pageLength as int
 
 	if arrayPtr = NULL then
 		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate PagedArray instance: " & arrName)
+		print ("PagedArray.construct: Failed to allocate PagedArray instance: " & id)
 		return NULL
 	end if
 
+	arrayPtr->id = left(id, 32)
 	arrayPtr->size = size
 	arrayPtr->pageLength = pageLength
 	arrayPtr->warnLimit = warnLimit
@@ -87,19 +88,18 @@ function construct (byref arrName as zstring, size as integer, pageLength as int
 	arrayPtr->currentPageMax = 0
 	arrayPtr->currentMax = 0
 	arrayPtr->currentPage = 0
-	arrayPtr->arrName = left(arrName, 32)
 
 	if not _reallocatePageIndex(arrayPtr) then
 		PagedArray.destruct(arrayPtr)
 		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate initial page index: " & arrName)
+		print ("PagedArray.construct: Failed to allocate initial page index: " & id)
 		return NULL
 	end if
 
 	if not _createPage(arrayPtr) then
 		PagedArray.destruct(arrayPtr)
 		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate initial page: " & arrName)
+		print ("PagedArray.construct: Failed to allocate initial page: " & id)
 		return NULL
 	end if
 
@@ -115,7 +115,7 @@ sub destruct (arrayPtr as PagedArrayObj ptr)
 
 	if arrayPtr = NULL then
 		' TODO: Throw error
-		print ("PagedArray.destruct: Invalid PagedArray pointer: " & arrayPtr->arrName)
+		print ("PagedArray.destruct: Invalid PagedArray pointer")
 		exit sub
 	end if
 
@@ -152,7 +152,7 @@ function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 
 	if arrayPtr = NULL then
 		' TODO: Throw error 
-		print ("PagedArray.createIndex: Invalid PagedArray pointer: " & arrayPtr->arrName)
+		print ("PagedArray.createIndex: Invalid PagedArray pointer")
 		return false
 	end if
 
@@ -162,7 +162,7 @@ function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 	if arrayPtr->currentIndex > arrayPtr->currentPageMax then
 		if not _createPage(arrayPtr) then
 			' TODO: Throw warning
-			print ("PagedArray.createIndex: Failed to allocate page index: " & arrayPtr->arrName)
+			print ("PagedArray.createIndex: Failed to allocate page index: " & arrayPtr->id)
 		end if
 	end if
 
@@ -181,7 +181,7 @@ function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 
 	if arrayPtr = NULL then
 		' TODO: Throw error
-		print ("PagedArray.getIndex: Invalid PagedArray pointer: " & arrayPtr->arrName)
+		print ("PagedArray.getIndex: Invalid PagedArray pointer")
 		return NULL
 	end if
 
@@ -191,7 +191,7 @@ function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 		offset = index
 	elseif index >= arrayPtr->currentIndex then
 		' TODO: Throw warning
-		print ("PagedArray.getIndex: Index (" & index & ") is greater than current array length (" & arrayPtr->currentIndex & "): " & arrayPtr->arrName)
+		print ("PagedArray.getIndex: Index (" & index & ") is greater than current array length (" & arrayPtr->currentIndex & "): " & arrayPtr->id)
 		return NULL
 	else
 		pagePtr = arrayPtr->pages[index \ arrayPtr->pageLength]
@@ -214,7 +214,7 @@ function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 
 	if arrayPtr = NULL then
 		' TODO: Throw error
-		print ("PagedArray.pop: Invalid PagedArray pointer: " & arrayPtr->arrName)
+		print ("PagedArray.pop: Invalid PagedArray pointer")
 		return false
 	end if
 
@@ -232,6 +232,20 @@ function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 	next
 
 	arrayPtr->currentIndex = index
+
+	return true
+end function
+
+function isEmpty (arrayPtr as PagedArrayObj ptr) as integer
+	if arrayPtr = NULL then
+		' TODO: Throw error
+		print ("PagedArray.isEmpty: Invalid PagedArray pointer")
+		return false
+	end if
+
+	if arrayPtr->currentIndex = 0 then
+		return false
+	end if
 
 	return true
 end function
@@ -262,7 +276,7 @@ function _createPage (arrayPtr as PagedArrayObj ptr) as integer
 
 	if arrayPtr->currentIndex > arrayPtr->warnLimit then
 		' TODO: Throw warning
-		print ("PagedArray._createPage: PagedArray warning limit has been surpassed: " & arrayPtr->arrName)
+		print ("PagedArray._createPage: PagedArray warning limit has been surpassed: " & arrayPtr->id)
 	end if
 
 	return true
@@ -286,7 +300,7 @@ function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 
 		if pageIndexPtr = NULL then
 			' TODO: Throw warning
-			print ("PagedArray._reallocatePageIndex: Failed to reallocate page index: " & arrayPtr->arrName)
+			print ("PagedArray._reallocatePageIndex: Failed to reallocate page index: " & arrayPtr->id)
 			return false
 		end if
 

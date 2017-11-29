@@ -27,6 +27,7 @@ type MeldInterface
     isRunning as function() as integer
 	getStatus as function() as integer
 	register as function(moduleName as zstring, interface as any ptr) as integer
+	require as function (moduleName as zstring) as any ptr
     shutdown as sub(status as integer)
 	newline as zstring ptr
 	dirsep as zstring ptr

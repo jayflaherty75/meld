@@ -207,7 +207,7 @@ sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
 		dim as Bst.Node ptr replacement = NULL
 
 		if rightPtr <> NULL andalso leftPtr <> NULL then
-			' Deleted node: of which care has been taken
+			' Deleted node: taken care of
 			' Parent: Can be reset with replacement
 			' replacement: becomes the new node
 			' Get parent of replacement

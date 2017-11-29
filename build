@@ -12,6 +12,7 @@ fbc -mt -c "./src/fb/shared/lib/identity/identity.bas" || { echo; echo Failed to
 fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile iterator, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/list/list.bas" || { echo; echo Failed to compile list, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/paged-array/paged-array.bas" || { echo; echo Failed to compile paged-array, build terminated; exit 1; }
+fbc -mt -c "./src/fb/shared/lib/resource-container/resource-container.bas" || { echo; echo Failed to compile resource-container, build terminated; exit 1; }
 
 fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/meld/lib/fault/fault.o" \
@@ -20,6 +21,7 @@ fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
 	"./src/fb/shared/lib/list/list.o" \
 	"./src/fb/shared/lib/paged-array/paged-array.o" \
+	"./src/fb/shared/lib/resource-container/resource-container.o" \
 	|| { echo; echo Test compilation failed, build terminated; exit 1; }
 
 echo "";
@@ -36,6 +38,7 @@ fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
 	"./src/fb/shared/lib/list/list.o" \
 	"./src/fb/shared/lib/paged-array/paged-array.o" \
+	"./src/fb/shared/lib/resource-container/resource-container.o" \
 	|| { echo; echo Build failed; exit 1; }
 
 echo;
