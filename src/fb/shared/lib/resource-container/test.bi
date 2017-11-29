@@ -9,6 +9,11 @@ namespace ResourceContainerTest
 declare function testModule (describe as describeCallback) as integer
 declare function create (it as itCallback) as integer
 declare function test1 () as integer
+declare function test2 () as integer
+declare function test3 () as integer
+declare function test4 () as integer
+declare function test5 () as integer
+declare function test6 () as integer
 
 declare function test8 () as integer
 
@@ -32,6 +37,11 @@ function create (it as itCallback) as integer
 	next
 
 	result = result ANDALSO it ("creates a PagedArray instance", @test1)
+	result = result ANDALSO it ("creates and populates resources", @test2)
+	result = result ANDALSO it ("retrieves the same data it put in", @test3)
+	result = result ANDALSO it ("releases resources without error", @test4)
+	result = result ANDALSO it ("creates more resources", @test5)
+	result = result ANDALSO it ("returns the correct data after modification", @test6)
 
 	result = result ANDALSO it ("releases remaining nodes when paged array deleted", @test8)
 
@@ -39,13 +49,117 @@ function create (it as itCallback) as integer
 end function
 
 function test1 () as integer
-	contPtr = ResourceContainer.construct("testResourceContainer", sizeof(integer), 8, 1018)
+	contPtr = ResourceContainer.construct("testResourceContainer", sizeof(integer), 8, 100000)
 
 	if contPtr = NULL then
 		return false
 	end if
 
 	return true
+end function
+
+function test2 () as integer
+	dim as integer result = true
+	dim as integer i
+	dim as integer index
+	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
+
+	for i = 0 to RESCONTAINER_TEST_LENGTH
+		index = ResourceContainer.request(contPtr)
+
+		if index = -1 then
+			result = false
+			exit for
+		end if
+
+		dataPtr = ResourceContainer.getPtr(contPtr, index)
+
+		if dataPtr = NULL then
+			result = false
+			exit for
+		end if
+
+		*dataPtr = testData(i)
+	next
+
+	return result
+end function
+
+function test3 () as integer
+	dim as integer result = true
+	dim as integer index
+	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
+
+	for index = 0 to RESCONTAINER_TEST_LENGTH
+		dataPtr = ResourceContainer.getPtr(contPtr, index)
+
+		if dataPtr = NULL then
+			result = false
+			exit for
+		end if
+
+		if *dataPtr <> testData(index) then
+			result = false
+			exit for
+		end if
+	next
+
+	return result
+end function
+
+function test4 () as integer
+	dim as integer result = true
+	dim as integer index
+	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
+
+	for index = RESCONTAINER_TEST_LENGTH \ 2 to RESCONTAINER_TEST_LENGTH
+		if not ResourceContainer.release(contPtr, index) then
+			result = false
+			exit for
+		end if
+	next
+
+	return result
+end function
+
+function test5 () as integer
+	dim as integer result = true
+	dim as integer i
+	dim as integer index
+	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
+
+	for i = RESCONTAINER_TEST_LENGTH \ 2 to RESCONTAINER_TEST_LENGTH
+		index = ResourceContainer.request(contPtr)
+
+		if index = -1 then
+			result = false
+			exit for
+		end if
+
+		dataPtr = ResourceContainer.getPtr(contPtr, index)
+
+		if dataPtr = NULL then
+			result = false
+			exit for
+		end if
+
+		*dataPtr = testData(i) + 12
+	next
+
+	return result
+end function
+
+function test6 () as integer
+	dim as integer result = true
+	dim as integer index
+	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
+
+	for index = 0 to RESCONTAINER_TEST_LENGTH
+		dataPtr = ResourceContainer.getPtr(contPtr, index)
+		print (*dataPtr)
+	next
+
+	return result
 end function
 
 function test8 () as integer

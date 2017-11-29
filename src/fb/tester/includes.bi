@@ -5,8 +5,8 @@
 #include once "../shared/lib/iterator/test.bi"
 #include once "../shared/lib/bst/test.bi"
 #include once "../shared/lib/paged-array/test.bi"
-#include once "../shared/lib/identity/test.bi"
 #include once "../shared/lib/resource-container/test.bi"
+#include once "../shared/lib/identity/test.bi"
 
 #define TEST_COUNT			7
 
@@ -17,5 +17,5 @@ tests(1) = @ListTest.testModule
 tests(2) = @IteratorTest.testModule
 tests(3) = @BstTest.testModule
 tests(4) = @PagedArrayTest.testModule
-tests(5) = @IdentityTest.testModule
 tests(6) = @ResourceContainerTest.testModule
+tests(5) = @IdentityTest.testModule

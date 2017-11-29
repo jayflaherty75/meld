@@ -122,7 +122,7 @@ function request (contPtr as ResourceContainerObj ptr) as integer
 	else
 		if not deps->pagedArray->pop(contPtr->stack, @resourceId) then
 			' TODO: Throw error
-			print ("RersourceContainer.request: Element size must be greater than zero: " & contPtr->id)
+			print ("RersourceContainer.request: Failed to reuse resouce from stack: " & contPtr->id)
 			return -1
 		end if
 	end if

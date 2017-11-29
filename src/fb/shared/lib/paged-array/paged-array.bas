@@ -33,6 +33,7 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.createIndex = @createIndex
 	state.methods.getIndex = @getIndex
 	state.methods.pop = @pop
+	state.methods.isEmpty = @isEmpty
 
 	if not meld->register("paged-array", @state.methods) then
 		return false
@@ -240,14 +241,14 @@ function isEmpty (arrayPtr as PagedArrayObj ptr) as integer
 	if arrayPtr = NULL then
 		' TODO: Throw error
 		print ("PagedArray.isEmpty: Invalid PagedArray pointer")
-		return false
+		return true
 	end if
 
 	if arrayPtr->currentIndex = 0 then
-		return false
+		return true
 	end if
 
-	return true
+	return false
 end function
 
 /''
