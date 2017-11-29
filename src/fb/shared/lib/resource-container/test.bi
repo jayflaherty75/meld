@@ -13,9 +13,8 @@ declare function test2 () as integer
 declare function test3 () as integer
 declare function test4 () as integer
 declare function test5 () as integer
-declare function test6 () as integer
 
-declare function test8 () as integer
+declare function test6 () as integer
 
 dim shared as RESCONTAINER_TEST_DATATYPE testData(1024)
 dim shared as ResourceContainerObj ptr contPtr
@@ -41,9 +40,8 @@ function create (it as itCallback) as integer
 	result = result ANDALSO it ("retrieves the same data it put in", @test3)
 	result = result ANDALSO it ("releases resources without error", @test4)
 	result = result ANDALSO it ("creates more resources", @test5)
-	result = result ANDALSO it ("returns the correct data after modification", @test6)
 
-	result = result ANDALSO it ("releases remaining nodes when paged array deleted", @test8)
+	result = result ANDALSO it ("releases remaining nodes when paged array deleted", @test6)
 
 	return result
 end function
@@ -150,19 +148,6 @@ function test5 () as integer
 end function
 
 function test6 () as integer
-	dim as integer result = true
-	dim as integer index
-	dim as RESCONTAINER_TEST_DATATYPE ptr dataPtr
-
-	for index = 0 to RESCONTAINER_TEST_LENGTH
-		dataPtr = ResourceContainer.getPtr(contPtr, index)
-		print (*dataPtr)
-	next
-
-	return result
-end function
-
-function test8 () as integer
 	ResourceContainer.destruct(contPtr)
 	contPtr = NULL
 
