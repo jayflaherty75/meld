@@ -51,6 +51,15 @@ end function
 sub unload()
 end sub
 
+/''
+ ' Creates a resource container that manages the creation and reuse of existing
+ ' resource.
+ ' @param {zstring} id
+ ' @param {integer} size
+ ' @param {integer} pageLength
+ ' @param {integer} warnLimit
+ ' @returns {ResourceContainerObj ptr}
+ '/
 function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as ResourceContainerObj ptr
 	dim as Dependencies ptr deps = @state.deps
 	dim as ResourceContainerObj ptr contPtr = allocate(sizeof(ResourceContainerObj))
@@ -86,6 +95,9 @@ function construct (byref id as zstring, size as integer, pageLength as integer,
 	return contPtr
 end function
 
+/''
+ ' @param {ResourceContainerObj ptr} contPtr
+ '/
 sub destruct (contPtr as ResourceContainerObj ptr)
 	dim as Dependencies ptr deps = @state.deps
 
@@ -106,6 +118,11 @@ sub destruct (contPtr as ResourceContainerObj ptr)
 	end if
 end sub
 
+/''
+ ' Request the index of a newly created resource.
+ ' @param {ResourceContainerObj ptr} contPtr
+ ' @returns {integer}
+ '/
 function request (contPtr as ResourceContainerObj ptr) as integer
 	dim as Dependencies ptr deps = @state.deps
 	dim as integer resourceId
@@ -130,6 +147,12 @@ function request (contPtr as ResourceContainerObj ptr) as integer
 	return resourceId
 end function
 
+/''
+ ' Release the resource of the given index.
+ ' @param {ResourceContainerObj ptr} contPtr
+ ' @param {integer} resourceId
+ ' @returns {integer}
+ '/
 function release (contPtr as ResourceContainerObj ptr, resourceId as integer) as integer
 	dim as Dependencies ptr deps = @state.deps
 	dim as integer index
@@ -161,6 +184,12 @@ function release (contPtr as ResourceContainerObj ptr, resourceId as integer) as
 	return true
 end function
 
+/''
+ ' Returns the point to the resource of the given index.
+ ' @param {ResourceContainerObj ptr} contPtr
+ ' @param {integer} resourceId
+ ' @returns {any ptr}
+ '/
 function getPtr (contPtr as ResourceContainerObj ptr, resourceId as integer) as any ptr
 	dim as Dependencies ptr deps = @state.deps
 
