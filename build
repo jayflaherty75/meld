@@ -8,6 +8,7 @@ echo
 fbc -mt -c "./src/fb/meld/lib/fault/fault.bas" || { echo; echo Failed to compile fault, build terminated; exit 1; }
 
 fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
+fbc -mt -c "./src/fb/shared/lib/console/console.bas" || { echo; echo Failed to compile console, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/identity/identity.bas" || { echo; echo Failed to compile identity, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile iterator, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/list/list.bas" || { echo; echo Failed to compile list, build terminated; exit 1; }
@@ -17,6 +18,7 @@ fbc -mt -c "./src/fb/shared/lib/resource-container/resource-container.bas" || { 
 fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
+	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
 	"./src/fb/shared/lib/list/list.o" \
@@ -34,6 +36,7 @@ echo Building Meld Core...;
 fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
+	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
 	"./src/fb/shared/lib/list/list.o" \

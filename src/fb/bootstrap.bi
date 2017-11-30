@@ -3,6 +3,7 @@
 #include once "../../modules/headers/constants/constants-v1.bi"
 #include once "meld/lib/fault/fault.bi"
 #include once "shared/lib/bst/bst.bi"
+#include once "shared/lib/console/console.bi"
 #include once "shared/lib/identity/identity.bi"
 #include once "shared/lib/iterator/iterator.bi"
 #include once "shared/lib/list/list.bi"
@@ -14,6 +15,7 @@ namespace Bootstrap
 type Dependencies
 	meld as MeldInterface ptr
 	bst as Bst.Interface ptr
+	console as Console.Interface ptr
 	fault as Fault.Interface ptr
 	identity as Identity.Interface ptr
 	iterator as Iterator.Interface ptr
@@ -35,6 +37,7 @@ function run () as Bootstrap.Dependencies ptr
 	meld.register = @_register
 	meld.require = @_require
 
+	Console.load(@meld)
 	Fault.load(@meld)
 	Iterator.load(@meld)
 	List.load(@meld)
@@ -50,6 +53,8 @@ function _register (moduleName as zstring, interface as any ptr) as integer
 	select case moduleName
 		case "bst":
 			deps.bst = interface
+		case "console":
+			deps.console = interface
 		case "fault":
 			deps.fault = interface
 		case "identity":
@@ -73,6 +78,8 @@ function _require (moduleName as zstring) as any ptr
 	select case moduleName
 		case "bst":
 			interface = deps.bst
+		case "console":
+			interface = deps.console
 		case "fault":
 			interface = deps.fault
 		case "identity":

@@ -66,9 +66,6 @@ function meldInitialize (config as zstring ptr) as integer
         return false
     end if
 
-	meldCore.methods.register = @meldRegister
-	meldCore.methods.require = @meldRequire
-
     meldCore.isRunning = true
 	meldCore.status = 0
 
@@ -81,8 +78,6 @@ end function
  ' calling meldUninitialize.
  '/
 sub meldUninitialize()
-	Fault.uninitialize()
-
     mutexlock(meldCore.mutexId)
     meldCore.isRunning = false
     mutexunlock(meldCore.mutexId)

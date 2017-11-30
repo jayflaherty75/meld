@@ -6,17 +6,14 @@ namespace Fault
 declare function load (meldPtr as MeldInterface ptr) as integer
 declare sub unload ()
 
-declare function initialize (mutexId as any ptr) as integer
-declare sub uninitialize()
-
-declare function registerType (errName as zstring ptr) as integer
+declare function registerType (byref errName as zstring) as integer
 declare function assignHandler (errCode as integer, handler as Fault.Handler) as integer
-declare function getCode (errName as zstring ptr) as integer
+declare function getCode (byref errName as zstring) as integer
 declare sub throw (_
-	errName as zstring ptr, _
+	byref errName as zstring, _
 	errCode as integer, _
 	byref message as string, _
-	filename as zstring ptr, _
+	byref filename as zstring, _
 	linenum as integer _	
 )
 

@@ -7,6 +7,7 @@ namespace Fault
 
 type Dependencies
 	meld as MeldInterface ptr
+	console as Console.Interface ptr
 end type
 
 type State
@@ -21,31 +22,32 @@ type State
 	deps as Dependencies
 end type
 
-static shared as zstring*64 uncaughtError = "MeldInternalUncaughtError"
-static shared as zstring*64 internalSystemError = "MeldInternalSystemError"
-static shared as zstring*64 moduleFile = __FILE__
+static shared as zstring*26 uncaughtError = "MeldInternalUncaughtError"
+static shared as zstring*24 internalSystemError = "MeldInternalSystemError"
+static shared as zstring*256 moduleFile = __FILE__
 
 dim shared as State errState
 
+declare function _initialize () as integer
+declare sub _uninitialize()
 declare sub _clearAll()
-declare sub _handleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
-declare sub _handleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
+declare sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+declare sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 
-declare sub _log (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
-declare function _format (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
+'declare sub _log (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string)
+'declare function _format (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string) as string
 
 /''
  ' @param {MeldInterface ptr} meldPtr
  '/
 function load (meld as MeldInterface ptr) as integer
 	if meld = NULL then
-		' TODO: Throw error
 		print ("load: Invalid meld interface pointer")
 		return false
 	end if
 
-	errState.methods.initialize = @initialize
-	errState.methods.uninitialize = @uninitialize
+	errState.methods.load = @load
+	errState.methods.unload = @unload
 	errState.methods.registerType = @registerType
 	errState.methods.assignHandler = @assignHandler
 	errState.methods.getCode = @getCode
@@ -56,25 +58,31 @@ function load (meld as MeldInterface ptr) as integer
 	end if
 
 	errState.deps.meld = meld
+	errState.deps.console = meld->require("console")
+
+	if not _initialize() then
+		print ("load: Failed to initialize")
+		return false
+	end if
 
 	return true
 end function
 
 sub unload ()
+	_uninitialize()
 end sub
 
 /''
  ' Error system setup.
- ' @param {any ptr} mutexId - Takes the system mutex ID for thread safety
  '/
-function initialize (mutexId as any ptr) as integer
+function _initialize () as integer
 	errState.typeLimitErrorMsg = "Can not create new error types.  The system has reached the limit it can handle."
 
-	errState.mutexId = mutexId
+	errState.mutexId = mutexcreate()
 	errState.errorCount = 0
 
-	errState.uncaughtError = registerType(@uncaughtError)
-	errState.internalSystemError = registerType(@internalSystemError)
+	errState.uncaughtError = registerType(uncaughtError)
+	errState.internalSystemError = registerType(internalSystemError)
 	assignHandler(errState.uncaughtError, @_handleError)
 	assignHandler(errState.internalSystemError, @_handleError)
 
@@ -84,18 +92,21 @@ end function
 /''
  ' Error system shutdown.
  '/
-sub uninitialize()
+sub _uninitialize()
 	_clearAll()
 
-	errState.mutexId = NULL
+	if errState.mutexId <> NULL then
+		mutexdestroy(errState.mutexId)
+		errState.mutexId = NULL
+	end if
 end sub
 
 /''
  ' Registers a new error type and returns the assigned error code.
- ' @param {zstring ptr} errName
+ ' @param {zstring} errName
  ' @returns {integer}
  '/
-function registerType (errName as zstring ptr) as integer
+function registerType (byref errName as zstring) as integer
 	dim as integer errCode = -1
 	dim as Fault.Header ptr errPtr
 
@@ -108,14 +119,14 @@ function registerType (errName as zstring ptr) as integer
 		mutexunlock(errState.mutexId)
 
 		errPtr = @errState.errors(errCode)
-		errPtr->name = *errName
+		errPtr->name = errName
 		errPtr->code = errCode
 	else
 		throw(_
-			@internalSystemError, _
+			internalSystemError, _
 			errState.internalSystemError, _
 			errState.typeLimitErrorMsg, _
-			@moduleFile, _
+			moduleFile, _
 			__LINE__ _
 		)
 	end if
@@ -148,14 +159,14 @@ end function
 /''
  ' Returns the error code for the registered error name
  '/
-function getCode (errName as zstring ptr) as integer
+function getCode (byref errName as zstring) as integer
 	dim as integer result = 0
 	dim as integer index = 0
 
 	mutexlock (errState.mutexId)
 
 	while (result <> 0 ANDALSO index < errState.errorCount)
-		if errState.errors(index).name = *errName then
+		if errState.errors(index).name = errName then
 			result = index
 		end if
 	wend
@@ -168,16 +179,16 @@ end function
 /''
  ' Pass an error to be handled.  Make sure you do trust exercises with whoever
  ' writes your error handlers.
- ' @param {zstring ptr} errName
+ ' @param {zstring} errName
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
  ' @param {string} message - Contains full error message
- ' @param {zstring ptr} filename - Pointer to a string containing the current
+ ' @param {zstring} filename - Pointer to a string containing the current
  '	filename.  Can be set to a constant containing __FILE__.
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw (errName as zstring ptr, errCode as integer, byref message as string, filename as zstring ptr, lineNum as integer)
+sub throw (byref errName as zstring, errCode as integer, byref message as string, byref filename as zstring, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
@@ -212,39 +223,38 @@ end sub
  ' Default error handler for uncaught errors.
  ' @private
  '/
-sub _handleError (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
-	' TODO: Implement a logging system and call it here
-	_log (*errName, *filename, lineNum, message)
+sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	dim as Dependencies ptr deps = @state.deps
 
-	' TODO: Implement interfaces and call meld
-	' meld->shutdown(1)
-	end(1)
+	deps->console->logmessage(errName, message, filename, lineNum)
+	deps->meld->shutdown(1)
 end sub
 
 /''
  ' Handler for logging warnings.
  ' @private
  '/
-sub _handleWarning (errName as zstring ptr, byref message as string, filename as zstring ptr, lineNum as integer)
-	' TODO: Implement a logging system and call it here
-	_log (*errName, *filename, lineNum, message)
+sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	dim as Dependencies ptr deps = @state.deps
+
+	deps->console->logmessage(errName, message, filename, lineNum)
 end sub
 
 /''
  ' TODO: Add logging and remove this temporary logging handler.
  ' @private
  '/
-sub _log (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string)
-	print (_format(errName, filename, lineNum, message))
-end sub
+'sub _log (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string)
+'	print (_format(errName, filename, lineNum, message))
+'end sub
 
 /''
  ' @private
  '/
-function _format (errName as zstring ptr, filename as zstring ptr, lineNum as integer, byref message as string) as string
-	dim as MeldInterface ptr meld = errState.deps.meld
+'function _format (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string) as string
+'	dim as MeldInterface ptr meld = errState.deps.meld
 
-	return Time () & errName & ": " & filename & " (" & lineNum & ") " & meld->newline & message
-end function
+'	return Time () & errName & ": " & filename & " (" & lineNum & ") " & meld->newline & message
+'end function
 
 end namespace
