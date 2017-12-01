@@ -5,6 +5,11 @@
 
 namespace Fault
 
+type ErrorCodes
+	uncaughtError as integer
+	internalSystemError as integer
+end type
+
 type Dependencies
 	meld as MeldInterface ptr
 	console as Console.Interface ptr
@@ -15,15 +20,14 @@ type State
 	errors(ERROR_MAX_TYPES) as Header
 	errorCount as uinteger
 	handlers(ERROR_MAX_TYPES) as Handler
-	uncaughtError as integer
-	internalSystemError as integer
 	typeLimitErrorMsg as string
 	methods as Interface
 	deps as Dependencies
+	errs as ErrorCodes
 end type
 
-static shared as zstring*26 uncaughtError = "MeldInternalUncaughtError"
-static shared as zstring*24 internalSystemError = "MeldInternalSystemError"
+static shared as zstring*26 uncaughtError = "UncaughtError"
+static shared as zstring*24 internalSystemError = "InternalSystemError"
 static shared as zstring*256 moduleFile = __FILE__
 
 dim shared as State errState
@@ -33,9 +37,6 @@ declare sub _uninitialize()
 declare sub _clearAll()
 declare sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 declare sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-
-'declare sub _log (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string)
-'declare function _format (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string) as string
 
 /''
  ' @param {MeldInterface ptr} meldPtr
@@ -65,6 +66,8 @@ function load (meld as MeldInterface ptr) as integer
 		return false
 	end if
 
+	'throw(internalSystemError, errState.errs.internalSystemError, errState.typeLimitErrorMsg, moduleFile, __LINE__)
+
 	return true
 end function
 
@@ -81,10 +84,15 @@ function _initialize () as integer
 	errState.mutexId = mutexcreate()
 	errState.errorCount = 0
 
-	errState.uncaughtError = registerType(uncaughtError)
-	errState.internalSystemError = registerType(internalSystemError)
-	assignHandler(errState.uncaughtError, @_handleError)
-	assignHandler(errState.internalSystemError, @_handleError)
+	errState.errs.uncaughtError = registerType(uncaughtError)
+	if not assignHandler(errState.errs.uncaughtError, @_handleError) then
+		print ("Fault.initialize: Failed to assign handler for uncaught error")
+	end if
+
+	errState.errs.internalSystemError = registerType(internalSystemError)
+	if not assignHandler(errState.errs.internalSystemError, @_handleError) then
+		print ("Fault.initialize: Failed to assign handler for internal system error")
+	end if
 
 	return true
 end function
@@ -124,7 +132,7 @@ function registerType (byref errName as zstring) as integer
 	else
 		throw(_
 			internalSystemError, _
-			errState.internalSystemError, _
+			errState.errs.internalSystemError, _
 			errState.typeLimitErrorMsg, _
 			moduleFile, _
 			__LINE__ _
@@ -145,7 +153,7 @@ function assignHandler (errCode as integer, handler as Fault.Handler) as integer
 
 	mutexlock (errState.mutexId)
 
-	if not errCode ORELSE not errState.errors(errCode).code then
+	if errCode < 0 ORELSE errState.errors(errCode).code < 0 then
 		result = false
 	else
 		errState.handlers(errCode) = handler
@@ -193,7 +201,7 @@ sub throw (byref errName as zstring, errCode as integer, byref message as string
 		andalso errState.handlers(errCode) then
 
 		errState.handlers(errCode) (errName, message, filename, lineNum)
-	else
+else
 		' All unhandled errors go to uncaught handler defined during
 		' initialization of error system.
 		errState.handlers(0) (errName, message, filename, lineNum)
@@ -224,9 +232,12 @@ end sub
  ' @private
  '/
 sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	dim as Dependencies ptr deps = @state.deps
+print ("_handleError")
+	dim as Dependencies ptr deps = @errState.deps
+print(deps->console)
+print(deps->meld)
 
-	deps->console->logmessage(errName, message, filename, lineNum)
+	deps->console->logError(errName, message, filename, lineNum)
 	deps->meld->shutdown(1)
 end sub
 
@@ -235,26 +246,9 @@ end sub
  ' @private
  '/
 sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	dim as Dependencies ptr deps = @state.deps
+	dim as Dependencies ptr deps = @errState.deps
 
-	deps->console->logmessage(errName, message, filename, lineNum)
+	deps->console->logWarning(errName, message, filename, lineNum)
 end sub
-
-/''
- ' TODO: Add logging and remove this temporary logging handler.
- ' @private
- '/
-'sub _log (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string)
-'	print (_format(errName, filename, lineNum, message))
-'end sub
-
-/''
- ' @private
- '/
-'function _format (byref errName as zstring, byref filename as zstring, lineNum as integer, byref message as string) as string
-'	dim as MeldInterface ptr meld = errState.deps.meld
-
-'	return Time () & errName & ": " & filename & " (" & lineNum & ") " & meld->newline & message
-'end function
 
 end namespace

@@ -3,15 +3,6 @@
 #include once "../../../../modules/headers/constants/constants-v1.bi"
 '#include once "../interfaces/interfaces.bi"
 
-' TODO: Break these out into separately compiled modules
-#include once "fault/fault.bi"
-#include once "../../shared/lib/bst/bst.bi"
-#include once "../../shared/lib/identity/identity.bi"
-#include once "../../shared/lib/iterator/iterator.bi"
-#include once "../../shared/lib/list/list.bi"
-#include once "../../shared/lib/paged-array/paged-array.bi"
-#include once "../../shared/lib/resource-container/resource-container.bi"
-
 ' TODO: Read application config based on command line argument
 ' TODO: Register functions
 ' TODO: Add shutdown hook
@@ -31,8 +22,8 @@ declare function meldInitialize (config as zstring ptr) as integer
 declare sub meldUninitialize()
 declare function meldIsRunning() as integer
 declare function meldGetStatus() as integer
-declare function meldRegister (moduleName as zstring, interface as any ptr) as integer
-declare function meldRequire (moduleName as zstring) as any ptr
+declare function meldRegister (byref moduleName as zstring, interface as any ptr) as integer
+declare function meldRequire (byref moduleName as zstring) as any ptr
 declare sub meldShutdown(status as integer)
 
 /''
@@ -103,6 +94,7 @@ end function
 
 /''
  ' Return the status for the system.
+ ' @returns {integer}
  '/
 function meldGetStatus() as integer
 	return meldCore.status
@@ -111,18 +103,24 @@ end function
 /''
  ' @param {zstring} name
  ' @param {any ptr} interface
+ ' @returns {integer}
  '/
-function meldRegister(moduleName as zstring, interface as any ptr) as integer
+function meldRegister(byref moduleName as zstring, interface as any ptr) as integer
 	return true
 end function
 
-function meldRequire (moduleName as zstring) as any ptr
+/''
+ ' @param {zstring} name
+ ' @returns {any ptr}
+ '/
+function meldRequire (byref moduleName as zstring) as any ptr
 	return NULL
 end function
 
 /''
  ' Signals that Meld should stop running. It is up to the caller to check
  ' meldIsRunning and shut down the application when ready.
+ ' @param {integer} status
  '/
 sub meldShutdown(status as integer)
     mutexlock(meldCore.mutexId)

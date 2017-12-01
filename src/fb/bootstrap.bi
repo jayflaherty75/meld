@@ -1,4 +1,5 @@
 
+'#include once "meld/lib/core.bi"
 #include once "../../modules/headers/meld/meld-v1.bi"
 #include once "../../modules/headers/constants/constants-v1.bi"
 #include once "meld/lib/fault/fault.bi"
