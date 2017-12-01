@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 #include once "../paged-array/paged-array-v1.bi"
 
 namespace ResourceContainer
@@ -12,7 +12,7 @@ type Instance
 end type
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
 	construct as function (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as ResourceContainer.Instance ptr
 	destruct as sub (idPtr as ResourceContainer.Instance ptr)

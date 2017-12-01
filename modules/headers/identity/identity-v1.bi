@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 #include once "../paged-array/paged-array-v1.bi"
 #include once "../bst/bst-v1.bi"
 
@@ -23,7 +23,7 @@ type Identifier
 end type
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
 	construct as function () as Identity.Instance ptr
 	destruct as sub (idPtr as Identity.Instance ptr)

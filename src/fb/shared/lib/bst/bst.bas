@@ -4,7 +4,7 @@
 namespace Bst
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 end type
 
 type StateType
@@ -22,13 +22,13 @@ declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) 
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {MeldInterface ptr} meld
+ ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
  '/
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
 		' TODO: Throw error
-		print ("Bst.load: Invalid meld interface pointer")
+		print ("Bst.load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -42,11 +42,11 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.getIterator = @getIterator
 	state.methods.defaultCompare = @defaultCompare
 
-	if not meld->register("bst", @state.methods) then
+	if not corePtr->register("bst", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
+	state.deps.core = corePtr
 
 	return true
 end function

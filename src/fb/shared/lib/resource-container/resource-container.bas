@@ -4,7 +4,7 @@
 namespace ResourceContainer
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 	pagedArray as PagedArray.Interface ptr
 end type
 
@@ -17,13 +17,13 @@ dim shared as StateType state
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {MeldInterface ptr} meld
+ ' @param {MeldInterface ptr} corePtr
  ' @returns {integer}
  '/
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
 		' TODO: Throw error
-		print ("ResourceContainer.load: Invalid meld interface pointer")
+		print ("ResourceContainer.load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -35,12 +35,12 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.release = @release
 	state.methods.getPtr = @getPtr
 
-	if not meld->register("resource-container", @state.methods) then
+	if not corePtr->register("resource-container", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
-	state.deps.pagedArray = meld->require("paged-array")
+	state.deps.core = corePtr
+	state.deps.pagedArray = corePtr->require("paged-array")
 
 	return true
 end function

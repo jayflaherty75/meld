@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 #include once "../console/console-v1.bi"
 
 #define ERROR_NAME_MAX_LENGTH               32
@@ -15,7 +15,7 @@ end type
 type Handler as sub(byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
 	registerType as function (byref errName as zstring) as integer
 	assignHandler as function (errCode as integer, handler as Fault.Handler) as integer

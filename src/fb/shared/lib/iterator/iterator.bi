@@ -5,7 +5,7 @@ type IteratorHandler as function (iter as IteratorObj ptr, target as any ptr) as
 
 namespace Iterator
 
-declare function load (meld as MeldInterface ptr) as integer
+declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
 
 declare function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr

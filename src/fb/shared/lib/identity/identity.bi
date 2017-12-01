@@ -3,7 +3,7 @@
 
 namespace Identity
 
-declare function load (meld as MeldInterface ptr) as integer
+declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
 
 declare function construct() as IdentityObj ptr

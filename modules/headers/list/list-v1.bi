@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 #include once "../iterator/iterator-v1.bi"
 
 namespace List
@@ -18,7 +18,7 @@ type Instance
 end type
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
 	construct as function () as List.Instance ptr
 	destruct as sub (listPtr as List.Instance ptr)

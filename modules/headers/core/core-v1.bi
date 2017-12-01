@@ -1,6 +1,5 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../console/console-v1.bi"
 
 namespace Core
 

@@ -4,7 +4,7 @@
 namespace PagedArray
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 end type
 
 type StateType
@@ -16,13 +16,13 @@ dim shared as StateType state
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {MeldInterface ptr} meld
+ ' @param {MeldInterface ptr} corePtr
  ' @returns {integer}
  '/
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
 		' TODO: Throw error
-		print ("PagedArray.load: Invalid meld interface pointer")
+		print ("PagedArray.load: Invalid corePtr interface pointer")
 		return false
 	end if
 
@@ -35,11 +35,11 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.pop = @pop
 	state.methods.isEmpty = @isEmpty
 
-	if not meld->register("paged-array", @state.methods) then
+	if not corePtr->register("paged-array", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
+	state.deps.core = corePtr
 
 	return true
 end function

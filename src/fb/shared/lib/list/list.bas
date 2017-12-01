@@ -4,7 +4,7 @@
 namespace List
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 end type
 
 type StateType
@@ -16,10 +16,10 @@ dim shared as StateType state
 
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
 		' TODO: Throw error
-		print ("List.load: Invalid meld interface pointer")
+		print ("List.load: Invalid corePtr interface pointer")
 		return false
 	end if
 
@@ -37,11 +37,11 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.defaultCompare = @defaultCompare
 	state.methods.getIterator = @getIterator
 
-	if not meld->register("list", @state.methods) then
+	if not corePtr->register("list", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
+	state.deps.core = corePtr
 
 	return true
 end function

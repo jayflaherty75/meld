@@ -4,7 +4,7 @@
 namespace Console
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 end type
 
 type StateType
@@ -18,12 +18,12 @@ declare function _format (byref id as zstring, byref message as string, byref so
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {MeldInterface ptr} meld
+ ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
  '/
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
-		print ("Console.load: Invalid meld interface pointer")
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
+		print ("Console.load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -31,11 +31,11 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.unload = @unload
 	state.methods.logmessage = @logmessage
 
-	if not meld->register("console", @state.methods) then
+	if not corePtr->register("console", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
+	state.deps.core = corePtr
 
 	return true
 end function
@@ -75,9 +75,9 @@ sub logSuccess (byref id as zstring, byref message as string, byref source as zs
 end sub
 
 function _format (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer) as string
-	dim as MeldInterface ptr meld = state.deps.meld
+	dim as Core.Interface ptr corePtr = state.deps.core
 
-	return Time () & " - " & id & ": " & source & " (" & lineNum & ") " & meld->newline & message
+	return Time () & " - " & id & ": " & source & " (" & lineNum & ") " & corePtr->getNewline & message
 end function
 
 end namespace

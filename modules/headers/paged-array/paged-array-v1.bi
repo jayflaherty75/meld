@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 
 namespace PagedArray
 
@@ -17,7 +17,7 @@ type Instance
 end type
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
 	construct as function (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArray.Instance ptr
 	destruct as sub (arrayPtr as PagedArray.Instance ptr)

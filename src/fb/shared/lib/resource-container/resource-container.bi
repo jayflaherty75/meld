@@ -3,7 +3,7 @@
 
 namespace ResourceContainer
 
-declare function load (meld as MeldInterface ptr) as integer
+declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
 declare function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as ResourceContainerObj ptr
 declare sub destruct (idPtr as ResourceContainerObj ptr)

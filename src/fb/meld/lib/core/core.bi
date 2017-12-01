@@ -1,5 +1,6 @@
 
 #include once "../../../../../modules/headers/core/core-v1.bi"
+#include once "../../../../../modules/headers/console/console-v1.bi"
 
 namespace Core
 

@@ -1,7 +1,7 @@
 
-'#include once "meld/lib/core.bi"
-#include once "../../modules/headers/meld/meld-v1.bi"
+#include once "../../modules/headers/core/core-v1.bi"
 #include once "../../modules/headers/constants/constants-v1.bi"
+#include once "meld/lib/core.bi"
 #include once "meld/lib/fault/fault.bi"
 #include once "shared/lib/bst/bst.bi"
 #include once "shared/lib/console/console.bi"
@@ -14,7 +14,7 @@
 namespace Bootstrap
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 	bst as Bst.Interface ptr
 	console as Console.Interface ptr
 	fault as Fault.Interface ptr
@@ -33,19 +33,19 @@ declare function _register (moduleName as zstring, interface as any ptr) as inte
 declare function _require (moduleName as zstring) as any ptr
 
 function run () as Bootstrap.Dependencies ptr
-	dim as MeldInterface meld
+	dim as Core.Interface corePtr
 
-	meld.register = @_register
-	meld.require = @_require
+	corePtr.register = @_register
+	corePtr.require = @_require
 
-	Console.load(@meld)
-	Fault.load(@meld)
-	Iterator.load(@meld)
-	List.load(@meld)
-	Bst.load(@meld)
-	PagedArray.load(@meld)
-	ResourceContainer.load(@meld)
-	Identity.load(@meld)
+	Console.load(@corePtr)
+	Fault.load(@corePtr)
+	Iterator.load(@corePtr)
+	List.load(@corePtr)
+	Bst.load(@corePtr)
+	PagedArray.load(@corePtr)
+	ResourceContainer.load(@corePtr)
+	Identity.load(@corePtr)
 
 	return @deps
 end function

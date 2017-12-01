@@ -4,7 +4,7 @@
 namespace Identity
 
 type Dependencies
-	meld as MeldInterface ptr
+	core as Core.Interface ptr
 	PagedArray as PagedArray.Interface ptr
 end type
 
@@ -16,12 +16,12 @@ end type
 dim shared as StateType state
 
 /''
- ' @param {MeldInterface ptr} meldPtr
+ ' @param {MeldInterface ptr} corePtr
  '/
-function load (meld as MeldInterface ptr) as integer
-	if meld = NULL then
+function load (corePtr as Core.Interface ptr) as integer
+	if corePtr = NULL then
 		' TODO: Throw error
-		print ("load: Invalid meld interface pointer")
+		print ("load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -31,11 +31,11 @@ function load (meld as MeldInterface ptr) as integer
 	state.methods.destruct = @destruct
 	state.methods.request = @request
 
-	if not meld->register("identity", @state.methods) then
+	if not corePtr->register("identity", @state.methods) then
 		return false
 	end if
 
-	state.deps.meld = meld
+	state.deps.core = corePtr
 
 	return true
 end function

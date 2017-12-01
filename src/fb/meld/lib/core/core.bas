@@ -106,7 +106,7 @@ end function
 
 /''
  ' Signals that Meld should stop running. It is up to the caller to check
- ' meldIsRunning and shut down the application when ready.
+ ' Core.isRunning and shut down the application when ready.
  ' @param {integer} status
  '/
 sub shutdown(status as integer)

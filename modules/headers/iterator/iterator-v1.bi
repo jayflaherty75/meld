@@ -1,6 +1,6 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../meld/meld-v1.bi"
+#include once "../core/core-v1.bi"
 
 namespace Iterator
 
@@ -13,7 +13,7 @@ type Instance
 end type
 
 type Interface
-	load as function (meld as MeldInterface ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
 	construct as function (dataSet as any ptr = NULL, length as integer = -1) as Iterator.Instance ptr
 	destruct as sub (iter as Iterator.Instance ptr)

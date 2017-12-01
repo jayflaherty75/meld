@@ -3,7 +3,7 @@
 
 namespace Fault
 
-declare function load (meldPtr as MeldInterface ptr) as integer
+declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload ()
 
 declare function registerType (byref errName as zstring) as integer
