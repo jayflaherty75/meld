@@ -23,8 +23,6 @@ dim shared as StateType state
 
 dim shared as ErrorCodes errors
 
-static shared as zstring*256 moduleFile = __FILE__
-
 declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
@@ -75,7 +73,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		_fault->throw(_
 			errors.moduleLoadingError, _
 			"bstLoadingError", "BST module missing Core dependency", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return false
 	end if
@@ -84,7 +82,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		_fault->throw(_
 			errors.moduleLoadingError, _
 			"bstLoadingError", "BST module missing Iterator dependency", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return false
 	end if
@@ -105,7 +103,7 @@ function construct() as BstObj ptr
 		_fault->throw(_
 			errors.resourceAllocationError, _
 			"BstAllocationError", "Failed to allocate BST instance", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -122,7 +120,7 @@ sub destruct (btreePtr as BstObj ptr)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"BstDestructNullReferenceError", "Attempt to reference a NULL BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -136,7 +134,7 @@ sub destruct (btreePtr as BstObj ptr)
 		_fault->throw(_
 			errors.releaseResourceError, _
 			"releaseBstError", "Failed to correctly release all resources from BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -151,7 +149,7 @@ function insert (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"BstInsertNullReferenceError", "Attempt to reference a NULL BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit function
 	end if
@@ -160,7 +158,7 @@ function insert (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"BstInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit function
 	end if
@@ -197,7 +195,7 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"BstSearchNullReferenceError", "Attempt to reference a NULL BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit function
 	end if
@@ -206,7 +204,7 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"BstSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit function
 	end if
@@ -231,7 +229,7 @@ function getLength (btreePtr as BstObj ptr) as integer
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"BstGetLengthNullReferenceError", "Attempt to reference a NULL BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -246,7 +244,7 @@ function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"BstGetIteratorNullReferenceError", "Attempt to reference a NULL BST", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if

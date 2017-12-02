@@ -28,7 +28,6 @@ end type
 
 static shared as zstring*26 uncaughtError = "UncaughtError"
 static shared as zstring*24 internalSystemError = "InternalSystemError"
-static shared as zstring*256 moduleFile = __FILE__
 
 dim shared as State errState
 
@@ -131,10 +130,8 @@ function registerType (byref errName as zstring) as integer
 	else
 		throw(_
 			errState.errs.internalSystemError, _
-			internalSystemError, _
-			errState.typeLimitErrorMsg, _
-			moduleFile, _
-			__LINE__ _
+			internalSystemError, errState.typeLimitErrorMsg, _
+			__FILE__, __LINE__ _
 		)
 	end if
 

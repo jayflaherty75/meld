@@ -14,7 +14,6 @@ declare function test2 () as integer
 declare function test3 () as integer
 declare function test4 () as integer
 declare function test5 () as integer
-
 declare function test6 () as integer
 
 dim shared as RESCONTAINER_TEST_DATATYPE testData(1024)

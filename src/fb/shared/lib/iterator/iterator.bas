@@ -21,8 +21,6 @@ dim shared _fault as Fault.Interface ptr
 
 dim shared as ErrorCodes errors
 
-static shared as zstring*256 moduleFile = __FILE__
-
 declare function _defaultHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 function load (corePtr as Core.Interface ptr) as integer
@@ -61,7 +59,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		_fault->throw(_
 			errors.moduleLoadingError, _
 			"iteratorLoadingError", "Iterator module missing Core dependency", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return false
 	end if
@@ -79,7 +77,7 @@ function construct(dataSet as any ptr = NULL, length as integer = -1) as Iterato
 		_fault->throw(_
 			errors.resourceAllocationError, _
 			"IteratorAllocationError", "Failed to allocate Iterator instance", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -102,7 +100,7 @@ sub destruct (iter as IteratorObj ptr)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"IteratorDestructNullReferenceError", "Attempt to reference a NULL Iterator", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -115,7 +113,7 @@ sub setHandler (iter as IteratorObj ptr, cb as IteratorHandler)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"IteratorSetHandlerNullReferenceError", "Attempt to reference a NULL Iterator", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -124,7 +122,7 @@ sub setHandler (iter as IteratorObj ptr, cb as IteratorHandler)
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"IteratorSetHandlerInvalidArgumentError", "Invalid 2nd Argument: cb must be a function", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -137,7 +135,7 @@ sub setData (iter as IteratorObj ptr, dataSet as any ptr, length as integer = -1
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"IteratorSetDataNullReferenceError", "Attempt to reference a NULL Iterator", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -153,7 +151,7 @@ function getNext (iter as IteratorObj ptr, target as any ptr) as integer
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"IteratorGetNextNullReferenceError", "Attempt to reference a NULL Iterator", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -162,7 +160,7 @@ function getNext (iter as IteratorObj ptr, target as any ptr) as integer
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"IteratorGetNextInvalidArgumentError", "Invalid 2nd Argument: target must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -177,7 +175,7 @@ sub reset (iter as IteratorObj ptr)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"IteratorResetNullReferenceError", "Attempt to reference a NULL Iterator", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if

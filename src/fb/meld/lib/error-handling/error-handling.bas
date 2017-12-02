@@ -29,8 +29,6 @@ type StateType
 	errs as ErrorCodes
 end type
 
-static shared as zstring*256 moduleFile = __FILE__
-
 dim shared as StateType state
 
 declare sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring, handler as Fault.handler)
@@ -86,7 +84,7 @@ sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, err
 	dim as integer errCode = _fault->registerType(errName)
 
 	if not _fault->assignHandler(errCode, handler) then
-		_fault->throw(0, errName, "Failed to assign " & errName & " handler", moduleFile, __LINE__)
+		_fault->throw(0, errName, "Failed to assign " & errName & " handler", __FILE__, __LINE__)
 	end if
 
 	*errCodePtr = errCode
