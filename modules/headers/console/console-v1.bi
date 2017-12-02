@@ -7,7 +7,7 @@ namespace Console
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
-	logMessage as sub (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+	logMessage as sub (byref message as string)
 	logWarning as sub (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 	logError as sub (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 	logSuccess as sub (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)

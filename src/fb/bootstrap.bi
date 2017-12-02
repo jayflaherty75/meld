@@ -1,7 +1,7 @@
 
-#include once "../../modules/headers/core/core-v1.bi"
 #include once "../../modules/headers/constants/constants-v1.bi"
-#include once "meld/lib/core.bi"
+#include once "../../modules/headers/core/core-v1.bi"
+#include once "meld/lib/core/core.bi"
 #include once "meld/lib/fault/fault.bi"
 #include once "shared/lib/bst/bst.bi"
 #include once "shared/lib/console/console.bi"
@@ -27,6 +27,8 @@ end type
 
 dim shared as Dependencies deps
 
+static shared as zstring*256 moduleFile = __FILE__
+
 declare function run () as Bootstrap.Dependencies ptr
 
 declare function _register (moduleName as zstring, interface as any ptr) as integer
@@ -38,6 +40,7 @@ function run () as Bootstrap.Dependencies ptr
 	corePtr.register = @_register
 	corePtr.require = @_require
 
+	Core.load(@corePtr)
 	Console.load(@corePtr)
 	Fault.load(@corePtr)
 	Iterator.load(@corePtr)
@@ -56,6 +59,8 @@ function _register (moduleName as zstring, interface as any ptr) as integer
 			deps.bst = interface
 		case "console":
 			deps.console = interface
+		case "core":
+			deps.core = interface
 		case "fault":
 			deps.fault = interface
 		case "identity":
@@ -81,6 +86,8 @@ function _require (moduleName as zstring) as any ptr
 			interface = deps.bst
 		case "console":
 			interface = deps.console
+		case "core":
+			interface = deps.core
 		case "fault":
 			interface = deps.fault
 		case "identity":

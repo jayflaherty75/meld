@@ -4,7 +4,7 @@
 
 namespace Core
 
-declare function load (config as zstring ptr) as integer
+declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload ()
 declare function initialize (config as zstring ptr) as integer
 declare sub uninitialize()

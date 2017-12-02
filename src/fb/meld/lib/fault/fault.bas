@@ -54,19 +54,17 @@ function load (corePtr as Core.Interface ptr) as integer
 	errState.methods.getCode = @getCode
 	errState.methods.throw = @throw
 
-	if not corePtr->register("error", @errState.methods) then
+	if not corePtr->register("fault", @errState.methods) then
 		return false
 	end if
 
-	errState.deps.core = corePtr
+	errState.deps.core = corePtr->require("core")
 	errState.deps.console = corePtr->require("console")
 
 	if not _initialize() then
 		print ("load: Failed to initialize")
 		return false
 	end if
-
-	'throw(internalSystemError, errState.errs.internalSystemError, errState.typeLimitErrorMsg, moduleFile, __LINE__)
 
 	return true
 end function
@@ -232,10 +230,7 @@ end sub
  ' @private
  '/
 sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-print ("_handleError")
 	dim as Dependencies ptr deps = @errState.deps
-print(deps->console)
-print(deps->core)
 
 	deps->console->logError(errName, message, filename, lineNum)
 	deps->core->shutdown(1)

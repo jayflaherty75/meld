@@ -4,7 +4,7 @@
 namespace Core
 
 type Interface
-	load as function (config as zstring ptr) as integer
+	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
 	initialize as function (config as zstring ptr) as integer
 	uninitialize as sub()

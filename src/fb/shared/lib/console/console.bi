@@ -5,7 +5,7 @@ namespace Console
 
 declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
-declare sub logMessage (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+declare sub logMessage (byref message as string)
 declare sub logWarning (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 declare sub logError (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 declare sub logSuccess (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)

@@ -39,7 +39,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		return false
 	end if
 
-	state.deps.core = corePtr
+	state.deps.core = corePtr->require("core")
 	state.deps.pagedArray = corePtr->require("paged-array")
 
 	return true

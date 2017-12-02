@@ -29,13 +29,16 @@ function load (corePtr as Core.Interface ptr) as integer
 
 	state.methods.load = @load
 	state.methods.unload = @unload
-	state.methods.logmessage = @logmessage
+	state.methods.logMessage = @logMessage
+	state.methods.logWarning = @logWarning
+	state.methods.logError = @logError
+	state.methods.logSuccess = @logSuccess
 
 	if not corePtr->register("console", @state.methods) then
 		return false
 	end if
 
-	state.deps.core = corePtr
+	state.deps.core = corePtr->require("core")
 
 	return true
 end function
@@ -46,8 +49,8 @@ end function
 sub unload()
 end sub
 
-sub logMessage (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
-	print (_format(id, message, source, lineNum))
+sub logMessage (byref message as string)
+	print (Time () & message)
 end sub
 
 sub logWarning (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
@@ -76,8 +79,9 @@ end sub
 
 function _format (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer) as string
 	dim as Core.Interface ptr corePtr = state.deps.core
+	dim as zstring*3 newline = *corePtr->getNewline()
 
-	return Time () & " - " & id & ": " & source & " (" & lineNum & ") " & corePtr->getNewline & message
+	return Time () & " - " & source & "(" & lineNum & ") " & newline & id & ": " & message
 end function
 
 end namespace

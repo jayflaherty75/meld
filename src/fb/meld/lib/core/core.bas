@@ -11,8 +11,8 @@ type StateType
     isRunning as integer
 	status as integer
     mutexId as any ptr
-	systemNewLine as zstring*3
-	systemDirChar as zstring*3
+	systemNewLine as zstring*8
+	systemDirChar as zstring*8
 	methods as Interface
 	deps as Dependencies
 end type
@@ -24,12 +24,12 @@ dim shared as StateType state
  ' @param {zstring ptr} config - First argument from command line
  ' @returns {integer}
  '/
-function load (config as zstring ptr) as integer
+function load (corePtr as Core.Interface ptr) as integer
 	#IFDEF __FB_WIN32__
-		state.systemNewLine = "\r\n"
-		state.systemDirChar = "\\"
+		state.systemNewLine = !"\r\n"
+		state.systemDirChar = !"\\"
 	#ELSE
-		state.systemNewLine = "\n"
+		state.systemNewLine = !"\n"
 		state.systemDirChar = "/"
 	#ENDIF
 
@@ -48,6 +48,10 @@ function load (config as zstring ptr) as integer
     if state.mutexId = NULL then
         return false
     end if
+
+	if not corePtr->register("core", @state.methods) then
+		return false
+	end if
 
     state.isRunning = true
 	state.status = 0
