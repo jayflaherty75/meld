@@ -59,7 +59,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	_console = corePtr->require("console")
 	_fault = corePtr->require("fault")
 
-	state.errs.uncaughtError = _fault->registerType("UncaughtError")
+	state.errs.uncaughtError = _fault->getCode("UncaughtError")
 	state.errs.internalSystemError = _fault->getCode("InternalSystemError")
 
 	_assignHandler(_fault, @state.errs.fatalOperationalError, "FatalOperationalError", _fault->defaultFatalHandler)

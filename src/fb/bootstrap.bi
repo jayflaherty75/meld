@@ -29,8 +29,6 @@ end type
 
 dim shared as Dependencies deps
 
-static shared as zstring*256 moduleFile = __FILE__
-
 declare function run () as Bootstrap.Dependencies ptr
 
 declare function _register (moduleName as zstring, interface as any ptr) as integer

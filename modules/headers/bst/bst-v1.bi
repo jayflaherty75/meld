@@ -1,6 +1,7 @@
 
 #include once "../constants/constants-v1.bi"
 #include once "../core/core-v1.bi"
+#include once "../fault/fault-v1.bi"
 #include once "../iterator/iterator-v1.bi"
 
 namespace Bst

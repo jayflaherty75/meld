@@ -3,16 +3,27 @@
 
 namespace Bst
 
-type Dependencies
-	core as Core.Interface ptr
-end type
-
 type StateType
-	deps as Dependencies
 	methods as Interface
 end type
 
+type ErrorsType
+	resourceAllocationError as integer
+	releaseResourceError as integer
+	nullReferenceError as integer
+	invalidArgumentError as integer
+	moduleLoadingError as integer
+end type
+
+dim shared _core as Core.Interface ptr
+dim shared _fault as Fault.Interface ptr
+dim shared _iterator as Iterator.Interface ptr
+
 dim shared as StateType state
+
+dim shared as ErrorsType errors
+
+static shared as zstring*256 moduleFile = __FILE__
 
 declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
@@ -27,7 +38,6 @@ declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) 
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		' TODO: Throw error
 		print ("Bst.load: Invalid Core interface pointer")
 		return false
 	end if
@@ -46,7 +56,38 @@ function load (corePtr as Core.Interface ptr) as integer
 		return false
 	end if
 
-	state.deps.core = corePtr->require("core")
+	_core = corePtr->require("core")
+	_fault = corePtr->require("fault")
+	_iterator = corePtr->require("iterator")
+
+	if _fault = NULL then
+		print ("**** Bst.load: Failed to Fault dependency")
+		return false
+	end if
+
+	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+	errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
+	errors.nullReferenceError = _fault->getCode("NullReferenceError")
+	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
+
+	if _core = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"bstLoadingError", "BST module missing Core dependency", _
+			moduleFile, __LINE__ _
+		)
+		return false
+	end if
+
+	if _iterator = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"bstLoadingError", "BST module missing Iterator dependency", _
+			moduleFile, __LINE__ _
+		)
+		return false
+	end if
 
 	return true
 end function
@@ -60,35 +101,46 @@ end sub
 function construct() as BstObj ptr
 	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))
 
-	if btreePtr <> NULL then
-		btreePtr->root = NULL
-		btreePtr->length = 0
-		btreePtr->compare = @defaultCompare
-	else
-		' TODO: throw error
-		print("Bst.construct: Failed to allocate BST object")
+	if btreePtr = NULL then
+		_fault->throw(_
+			errors.resourceAllocationError, _
+			"BstAllocationError", "Failed to allocate BST instance", _
+			moduleFile, __LINE__ _
+		)
+
+		return NULL
 	end if
+
+	btreePtr->root = NULL
+	btreePtr->length = 0
+	btreePtr->compare = @defaultCompare
 
 	return btreePtr
 end function
 
 sub destruct (btreePtr as BstObj ptr)
-	if btreePtr <> NULL then
-		if btreePtr->root <> NULL then
-			btreePtr->root->parent = NULL
-			_deleteNode(btreePtr, btreePtr->root)
-		end if
-
-		if btreePtr->length <> 0 then
-			' TODO: throw error
-			print("Bst.destruct: Failed to correctly release all resources")
-		end if
-
-		deallocate(btreePtr)
-	else
-		' TODO: throw error
-		print("Bst.destruct: Invalid binary tree")
+	if btreePtr = NULL then
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstDestructNullReferenceError", "Attempt to reference a NULL BST", _
+			moduleFile, __LINE__ _
+		)
 	end if
+
+	if btreePtr->root <> NULL then
+		btreePtr->root->parent = NULL
+		_deleteNode(btreePtr, btreePtr->root)
+	end if
+
+	if btreePtr->length <> 0 then
+		_fault->throw(_
+			errors.releaseResourceError, _
+			"releaseBstError", "Failed to correctly release all resources from BST", _
+			moduleFile, __LINE__ _
+		)
+	end if
+
+	deallocate(btreePtr)
 end sub
 
 function insert (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
@@ -96,14 +148,20 @@ function insert (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 	dim as Bst.Node ptr searchPtr = NULL
 
 	if btreePtr = NULL then
-		' TODO: throw error
-		print("Bst.insert: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstInsertNullReferenceError", "Attempt to reference a NULL BST", _
+			moduleFile, __LINE__ _
+		)
 		exit function
 	end if
 
 	if element = NULL then
-		' TODO: throw error
-		print("Bst.insert: Invalid element")
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"BstInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
+			moduleFile, __LINE__ _
+		)
 		exit function
 	end if
 
@@ -136,14 +194,20 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 	dim as Bst.Node ptr searchPtr = NULL
 
 	if btreePtr = NULL then
-		' TODO: throw error
-		print("Bst.insert: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstSearchNullReferenceError", "Attempt to reference a NULL BST", _
+			moduleFile, __LINE__ _
+		)
 		exit function
 	end if
 
 	if element = NULL then
-		' TODO: throw error
-		print("Bst.insert: Invalid element")
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"BstSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
+			moduleFile, __LINE__ _
+		)
 		exit function
 	end if
 
@@ -163,21 +227,33 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 end function
 
 function getLength (btreePtr as BstObj ptr) as integer
+	if btreePtr = NULL then
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstGetLengthNullReferenceError", "Attempt to reference a NULL BST", _
+			moduleFile, __LINE__ _
+		)
+		return NULL
+	end if
+
 	return btreePtr->length
 end function
 
 function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
-	dim as IteratorObj ptr iter = Iterator.construct()
+	dim as IteratorObj ptr iter = _iterator->construct()
 
 	if btreePtr = NULL then
-		' TODO: throw error
-		print("Bst.getIterator: Invalid binary tree")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstGetIteratorNullReferenceError", "Attempt to reference a NULL BST", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
 	iter->handler = @_iterationHandler
 
-	Iterator.setData(iter, btreePtr)
+	_iterator->setData(iter, btreePtr)
 
 	return iter
 end function

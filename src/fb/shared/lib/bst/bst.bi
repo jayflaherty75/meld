@@ -1,5 +1,4 @@
 
-#include once "../iterator/iterator.bi"
 #include once "../../../../../modules/headers/bst/bst-v1.bi"
 
 namespace Bst

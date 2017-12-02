@@ -32,7 +32,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	state.methods.getNext = @getNext
 	state.methods.reset = @reset
 
-	if not corePtr->register("interface", @state.methods) then
+	if not corePtr->register("iterator", @state.methods) then
 		return false
 	end if
 
