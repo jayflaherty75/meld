@@ -35,8 +35,6 @@ dim shared as State errState
 declare function _initialize () as integer
 declare sub _uninitialize()
 declare sub _clearAll()
-declare sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-declare sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 
 /''
  ' @param {Core.Interface ptr} corePtr
@@ -53,6 +51,9 @@ function load (corePtr as Core.Interface ptr) as integer
 	errState.methods.assignHandler = @assignHandler
 	errState.methods.getCode = @getCode
 	errState.methods.throw = @throw
+	errState.methods.defaultFatalHandler = @defaultFatalHandler
+	errState.methods.defaultErrorHandler = @defaultErrorHandler
+	errState.methods.defaultWarningHandler = @defaultWarningHandler
 
 	if not corePtr->register("fault", @errState.methods) then
 		return false
@@ -83,12 +84,12 @@ function _initialize () as integer
 	errState.errorCount = 0
 
 	errState.errs.uncaughtError = registerType(uncaughtError)
-	if not assignHandler(errState.errs.uncaughtError, @_handleError) then
+	if not assignHandler(errState.errs.uncaughtError, @defaultErrorHandler) then
 		print ("Fault.initialize: Failed to assign handler for uncaught error")
 	end if
 
 	errState.errs.internalSystemError = registerType(internalSystemError)
-	if not assignHandler(errState.errs.internalSystemError, @_handleError) then
+	if not assignHandler(errState.errs.internalSystemError, @defaultErrorHandler) then
 		print ("Fault.initialize: Failed to assign handler for internal system error")
 	end if
 
@@ -129,8 +130,8 @@ function registerType (byref errName as zstring) as integer
 		errPtr->code = errCode
 	else
 		throw(_
-			internalSystemError, _
 			errState.errs.internalSystemError, _
+			internalSystemError, _
 			errState.typeLimitErrorMsg, _
 			moduleFile, _
 			__LINE__ _
@@ -185,16 +186,16 @@ end function
 /''
  ' Pass an error to be handled.  Make sure you do trust exercises with whoever
  ' writes your error handlers.
- ' @param {zstring} errName
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
+ ' @param {zstring} errName
  ' @param {string} message - Contains full error message
  ' @param {zstring} filename - Pointer to a string containing the current
  '	filename.  Can be set to a constant containing __FILE__.
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw (byref errName as zstring, errCode as integer, byref message as string, byref filename as zstring, lineNum as integer)
+sub throw (errCode as integer, byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
@@ -226,10 +227,10 @@ sub _clearAll()
 end sub
 
 /''
- ' Default error handler for uncaught errors.
+ ' Default error handler for fatal errors.
  ' @private
  '/
-sub _handleError (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub defaultFatalHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	dim as Dependencies ptr deps = @errState.deps
 
 	deps->console->logError(errName, message, filename, lineNum)
@@ -237,10 +238,20 @@ sub _handleError (byref errName as zstring, byref message as string, byref filen
 end sub
 
 /''
+ ' Default error handler for non-fatal errors.
+ ' @private
+ '/
+sub defaultErrorHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	dim as Dependencies ptr deps = @errState.deps
+
+	deps->console->logError(errName, message, filename, lineNum)
+end sub
+
+/''
  ' Handler for logging warnings.
  ' @private
  '/
-sub _handleWarning (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub defaultWarningHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	dim as Dependencies ptr deps = @errState.deps
 
 	deps->console->logWarning(errName, message, filename, lineNum)

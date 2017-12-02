@@ -1,5 +1,5 @@
 
-#include once "../../../../../modules/headers/core/core-v1.bi"
+#include once "../../../../../modules/headers/error-handling/error-handling-v1.bi"
 
 namespace ErrorHandling
 

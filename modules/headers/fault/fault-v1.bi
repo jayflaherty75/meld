@@ -21,12 +21,15 @@ type Interface
 	assignHandler as function (errCode as integer, handler as Fault.Handler) as integer
 	getCode as function (byref errName as zstring) as integer
 	throw as sub (_
-		byref errName as zstring, _
 		errCode as integer, _
+		byref errName as zstring, _
 		byref message as string, _
 		byref filename as zstring, _
 		linenum as integer _	
 	)
+	defaultFatalHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	defaultErrorHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	defaultWarningHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 end type
 
 end namespace

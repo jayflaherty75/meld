@@ -2,6 +2,7 @@
 #include once "../../modules/headers/constants/constants-v1.bi"
 #include once "../../modules/headers/core/core-v1.bi"
 #include once "meld/lib/core/core.bi"
+#include once "meld/lib/error-handling/error-handling.bi"
 #include once "meld/lib/fault/fault.bi"
 #include once "shared/lib/bst/bst.bi"
 #include once "shared/lib/console/console.bi"
@@ -17,6 +18,7 @@ type Dependencies
 	core as Core.Interface ptr
 	bst as Bst.Interface ptr
 	console as Console.Interface ptr
+	errorHandling as ErrorHandling.Interface ptr
 	fault as Fault.Interface ptr
 	identity as Identity.Interface ptr
 	iterator as Iterator.Interface ptr
@@ -43,6 +45,7 @@ function run () as Bootstrap.Dependencies ptr
 	Core.load(@corePtr)
 	Console.load(@corePtr)
 	Fault.load(@corePtr)
+	ErrorHandling.load(@corePtr)
 	Iterator.load(@corePtr)
 	List.load(@corePtr)
 	Bst.load(@corePtr)
@@ -63,6 +66,8 @@ function _register (moduleName as zstring, interface as any ptr) as integer
 			deps.core = interface
 		case "fault":
 			deps.fault = interface
+		case "error-handling":
+			deps.errorHandling = interface
 		case "identity":
 			deps.identity = interface
 		case "iterator":
@@ -90,6 +95,8 @@ function _require (moduleName as zstring) as any ptr
 			interface = deps.core
 		case "fault":
 			interface = deps.fault
+		case "error-handling":
+			interface = deps.errorHandling
 		case "identity":
 			interface = deps.identity
 		case "iterator":
