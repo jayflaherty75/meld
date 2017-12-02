@@ -165,17 +165,20 @@ end function
 
 /''
  ' Returns the error code for the registered error name
+ ' @param {zstring} errName
+ ' @returns {integer} - Error code or -1 if none found
  '/
 function getCode (byref errName as zstring) as integer
-	dim as integer result = 0
+	dim as integer result = -1
 	dim as integer index = 0
 
 	mutexlock (errState.mutexId)
 
-	while (result <> 0 ANDALSO index < errState.errorCount)
+	while (result = -1 ANDALSO index < errState.errorCount)
 		if errState.errors(index).name = errName then
 			result = index
 		end if
+		index += 1
 	wend
 
 	mutexunlock (errState.mutexId)

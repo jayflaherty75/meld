@@ -3,16 +3,31 @@
 
 namespace PagedArray
 
-type Dependencies
-	core as Core.Interface ptr
+type ErrorCodes
+	resourceAllocationError as integer
+	invalidArgumentError as integer
+	nullReferenceError as integer
+	outOfBoundsError as integer
+	resourceLimitSurpassed as integer
+	moduleLoadingError as integer
+
+	uncaughtError as integer
+	internalSystemError as integer
+	fatalOperationalError as integer
+	releaseResourceError as integer
+	resourceMissingError as integer
 end type
 
 type StateType
-	deps as Dependencies
 	methods as Interface
 end type
 
+dim shared _core as Core.Interface ptr
+dim shared _fault as Fault.Interface ptr
+
 dim shared as StateType state
+
+dim shared as ErrorCodes errors
 
 /''
  ' Loading lifecycle function called by Meld framework.
@@ -21,8 +36,7 @@ dim shared as StateType state
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.load: Invalid corePtr interface pointer")
+		print ("**** PagedArray.load: Invalid corePtr interface pointer")
 		return false
 	end if
 
@@ -39,7 +53,29 @@ function load (corePtr as Core.Interface ptr) as integer
 		return false
 	end if
 
-	state.deps.core = corePtr->require("core")
+	_core = corePtr->require("core")
+	_fault = corePtr->require("fault")
+
+	if _fault = NULL then
+		print ("**** PagedArray.load: Missing Fault dependency")
+		return false
+	end if
+
+	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+	errors.nullReferenceError = _fault->getCode("NullReferenceError")
+	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+	errors.outOfBoundsError = _fault->getCode("OutOfBoundsError")
+	errors.resourceLimitSurpassed = _fault->getCode("ResourceLimitSurpassed")
+	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
+
+	if _core = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"pagedArrayLoadingError", "PagedArray module missing Core dependency", _
+			__FILE__, __LINE__ _
+		)
+		return false
+	end if
 
 	return true
 end function
@@ -62,22 +98,31 @@ function construct (byref id as zstring, size as integer, pageLength as integer,
 	dim as PagedArrayObj ptr arrayPtr
 
 	if size <= 0 then
-		' TODO: Throw error
-		print ("PagedArray.construct: Element size must be greater than zero: " & id)
+		_fault->throw( _
+			errors.invalidArgumentError, _
+			"PagedArrayInvalidArgumentError", "Invalid 2nd Argument: element size must be greater than zero: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
 	if pageLength <= 0 then
-		' TODO: Throw error
-		print ("PagedArray.construct: Page length must be greater than zero: " & id)
+		_fault->throw( _
+			errors.invalidArgumentError, _
+			"PagedArrayInvalidArgumentError", "Invalid 3rd Argument: page length must be greater than zero: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
 	arrayPtr = allocate(sizeof(PagedArrayObj))
 
 	if arrayPtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate PagedArray instance: " & id)
+		_fault->throw( _
+			errors.resourceAllocationError, _
+			"PagedArrayAllocationError", "Failed to allocate PagedArray instance: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -91,16 +136,24 @@ function construct (byref id as zstring, size as integer, pageLength as integer,
 	arrayPtr->currentPage = 0
 
 	if not _reallocatePageIndex(arrayPtr) then
-		PagedArray.destruct(arrayPtr)
-		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate initial page index: " & id)
+		destruct(arrayPtr)
+
+		_fault->throw( _
+			errors.resourceAllocationError, _
+			"PagedArrayPageAllocationError", "Failed to allocate page index of PagedArray: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
 	if not _createPage(arrayPtr) then
-		PagedArray.destruct(arrayPtr)
-		' TODO: Throw error
-		print ("PagedArray.construct: Failed to allocate initial page: " & id)
+		destruct(arrayPtr)
+
+		_fault->throw( _
+			errors.resourceAllocationError, _
+			"PagedArrayInitPageAllocationError", "Failed to allocate initial page for PagedArray: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -115,8 +168,11 @@ sub destruct (arrayPtr as PagedArrayObj ptr)
 	dim as integer pageIndex
 
 	if arrayPtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.destruct: Invalid PagedArray pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"PagedArrayDestructNullReferenceError", "Attempt to reference a NULL PagedArray", _
+			__FILE__, __LINE__ _
+		)
 		exit sub
 	end if
 
@@ -152,8 +208,11 @@ function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 	dim as integer result
 
 	if arrayPtr = NULL then
-		' TODO: Throw error 
-		print ("PagedArray.createIndex: Invalid PagedArray pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"PagedArrayCreateIndexNullReferenceError", "Attempt to reference a NULL PagedArray", _
+			__FILE__, __LINE__ _
+		)
 		return false
 	end if
 
@@ -162,8 +221,11 @@ function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 
 	if arrayPtr->currentIndex > arrayPtr->currentPageMax then
 		if not _createPage(arrayPtr) then
-			' TODO: Throw warning
-			print ("PagedArray.createIndex: Failed to allocate page index: " & arrayPtr->id)
+			_fault->throw( _
+				errors.resourceAllocationError, _
+				"PagedArrayAllocationError", "Failed to allocate page index for PagedArray: " & arrayPtr->id, _
+				__FILE__, __LINE__ _
+			)
 		end if
 	end if
 
@@ -181,8 +243,11 @@ function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 	dim as uinteger offset
 
 	if arrayPtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.getIndex: Invalid PagedArray pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"PagedArrayGetIndexNullReferenceError", "Attempt to reference a NULL PagedArray", _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -191,8 +256,11 @@ function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 		pagePtr = arrayPtr->pages[0]
 		offset = index
 	elseif index >= arrayPtr->currentIndex then
-		' TODO: Throw warning
-		print ("PagedArray.getIndex: Index (" & index & ") is greater than current array length (" & arrayPtr->currentIndex & "): " & arrayPtr->id)
+		_fault->throw(_
+			errors.outOfBoundsError, _
+			"PagedArrayOutOfBoundsError", "Index (" & index & ") is greater than current array length (" & arrayPtr->currentIndex & "): " & arrayPtr->id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	else
 		pagePtr = arrayPtr->pages[index \ arrayPtr->pageLength]
@@ -214,8 +282,11 @@ function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 	dim as integer index
 
 	if arrayPtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.pop: Invalid PagedArray pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"PagedArrayPopNullReferenceError", "Attempt to reference a NULL PagedArray", _
+			__FILE__, __LINE__ _
+		)
 		return false
 	end if
 
@@ -239,8 +310,11 @@ end function
 
 function isEmpty (arrayPtr as PagedArrayObj ptr) as integer
 	if arrayPtr = NULL then
-		' TODO: Throw error
-		print ("PagedArray.isEmpty: Invalid PagedArray pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"PagedArrayIsEmptyNullReferenceError", "Attempt to reference a NULL PagedArray", _
+			__FILE__, __LINE__ _
+		)
 		return true
 	end if
 
@@ -276,8 +350,11 @@ function _createPage (arrayPtr as PagedArrayObj ptr) as integer
 	end if
 
 	if arrayPtr->currentIndex > arrayPtr->warnLimit then
-		' TODO: Throw warning
-		print ("PagedArray._createPage: PagedArray warning limit has been surpassed: " & arrayPtr->id)
+		_fault->throw( _
+			errors.resourceLimitSurpassed, _
+			"PagedArrayLimitSurpassed", "PagedArray warning limit has been surpassed: " & arrayPtr->id, _
+			__FILE__, __LINE__ _
+		)
 	end if
 
 	return true
@@ -300,8 +377,11 @@ function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 		pageIndexPtr = allocate(sizeof(any ptr) * currentMax)
 
 		if pageIndexPtr = NULL then
-			' TODO: Throw warning
-			print ("PagedArray._reallocatePageIndex: Failed to reallocate page index: " & arrayPtr->id)
+			_fault->throw( _
+				errors.resourceAllocationError, _
+				"PagedArrayIndexReAllocationError", "Failed to reallocate page index for PagedArray: " & arrayPtr->id, _
+				__FILE__, __LINE__ _
+			)
 			return false
 		end if
 

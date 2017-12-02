@@ -23,8 +23,6 @@ dim shared as StateType state
 
 dim shared as ErrorCodes errors
 
-static shared as zstring*256 moduleFile = __FILE__
-
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 function load (corePtr as Core.Interface ptr) as integer
@@ -70,7 +68,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		_fault->throw(_
 			errors.moduleLoadingError, _
 			"listLoadingError", "List module missing Core dependency", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return false
 	end if
@@ -79,7 +77,7 @@ function load (corePtr as Core.Interface ptr) as integer
 		_fault->throw(_
 			errors.moduleLoadingError, _
 			"listLoadingError", "List module missing Iterator dependency", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return false
 	end if
@@ -98,10 +96,10 @@ function construct() as ListObj ptr
 	dim as ListObj ptr listPtr = allocate(sizeof(ListObj))
 
 	if listPtr = NULL then
-		_fault->throw(_
+		_fault->throw( _
 			errors.resourceAllocationError, _
 			"ListAllocationError", "Failed to allocate List instance", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -124,8 +122,9 @@ sub destruct (listPtr as ListObj ptr)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListDestructNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
+		exit sub
 	end if
 
 	nodePtr = getFirst(listPtr)
@@ -140,7 +139,7 @@ sub destruct (listPtr as ListObj ptr)
 		_fault->throw(_
 			errors.releaseResourceError, _
 			"releaseListError", "Failed to correctly release all resources from List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -161,7 +160,7 @@ function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Nod
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListInsertNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -170,7 +169,7 @@ function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Nod
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"ListInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -181,7 +180,7 @@ function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Nod
 		_fault->throw(_
 			errors.resourceAllocationError, _
 			"ListNodeAllocationError", "Failed to allocate List node", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -222,7 +221,7 @@ sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListRemoveNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -231,7 +230,7 @@ sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"ListRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		exit sub
 	end if
@@ -265,7 +264,7 @@ function getFirst (listPtr as ListObj ptr) as List.Node ptr
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListGetFirstNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -283,7 +282,7 @@ function getLast (listPtr as ListObj ptr) as List.Node ptr
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListGetLastNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -302,7 +301,7 @@ function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node pt
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListGetNextNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -319,7 +318,7 @@ function getLength (listPtr as ListObj ptr) as integer
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListGetLengthNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -343,7 +342,7 @@ function search (listPtr as ListObj ptr, element as any ptr, compare as function
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListSearchNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
@@ -352,7 +351,7 @@ function search (listPtr as ListObj ptr, element as any ptr, compare as function
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"ListSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -360,7 +359,7 @@ function search (listPtr as ListObj ptr, element as any ptr, compare as function
 		_fault->throw(_
 			errors.invalidArgumentError, _
 			"ListSearchInvalidArgumentError", "Invalid 3rd Argument: compare must be a function", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 	end if
 
@@ -405,7 +404,7 @@ function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
 		_fault->throw(_
 			errors.nullReferenceError, _
 			"ListGetIteratorNullReferenceError", "Attempt to reference a NULL List", _
-			moduleFile, __LINE__ _
+			__FILE__, __LINE__ _
 		)
 		return NULL
 	end if
