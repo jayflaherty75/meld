@@ -7,7 +7,7 @@ type StateType
 	methods as Interface
 end type
 
-type ErrorsType
+type ErrorCodes
 	resourceAllocationError as integer
 	releaseResourceError as integer
 	nullReferenceError as integer
@@ -21,7 +21,7 @@ dim shared _iterator as Iterator.Interface ptr
 
 dim shared as StateType state
 
-dim shared as ErrorsType errors
+dim shared as ErrorCodes errors
 
 static shared as zstring*256 moduleFile = __FILE__
 
@@ -38,7 +38,7 @@ declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) 
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		print ("Bst.load: Invalid Core interface pointer")
+		print ("**** Bst.load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -61,7 +61,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	_iterator = corePtr->require("iterator")
 
 	if _fault = NULL then
-		print ("**** Bst.load: Failed to Fault dependency")
+		print ("**** Bst.load: Missing Fault dependency")
 		return false
 	end if
 
@@ -107,7 +107,6 @@ function construct() as BstObj ptr
 			"BstAllocationError", "Failed to allocate BST instance", _
 			moduleFile, __LINE__ _
 		)
-
 		return NULL
 	end if
 
@@ -125,6 +124,7 @@ sub destruct (btreePtr as BstObj ptr)
 			"BstDestructNullReferenceError", "Attempt to reference a NULL BST", _
 			moduleFile, __LINE__ _
 		)
+		exit sub
 	end if
 
 	if btreePtr->root <> NULL then
