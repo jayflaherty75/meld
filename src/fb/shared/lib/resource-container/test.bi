@@ -1,4 +1,5 @@
 
+#include once "../../../../../modules/headers/tester/tester-v1.bi"
 #include once "resource-container.bi"
 
 namespace ResourceContainerTest
@@ -6,8 +7,8 @@ namespace ResourceContainerTest
 #define RESCONTAINER_TEST_LENGTH				1024
 #define RESCONTAINER_TEST_DATATYPE				integer
 
-declare function testModule (describe as describeCallback) as integer
-declare function create (it as itCallback) as integer
+declare function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
+declare function create (it as Tester.itCallback) as integer
 declare function test1 () as integer
 declare function test2 () as integer
 declare function test3 () as integer
@@ -19,7 +20,7 @@ declare function test6 () as integer
 dim shared as RESCONTAINER_TEST_DATATYPE testData(1024)
 dim shared as ResourceContainerObj ptr contPtr
 
-function testModule (describe as describeCallback) as integer
+function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
 	dim as integer result = true
 
 	result = result ANDALSO describe ("The ResourceContainer module", @create)
@@ -27,7 +28,7 @@ function testModule (describe as describeCallback) as integer
 	return result
 end function
 
-function create (it as itCallback) as integer
+function create (it as Tester.itCallback) as integer
 	dim as integer i
 	dim as integer result = true
 

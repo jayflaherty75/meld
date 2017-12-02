@@ -3,23 +3,33 @@
 
 namespace List
 
-type Dependencies
-	core as Core.Interface ptr
-end type
-
 type StateType
-	deps as Dependencies
 	methods as Interface
 end type
 
+type ErrorCodes
+	resourceAllocationError as integer
+	nullReferenceError as integer
+	releaseResourceError as integer
+	invalidArgumentError as integer
+	moduleLoadingError as integer
+end type
+
+dim shared _core as Core.Interface ptr
+dim shared _fault as Fault.Interface ptr
+dim shared _iterator as Iterator.Interface ptr
+
 dim shared as StateType state
+
+dim shared as ErrorCodes errors
+
+static shared as zstring*256 moduleFile = __FILE__
 
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		' TODO: Throw error
-		print ("List.load: Invalid corePtr interface pointer")
+		print ("*** List.load: Invalid corePtr interface pointer")
 		return false
 	end if
 
@@ -41,7 +51,38 @@ function load (corePtr as Core.Interface ptr) as integer
 		return false
 	end if
 
-	state.deps.core = corePtr->require("core")
+	_core = corePtr->require("core")
+	_fault = corePtr->require("fault")
+	_iterator = corePtr->require("iterator")
+
+	if _fault = NULL then
+		print ("**** List.load: Missing Fault dependency")
+		return false
+	end if
+
+	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+	errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
+	errors.nullReferenceError = _fault->getCode("NullReferenceError")
+	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
+
+	if _core = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"listLoadingError", "List module missing Core dependency", _
+			moduleFile, __LINE__ _
+		)
+		return false
+	end if
+
+	if _iterator = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"listLoadingError", "List module missing Iterator dependency", _
+			moduleFile, __LINE__ _
+		)
+		return false
+	end if
 
 	return true
 end function
@@ -56,14 +97,17 @@ end sub
 function construct() as ListObj ptr
 	dim as ListObj ptr listPtr = allocate(sizeof(ListObj))
 
-	if listPtr <> NULL then
-		listPtr->first = NULL
-		listPtr->last = NULL
-		listPtr->length = 0
-	else
-		' TODO: throw error
-		print ("List.construct: Failed to allocate list object")
+	if listPtr = NULL then
+		_fault->throw(_
+			errors.resourceAllocationError, _
+			"ListAllocationError", "Failed to allocate List instance", _
+			moduleFile, __LINE__ _
+		)
 	end if
+
+	listPtr->first = NULL
+	listPtr->last = NULL
+	listPtr->length = 0
 
 	return listPtr
 end function
@@ -76,25 +120,31 @@ sub destruct (listPtr as ListObj ptr)
 	dim as List.Node ptr nodePtr
 	dim as List.Node ptr nextPtr
 
-	if listPtr <> NULL then
-		nodePtr = getFirst(listPtr)
-
-		while (nodePtr <> NULL)
-			nextPtr = getNext(listPtr, nodePtr)
-			remove (listPtr, nodePtr)
-			nodePtr = nextPtr
-		wend
-
-		if listPtr->length <> 0 then
-			' TODO: throw error
-			print("List.destruct: Failed to correctly release all resources")
-		end if
-
-		deallocate (listPtr)
-	else
-		' TODO: throw error
-		print("List.destruct: Invalid list")
+	if listPtr = NULL then
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListDestructNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 	end if
+
+	nodePtr = getFirst(listPtr)
+
+	while (nodePtr <> NULL)
+		nextPtr = getNext(listPtr, nodePtr)
+		remove (listPtr, nodePtr)
+		nodePtr = nextPtr
+	wend
+
+	if listPtr->length <> 0 then
+		_fault->throw(_
+			errors.releaseResourceError, _
+			"releaseListError", "Failed to correctly release all resources from List", _
+			moduleFile, __LINE__ _
+		)
+	end if
+
+	deallocate (listPtr)
 end sub
 
 /''
@@ -108,43 +158,53 @@ function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Nod
 	dim as List.Node ptr nodePtr = NULL
 
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.insert: Invalid list")
-		exit function
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListInsertNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
+		return NULL
 	end if
 
 	if element = NULL then
-		' TODO: throw error
-		print("List.insert: Invalid element")
-		exit function
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ListInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
+			moduleFile, __LINE__ _
+		)
+		return NULL
 	end if
 
 	nodePtr = allocate(sizeof(List.Node))
 
-	if nodePtr <> NULL then
-		nodePtr->element = element
+	if nodePtr = NULL then
+		_fault->throw(_
+			errors.resourceAllocationError, _
+			"ListNodeAllocationError", "Failed to allocate List node", _
+			moduleFile, __LINE__ _
+		)
+		return NULL
+	end if
 
-		if prevPtr = NULL then
-			nodePtr->prevPtr = NULL
-			nodePtr->nextPtr = listPtr->first
-			listPtr->first = nodePtr
+	nodePtr->element = element
+
+	if prevPtr = NULL then
+		nodePtr->prevPtr = NULL
+		nodePtr->nextPtr = listPtr->first
+		listPtr->first = nodePtr
+	else
+		if prevPtr->nextPtr = NULL then
+			listPtr->last = nodePtr
 		else
-			if prevPtr->nextPtr = NULL then
-				listPtr->last = nodePtr
-			else
-				prevPtr->nextPtr->prevPtr = nodePtr
-			end if
-
-			nodePtr->prevPtr = prevPtr
-			nodePtr->nextPtr = prevPtr->nextPtr
-			prevPtr->nextPtr = nodePtr
+			prevPtr->nextPtr->prevPtr = nodePtr
 		end if
 
-		listPtr->length += 1
-	else
-		' TODO: throw error
-		print("List.insert: Failed to allocate node")
+		nodePtr->prevPtr = prevPtr
+		nodePtr->nextPtr = prevPtr->nextPtr
+		prevPtr->nextPtr = nodePtr
 	end if
+
+	listPtr->length += 1
 
 	return nodePtr
 end function
@@ -159,14 +219,20 @@ sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 	dim as List.Node ptr prevPtr
 
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.remove: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListRemoveNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		exit sub
 	end if
 
 	if node = NULL then
-		' TODO: throw error
-		print("List.remove: Invalid node")
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ListRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL", _
+			moduleFile, __LINE__ _
+		)
 		exit sub
 	end if
 
@@ -196,8 +262,11 @@ end sub
  '/
 function getFirst (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.getFirst: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListGetFirstNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -211,8 +280,11 @@ end function
  '/
 function getLast (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.getLast: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListGetLastNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -227,8 +299,11 @@ end function
  '/
 function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node ptr
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.getNext: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListGetNextNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -241,8 +316,11 @@ end function
 
 function getLength (listPtr as ListObj ptr) as integer
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.getNext: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListGetLengthNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -262,9 +340,28 @@ function search (listPtr as ListObj ptr, element as any ptr, compare as function
 	dim as List.Node ptr result = NULL
 
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.search: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListSearchNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
+	end if
+
+	if element = NULL then
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ListSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
+			moduleFile, __LINE__ _
+		)
+	end if
+
+	if compare = NULL then
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ListSearchInvalidArgumentError", "Invalid 3rd Argument: compare must be a function", _
+			moduleFile, __LINE__ _
+		)
 	end if
 
 	nodePtr = getFirst(listPtr)
@@ -302,17 +399,20 @@ end function
  ' @returns {IteratorObj ptr}
  '/
 function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
-	dim as IteratorObj ptr iter = Iterator.construct()
+	dim as IteratorObj ptr iter = _iterator->construct()
 
 	if listPtr = NULL then
-		' TODO: throw error
-		print("List.search: Invalid list")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ListGetIteratorNullReferenceError", "Attempt to reference a NULL List", _
+			moduleFile, __LINE__ _
+		)
 		return NULL
 	end if
 
 	iter->handler = @_iterationHandler
 
-	Iterator.setData(iter, listPtr)
+	_iterator->setData(iter, listPtr)
 
 	return iter
 end function

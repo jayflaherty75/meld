@@ -1,6 +1,5 @@
 
 #include once "../../../../../modules/headers/list/list-v1.bi"
-#include once "../iterator/iterator.bi"
 
 namespace List
 

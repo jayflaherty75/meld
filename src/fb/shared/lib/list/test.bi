@@ -1,12 +1,13 @@
 
+#include once "../../../../../modules/headers/tester/tester-v1.bi"
 #include once "list.bi"
 
 ' TODO: Test errors are thrown; requires interfaces/modules
 
 namespace ListTest
 
-declare function testModule (describe as describeCallback) as integer
-declare function create (it as itCallback) as integer
+declare function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
+declare function create (it as Tester.itCallback) as integer
 declare function test1 () as integer
 declare function test2 () as integer
 declare function test3 () as integer
@@ -28,20 +29,26 @@ declare function test17 () as integer
 declare function test18 () as integer
 declare function test19 () as integer
 
+dim shared _core as Core.Interface ptr
+dim shared _iterator as Iterator.Interface ptr
+
 dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
 dim shared as integer testResult(5-1) = { 3, 5, 6 }
 dim shared as ListObj ptr listPtr
 dim shared as List.Node ptr nodePtr
 
-function testModule (describe as describeCallback) as integer
+function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
 	dim as integer result = TRUE
+
+	_core = corePtr
+	_iterator = _core->require("iterator")
 
 	result = result ANDALSO describe ("The List library", @create)
 
 	return result
 end function
 
-function create (it as itCallback) as integer
+function create (it as Tester.itCallback) as integer
 	dim as integer result = TRUE
 
 	result = result ANDALSO it ("creates a new list instance", @test1)
@@ -113,7 +120,7 @@ function test3_1 () as integer
 		return FALSE
 	end if
 
-	while (Iterator.getNext(iter, @valPtr))
+	while (_iterator->getNext(iter, @valPtr))
 		result = result & (*valPtr)
 	wend
 
@@ -121,7 +128,7 @@ function test3_1 () as integer
 		return FALSE
 	end if
 
-	Iterator.destruct(iter)
+	_iterator->destruct(iter)
 	iter = NULL
 
 	return TRUE

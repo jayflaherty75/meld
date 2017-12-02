@@ -1,5 +1,5 @@
 
-#include once "tester.bi"
+#include once "../../../modules/headers/tester/tester-v1.bi"
 #include once "../meld/lib/fault/test.bi"
 #include once "../shared/lib/list/test.bi"
 #include once "../shared/lib/iterator/test.bi"
@@ -10,7 +10,7 @@
 
 #define TEST_COUNT			7
 
-dim shared as testModule tests(TEST_COUNT - 1)
+dim shared as Tester.testModule tests(TEST_COUNT - 1)
 
 tests(0) = @FaultTest.testModule
 tests(1) = @ListTest.testModule

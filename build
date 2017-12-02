@@ -8,6 +8,7 @@ echo
 fbc -mt -c "./src/fb/meld/lib/core/core.bas" || { echo; echo Failed to compile core, build terminated; exit 1; }
 fbc -mt -c "./src/fb/meld/lib/fault/fault.bas" || { echo; echo Failed to compile fault, build terminated; exit 1; }
 fbc -mt -c "./src/fb/meld/lib/error-handling/error-handling.bas" || { echo; echo Failed to compile error-handling, build terminated; exit 1; }
+fbc -mt -c "./src/fb/meld/lib/tester/tester.bas" || { echo; echo Failed to compile tester, build terminated; exit 1; }
 
 fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
 fbc -mt -c "./src/fb/shared/lib/console/console.bas" || { echo; echo Failed to compile console, build terminated; exit 1; }
@@ -21,6 +22,7 @@ fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/meld/lib/core/core.o" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/meld/lib/error-handling/error-handling.o" \
+	"./src/fb/meld/lib/tester/tester.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
@@ -41,6 +43,7 @@ fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
 	"./src/fb/meld/lib/core/core.o" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/meld/lib/error-handling/error-handling.o" \
+	"./src/fb/meld/lib/tester/tester.o" \
 	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \

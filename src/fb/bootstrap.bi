@@ -4,6 +4,7 @@
 #include once "meld/lib/core/core.bi"
 #include once "meld/lib/error-handling/error-handling.bi"
 #include once "meld/lib/fault/fault.bi"
+#include once "meld/lib/tester/tester.bi"
 #include once "shared/lib/bst/bst.bi"
 #include once "shared/lib/console/console.bi"
 #include once "shared/lib/identity/identity.bi"
@@ -25,9 +26,11 @@ type Dependencies
 	list as List.Interface ptr
 	pagedArray as PagedArray.Interface ptr
 	resourceContainer as ResourceContainer.Interface ptr
+	tester as Tester.Interface ptr
 end type
 
 dim shared as Dependencies deps
+dim shared as Core.Interface corePtr
 
 declare function run () as Bootstrap.Dependencies ptr
 
@@ -35,12 +38,12 @@ declare function _register (moduleName as zstring, interface as any ptr) as inte
 declare function _require (moduleName as zstring) as any ptr
 
 function run () as Bootstrap.Dependencies ptr
-	dim as Core.Interface corePtr
 
 	corePtr.register = @_register
 	corePtr.require = @_require
 
 	Core.load(@corePtr)
+	Tester.load(@corePtr)
 	Console.load(@corePtr)
 	Fault.load(@corePtr)
 	ErrorHandling.load(@corePtr)
@@ -76,6 +79,8 @@ function _register (moduleName as zstring, interface as any ptr) as integer
 			deps.pagedArray = interface
 		case "resource-container":
 			deps.resourceContainer = interface
+		case "tester":
+			deps.tester = interface
 	end select
 
 	return true
@@ -105,6 +110,8 @@ function _require (moduleName as zstring) as any ptr
 			interface = deps.pagedArray
 		case "resource-container":
 			interface = deps.resourceContainer
+		case "tester":
+			interface = deps.tester
 	end select
 
 	return interface
