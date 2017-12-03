@@ -35,7 +35,9 @@ dim shared as StateType state
 declare sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring, handler as Fault.handler)
 
 /''
+ ' Loading lifecycle function called by Meld framework.
  ' @param {Core.Interface ptr} corePtr
+ ' @returns {integer} Signals framework whether module load was successful or not.
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	dim as Core.Interface ptr _core
@@ -79,9 +81,20 @@ function load (corePtr as Core.Interface ptr) as integer
 	return true
 end function
 
+/''
+ ' Unload lifecycle function called by Meld framework.
+ '/
 sub unload ()
 end sub
 
+/''
+ ' Helper function to assign a handler to an error code.
+ ' @param {Fault.Interface ptr} _fault
+ ' @param {integer ptr} errCodePtr
+ ' @param {zstring} errName
+ ' @param {Fault.handler} handler
+ ' @throws {UncaughtError}
+ '/
 sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring, handler as Fault.handler)
 	dim as integer errCode = _fault->registerType(errName)
 

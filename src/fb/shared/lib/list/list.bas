@@ -25,6 +25,9 @@ dim shared as ErrorCodes errors
 
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
+/''
+ ' @throws {ListLoadingError}
+ '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
 		print ("*** List.load: Invalid corePtr interface pointer")
@@ -67,7 +70,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	if _core = NULL then
 		_fault->throw(_
 			errors.moduleLoadingError, _
-			"listLoadingError", "List module missing Core dependency", _
+			"ListLoadingError", "List module missing Core dependency", _
 			__FILE__, __LINE__ _
 		)
 		return false
@@ -76,7 +79,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	if _iterator = NULL then
 		_fault->throw(_
 			errors.moduleLoadingError, _
-			"listLoadingError", "List module missing Iterator dependency", _
+			"ListLoadingError", "List module missing Iterator dependency", _
 			__FILE__, __LINE__ _
 		)
 		return false
@@ -91,6 +94,7 @@ end sub
 /''
  ' Creates a new list instance.
  ' @returns {ListObj ptr}
+ ' @throws {ListAllocationError}
  '/
 function construct() as ListObj ptr
 	dim as ListObj ptr listPtr = allocate(sizeof(ListObj))
@@ -113,6 +117,7 @@ end function
 /''
  ' Deletes a previously created list instance.
  ' @param {ListObj ptr} listPtr
+ ' @throws {ListDestructNullReferenceError|ReleaseListError}
  '/
 sub destruct (listPtr as ListObj ptr)
 	dim as List.Node ptr nodePtr
@@ -138,7 +143,7 @@ sub destruct (listPtr as ListObj ptr)
 	if listPtr->length <> 0 then
 		_fault->throw(_
 			errors.releaseResourceError, _
-			"releaseListError", "Failed to correctly release all resources from List", _
+			"ReleaseListError", "Failed to correctly release all resources from List", _
 			__FILE__, __LINE__ _
 		)
 	end if
@@ -152,6 +157,7 @@ end sub
  ' @param {ListObj ptr} listPtr
  ' @param {any ptr} element
  ' @param {List.Node ptr} prevPtr
+ ' @throws {ListInsertNullReferenceError|ListInsertInvalidArgumentError|ListNodeAllocationError}
  '/
 function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Node ptr = NULL) as List.Node ptr
 	dim as List.Node ptr nodePtr = NULL
@@ -212,6 +218,7 @@ end function
  ' Removes a node from the list.
  ' @param {ListObj ptr} listPtr
  ' @param {List.Node ptr} node
+ ' @throws {ListRemoveNullReferenceError|ListRemoveInvalidArgumentError}
  '/
 sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 	dim as List.Node ptr nextPtr
@@ -258,6 +265,7 @@ end sub
  ' Returns the first node of a list.
  ' @param {ListObj ptr} listPtr
  ' @returns {List.Node ptr}
+ ' @throws {ListGetFirstNullReferenceError}
  '/
 function getFirst (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
@@ -276,6 +284,7 @@ end function
  ' Returns the last node of a list.
  ' @param {ListObj ptr} listPtr
  ' @returns {List.Node ptr}
+ ' @throws {ListGetLastNullReferenceError}
  '/
 function getLast (listPtr as ListObj ptr) as List.Node ptr
 	if listPtr = NULL then
@@ -295,6 +304,7 @@ end function
  ' @param {ListObj ptr} listPtr
  ' @param {List.Node ptr} node
  ' @returns {List.Node ptr}
+ ' @throws {ListGetNextNullReferenceError}
  '/
 function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node ptr
 	if listPtr = NULL then
@@ -313,6 +323,12 @@ function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node pt
 	end if
 end function
 
+/''
+ ' Returns the length of the given list.
+ ' @param {ListObj ptr} listPtr
+ ' @returns {integer}
+ ' @throws {ListGetLengthNullReferenceError}
+ '/
 function getLength (listPtr as ListObj ptr) as integer
 	if listPtr = NULL then
 		_fault->throw(_
@@ -333,6 +349,7 @@ end function
  ' @param {any ptr} element
  ' @param {function} compare
  ' @returns {List.Node ptr}
+ ' @throws {ListSearchNullReferenceError|ListSearchInvalidArgumentError}
  '/
 function search (listPtr as ListObj ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as List.Node ptr
 	dim as List.Node ptr nodePtr = NULL
@@ -396,6 +413,7 @@ end function
  ' node in the given list.
  ' @param {ListObj ptr} listPtr
  ' @returns {IteratorObj ptr}
+ ' @throws {ListGetIteratorNullReferenceError}
  '/
 function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
 	dim as IteratorObj ptr iter = _iterator->construct()

@@ -33,6 +33,7 @@ declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) 
  ' Loading lifecycle function called by Meld framework.
  ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
+ ' @throws {BstLoadingError}
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
@@ -72,7 +73,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	if _core = NULL then
 		_fault->throw(_
 			errors.moduleLoadingError, _
-			"bstLoadingError", "BST module missing Core dependency", _
+			"BstLoadingError", "BST module missing Core dependency", _
 			__FILE__, __LINE__ _
 		)
 		return false
@@ -81,7 +82,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	if _iterator = NULL then
 		_fault->throw(_
 			errors.moduleLoadingError, _
-			"bstLoadingError", "BST module missing Iterator dependency", _
+			"BstLoadingError", "BST module missing Iterator dependency", _
 			__FILE__, __LINE__ _
 		)
 		return false

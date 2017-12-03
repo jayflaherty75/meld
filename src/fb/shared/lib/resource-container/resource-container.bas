@@ -27,8 +27,9 @@ dim shared as ErrorCodes errors
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {MeldInterface ptr} corePtr
+ ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
+ ' @throws {ResContLoadingError}
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
@@ -100,6 +101,7 @@ end sub
  ' @param {integer} pageLength
  ' @param {integer} warnLimit
  ' @returns {ResourceContainerObj ptr}
+ ' @throws {ResContInvalidArgumentError|ResourceContainerGeneralError}
  '/
 function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as ResourceContainerObj ptr
 	dim as ResourceContainerObj ptr contPtr = allocate(sizeof(ResourceContainerObj))
@@ -146,6 +148,7 @@ end function
 
 /''
  ' @param {ResourceContainerObj ptr} contPtr
+ ' @throws {ResContDestructNullReferenceError}
  '/
 sub destruct (contPtr as ResourceContainerObj ptr)
 	if contPtr = NULL then
@@ -172,6 +175,7 @@ end sub
  ' Request the index of a newly created resource.
  ' @param {ResourceContainerObj ptr} contPtr
  ' @returns {integer}
+ ' @throws {ResContRequestNullReferenceError|ResContResourceMissingError}
  '/
 function request (contPtr as ResourceContainerObj ptr) as integer
 	dim as integer resourceId
@@ -207,6 +211,7 @@ end function
  ' @param {ResourceContainerObj ptr} contPtr
  ' @param {integer} resourceId
  ' @returns {integer}
+ ' @throws {ResContReleaseNullReferenceError|ResContReleaseInvalidArgumentError|ResContReleaseError}
  '/
 function release (contPtr as ResourceContainerObj ptr, resourceId as integer) as integer
 	dim as integer index
@@ -252,6 +257,7 @@ end function
  ' @param {ResourceContainerObj ptr} contPtr
  ' @param {integer} resourceId
  ' @returns {any ptr}
+ ' @throws {ResContGetPtrNullReferenceError}
  '/
 function getPtr (contPtr as ResourceContainerObj ptr, resourceId as integer) as any ptr
 	if contPtr = NULL then

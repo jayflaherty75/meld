@@ -33,6 +33,7 @@ dim shared as ErrorCodes errors
  ' Loading lifecycle function called by Meld framework.
  ' @param {MeldInterface ptr} corePtr
  ' @returns {integer}
+ ' @throws {PagedArrayLoadingError}
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
@@ -71,7 +72,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	if _core = NULL then
 		_fault->throw(_
 			errors.moduleLoadingError, _
-			"pagedArrayLoadingError", "PagedArray module missing Core dependency", _
+			"PagedArrayLoadingError", "PagedArray module missing Core dependency", _
 			__FILE__, __LINE__ _
 		)
 		return false
@@ -93,6 +94,7 @@ end sub
  ' @param {integer} pageLength
  ' @param {integer} warnLimit
  ' @returns {PagedArrayObj ptr}
+ ' @throws {PagedArrayInvalidArgumentError|PagedArrayAllocationError|PagedArrayPageAllocationError|PagedArrayInitPageAllocationError}
  '/
 function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArrayObj ptr
 	dim as PagedArrayObj ptr arrayPtr
@@ -163,6 +165,7 @@ end function
 /''
  ' Destruct lifecycle function called by Meld framework.
  ' @param {PagedArrayObj ptr} arrayPtr
+ ' @throws {PagedArrayDestructNullReferenceError}
  '/
 sub destruct (arrayPtr as PagedArrayObj ptr)
 	dim as integer pageIndex
@@ -203,6 +206,7 @@ end sub
  ' Creates and returns a new index available in the paged array.
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @returns {integer}
+ ' @throws {PagedArrayCreateIndexNullReferenceError|PagedArrayAllocationError}
  '/
 function createIndex (arrayPtr as PagedArrayObj ptr) as integer
 	dim as integer result
@@ -237,6 +241,7 @@ end function
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @param {uinteger} index
  ' @returns {any ptr}
+ ' @throws {PagedArrayGetIndexNullReferenceError|PagedArrayOutOfBoundsError}
  '/
 function getIndex (arrayPtr as PagedArrayObj ptr, index as uinteger) as any ptr
 	dim as byte ptr pagePtr
@@ -275,6 +280,7 @@ end function
  ' it at the given data pointer.
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @returns {any ptr}
+ ' @throws {PagedArrayPopNullReferenceError}
  '/
 function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 	dim as integer i
@@ -308,6 +314,13 @@ function pop (arrayPtr as PagedArrayObj ptr, dataPtr as any ptr) as integer
 	return true
 end function
 
+/''
+ ' Returns true if the paged array is empty.
+ ' @param {PagedArrayObj ptr} arrayPtr
+ ' @returns {integer}
+ ' @private
+ ' @throws {PagedArrayIsEmptyNullReferenceError}
+ '/
 function isEmpty (arrayPtr as PagedArrayObj ptr) as integer
 	if arrayPtr = NULL then
 		_fault->throw(_
@@ -331,6 +344,7 @@ end function
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @returns {integer}
  ' @private
+ ' @throws {PagedArrayLimitSurpassed}
  '/
 function _createPage (arrayPtr as PagedArrayObj ptr) as integer
 	dim as any ptr page = allocate(arrayPtr->size * arrayPtr->pageLength)
@@ -366,6 +380,7 @@ end function
  ' @param {PagedArrayObj ptr} arrayPtr
  ' @returns {integer}
  ' @private
+ ' @throws {PagedArrayIndexReAllocationError}
  '/
 function _reallocatePageIndex (arrayPtr as PagedArrayObj ptr) as integer
 	dim as integer currentMax

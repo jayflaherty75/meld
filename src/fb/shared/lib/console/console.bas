@@ -23,7 +23,7 @@ declare function _format (byref id as zstring, byref message as string, byref so
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		print ("Console.load: Invalid Core interface pointer")
+		print ("**** Console.load: Invalid Core interface pointer")
 		return false
 	end if
 
