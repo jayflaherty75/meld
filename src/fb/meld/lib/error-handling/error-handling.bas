@@ -15,6 +15,7 @@ type ErrorCodes
 	invalidArgumentError as integer
 	outOfBoundsError as integer
 	resourceLimitSurpassed as integer
+	generalError as integer
 end type
 
 type Dependencies
@@ -69,6 +70,7 @@ function load (corePtr as Core.Interface ptr) as integer
 	_assignHandler(_fault, @state.errs.invalidArgumentError, "InvalidArgumentError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.outOfBoundsError, "OutOfBoundsError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.resourceLimitSurpassed, "ResourceLimitSurpassed", _fault->defaultWarningHandler)
+	_assignHandler(_fault, @state.errs.generalError, "GeneralError", _fault->defaultWarningHandler)
 
 	state.deps.core = _core
 	state.deps.console = _console

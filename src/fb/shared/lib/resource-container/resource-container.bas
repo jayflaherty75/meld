@@ -3,17 +3,27 @@
 
 namespace ResourceContainer
 
-type Dependencies
-	core as Core.Interface ptr
-	pagedArray as PagedArray.Interface ptr
-end type
-
 type StateType
-	deps as Dependencies
 	methods as Interface
 end type
 
+type ErrorCodes
+	resourceAllocationError as integer
+	moduleLoadingError as integer
+	invalidArgumentError as integer
+	nullReferenceError as integer
+	resourceMissingError as integer
+	releaseResourceError as integer
+	generalError as integer
+end type
+
+dim shared _core as Core.Interface ptr
+dim shared _fault as Fault.Interface ptr
+dim shared _pagedArray as PagedArray.Interface ptr
+
 dim shared as StateType state
+
+dim shared as ErrorCodes errors
 
 /''
  ' Loading lifecycle function called by Meld framework.
@@ -22,8 +32,7 @@ dim shared as StateType state
  '/
 function load (corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
-		' TODO: Throw error
-		print ("ResourceContainer.load: Invalid Core interface pointer")
+		print ("**** ResourceContainer.load: Invalid Core interface pointer")
 		return false
 	end if
 
@@ -39,8 +48,40 @@ function load (corePtr as Core.Interface ptr) as integer
 		return false
 	end if
 
-	state.deps.core = corePtr->require("core")
-	state.deps.pagedArray = corePtr->require("paged-array")
+	_core = corePtr->require("core")
+	_fault = corePtr->require("fault")
+	_pagedArray = corePtr->require("paged-array")
+
+	if _fault = NULL then
+		print ("**** PagedArray.load: Missing Fault dependency")
+		return false
+	end if
+
+	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
+	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+	errors.nullReferenceError = _fault->getCode("NullReferenceError")
+	errors.resourceMissingError = _fault->getCode("ResourceMissingError")
+	errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
+	errors.generalError = _fault->getCode("GeneralError")
+
+	if _core = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"ResContLoadingError", "ResourceContainer module missing Core dependency", _
+			__FILE__, __LINE__ _
+		)
+		return false
+	end if
+
+	if _pagedArray = NULL then
+		_fault->throw(_
+			errors.moduleLoadingError, _
+			"ResContLoadingError", "ResourceContainer module missing PagedArray dependency", _
+			__FILE__, __LINE__ _
+		)
+		return false
+	end if
 
 	return true
 end function
@@ -61,30 +102,38 @@ end sub
  ' @returns {ResourceContainerObj ptr}
  '/
 function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as ResourceContainerObj ptr
-	dim as Dependencies ptr deps = @state.deps
 	dim as ResourceContainerObj ptr contPtr = allocate(sizeof(ResourceContainerObj))
 	dim as PagedArrayObj ptr resources
 	dim as PagedArrayObj ptr stack
 
 	if size <= 0 then
-		' TODO: Throw error
-		print ("RersourceContainer.construct: Element size must be greater than zero: " & id)
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ResContInvalidArgumentError", "Invalid 2nd Argument: size must be greater than zero: " & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
-	resources = deps->pagedArray->construct(id & "_resources", size, pageLength, warnLimit)
+	resources = _pagedArray->construct(id & "_resources", size, pageLength, warnLimit)
 
 	if resources = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.construct: Failed to create resources: " & id)
+		_fault->throw( _
+			errors.resourceAllocationError, _
+			"ResourceContainerGeneralError", "Failed to create paged array" & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
-	stack = deps->pagedArray->construct(id & "_stack", sizeof(integer), pageLength, warnLimit)
+	stack = _pagedArray->construct(id & "_stack", sizeof(integer), pageLength, warnLimit)
 
 	if stack = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.construct: Failed to create stack: " & id)
+		_fault->throw( _
+			errors.generalError, _
+			"ResourceContainerGeneralError", "Failed to create paged array for stack" & id, _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
@@ -99,21 +148,22 @@ end function
  ' @param {ResourceContainerObj ptr} contPtr
  '/
 sub destruct (contPtr as ResourceContainerObj ptr)
-	dim as Dependencies ptr deps = @state.deps
-
 	if contPtr = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.destruct: Invalid ResourceContainer pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ResContDestructNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
+			__FILE__, __LINE__ _
+		)
 		exit sub
 	end if
 
 	if contPtr->resources <> NULL then
-		deps->pagedArray->destruct(contPtr->resources)
+		_pagedArray->destruct(contPtr->resources)
 		contPtr->resources = NULL
 	end if
 
 	if contPtr->stack <> NULL then
-		deps->pagedArray->destruct(contPtr->stack)
+		_pagedArray->destruct(contPtr->stack)
 		contPtr->stack = NULL
 	end if
 end sub
@@ -124,25 +174,30 @@ end sub
  ' @returns {integer}
  '/
 function request (contPtr as ResourceContainerObj ptr) as integer
-	dim as Dependencies ptr deps = @state.deps
 	dim as integer resourceId
 	dim as any ptr resource = NULL
 
 	if contPtr = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.request: Invalid ResourceContainer pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ResContRequestNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
+			__FILE__, __LINE__ _
+		)
 		return -1
 	end if
 
-	if deps->pagedArray->isEmpty(contPtr->stack) then
-		resourceId = deps->pagedArray->createIndex(contPtr->resources)
-	else
-		if not deps->pagedArray->pop(contPtr->stack, @resourceId) then
-			' TODO: Throw error
-			print ("RersourceContainer.request: Failed to reuse resouce from stack: " & contPtr->id)
+	if not _pagedArray->isEmpty(contPtr->stack) then
+		if not _pagedArray->pop(contPtr->stack, @resourceId) then
+			_fault->throw(_
+				errors.resourceMissingError, _
+				"ResContResourceMissingError", "Failed to reuse resource from stack: " & contPtr->id, _
+				__FILE__, __LINE__ _
+			)
 			return -1
 		end if
 	end if
+
+	resourceId = _pagedArray->createIndex(contPtr->resources)
 
 	return resourceId
 end function
@@ -154,28 +209,36 @@ end function
  ' @returns {integer}
  '/
 function release (contPtr as ResourceContainerObj ptr, resourceId as integer) as integer
-	dim as Dependencies ptr deps = @state.deps
 	dim as integer index
 	dim as integer ptr stackPtr
 
 	if contPtr = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.request: Invalid ResourceContainer pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ResContReleaseNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
+			__FILE__, __LINE__ _
+		)
 		return -1
 	end if
 
 	if resourceId <= 0 then
-		' TODO: Throw error
-		print ("RersourceContainer.release: Invalid resourceId argument: " & contPtr->id)
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"ResContReleaseInvalidArgumentError", "Invalid 2nd Argument: resourceId must be greater than zero" & contPtr->id, _
+			__FILE__, __LINE__ _
+		)
 		return -1
 	end if
 
-	index = deps->pagedArray->createIndex(contPtr->stack)
-	stackPtr = deps->pagedArray->getIndex(contPtr->stack, index)
+	index = _pagedArray->createIndex(contPtr->stack)
+	stackPtr = _pagedArray->getIndex(contPtr->stack, index)
 
 	if stackPtr = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.release: Failed to reference stack: " & contPtr->id)
+		_fault->throw(_
+			errors.releaseResourceError, _
+			"ResContReleaseError", "Failed to release resource back to container: " & contPtr->id, _
+			__FILE__, __LINE__ _
+		)
 		return -1
 	end if
 
@@ -191,15 +254,16 @@ end function
  ' @returns {any ptr}
  '/
 function getPtr (contPtr as ResourceContainerObj ptr, resourceId as integer) as any ptr
-	dim as Dependencies ptr deps = @state.deps
-
 	if contPtr = NULL then
-		' TODO: Throw error
-		print ("RersourceContainer.request: Invalid ResourceContainer pointer")
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"ResContGetPtrNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
+			__FILE__, __LINE__ _
+		)
 		return NULL
 	end if
 
-	return deps->pagedArray->getIndex(contPtr->resources, resourceId)
+	return _pagedArray->getIndex(contPtr->resources, resourceId)
 end function
 
 end namespace
