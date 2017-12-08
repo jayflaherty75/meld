@@ -1,101 +1,14 @@
 
 #include once "bst.bi"
+#include once "module.bi"
 
 namespace Bst
-
-type StateType
-	methods as Interface
-end type
-
-type ErrorCodes
-	resourceAllocationError as integer
-	releaseResourceError as integer
-	nullReferenceError as integer
-	invalidArgumentError as integer
-	moduleLoadingError as integer
-end type
-
-dim shared _core as Core.Interface ptr
-dim shared _fault as Fault.Interface ptr
-dim shared _iterator as Iterator.Interface ptr
-
-dim shared as StateType state
-
-dim shared as ErrorCodes errors
 
 declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
-
-/''
- ' Loading lifecycle function called by Meld framework.
- ' @param {Core.Interface ptr} corePtr
- ' @returns {integer}
- ' @throws {BstLoadingError}
- '/
-function load (corePtr as Core.Interface ptr) as integer
-	if corePtr = NULL then
-		print ("**** Bst.load: Invalid Core interface pointer")
-		return false
-	end if
-
-	state.methods.load = @load
-	state.methods.construct = @construct
-	state.methods.destruct = @destruct
-	state.methods.unload = @unload
-	state.methods.insert = @insert
-	state.methods.search = @search
-	state.methods.getLength = @getLength
-	state.methods.getIterator = @getIterator
-	state.methods.defaultCompare = @defaultCompare
-
-	if not corePtr->register("bst", @state.methods) then
-		return false
-	end if
-
-	_core = corePtr->require("core")
-	_fault = corePtr->require("fault")
-	_iterator = corePtr->require("iterator")
-
-	if _fault = NULL then
-		print ("**** Bst.load: Missing Fault dependency")
-		return false
-	end if
-
-	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
-	errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
-	errors.nullReferenceError = _fault->getCode("NullReferenceError")
-	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
-	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
-
-	if _core = NULL then
-		_fault->throw(_
-			errors.moduleLoadingError, _
-			"BstLoadingError", "BST module missing Core dependency", _
-			__FILE__, __LINE__ _
-		)
-		return false
-	end if
-
-	if _iterator = NULL then
-		_fault->throw(_
-			errors.moduleLoadingError, _
-			"BstLoadingError", "BST module missing Iterator dependency", _
-			__FILE__, __LINE__ _
-		)
-		return false
-	end if
-
-	return true
-end function
-
-/''
- ' Unload lifecycle function called by Meld framework.
- '/
-sub unload()
-end sub
 
 function construct() as BstObj ptr
 	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))

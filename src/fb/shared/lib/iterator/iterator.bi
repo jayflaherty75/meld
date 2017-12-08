@@ -7,7 +7,8 @@ namespace Iterator
 
 declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
-
+declare function register() as integer
+declare sub unregister()
 declare function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr
 declare sub destruct (iter as IteratorObj ptr)
 

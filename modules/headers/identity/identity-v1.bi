@@ -25,6 +25,8 @@ end type
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
+	register as function () as integer
+	unregister as sub ()
 	construct as function () as Identity.Instance ptr
 	destruct as sub (idPtr as Identity.Instance ptr)
 	request as function (idPtr as Identity.Instance ptr, byref identifier as zstring) as integer

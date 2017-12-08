@@ -9,6 +9,8 @@ namespace PagedArray
 
 declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
+declare function register() as integer
+declare sub unregister()
 declare function construct (byref id as zstring, size as integer, pageLength as integer, warnLimit as integer) as PagedArrayObj ptr
 declare sub destruct (arrayPtr as PagedArrayObj ptr)
 

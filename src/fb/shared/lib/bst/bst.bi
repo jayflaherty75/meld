@@ -5,7 +5,8 @@ namespace Bst
 
 declare function load (corePtr as Core.Interface ptr) as integer
 declare sub unload()
-
+declare function register() as integer
+declare sub unregister()
 declare function construct() as BstObj ptr
 declare sub destruct (btreePtr as BstObj ptr)
 

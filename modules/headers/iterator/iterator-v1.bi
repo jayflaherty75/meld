@@ -15,7 +15,9 @@ end type
 
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
-	unload as sub()
+	unload as sub ()
+	register as function () as integer
+	unregister as sub ()
 	construct as function (dataSet as any ptr = NULL, length as integer = -1) as Iterator.Instance ptr
 	destruct as sub (iter as Iterator.Instance ptr)
 	setHandler as sub (iter as Iterator.Instance ptr, cb as function(iter as Iterator.Instance ptr, target as any ptr) as integer)

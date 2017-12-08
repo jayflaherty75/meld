@@ -1,74 +1,10 @@
 
 #include once "iterator.bi"
+#include once "module.bi"
 
 namespace Iterator
 
-type ErrorCodes
-	resourceAllocationError as integer
-	nullReferenceError as integer
-	invalidArgumentError as integer
-	moduleLoadingError as integer
-end type
-
-type StateType
-	methods as Interface
-end type
-
-dim shared as StateType state
-
-dim shared _core as Core.Interface ptr
-dim shared _fault as Fault.Interface ptr
-
-dim shared as ErrorCodes errors
-
 declare function _defaultHandler (iter as IteratorObj ptr, target as any ptr) as integer
-
-function load (corePtr as Core.Interface ptr) as integer
-	if corePtr = NULL then
-		print ("**** Iterator.load: Invalid corePtr interface pointer")
-		return false
-	end if
-
-	state.methods.load = @load
-	state.methods.unload = @unload
-	state.methods.construct = @construct
-	state.methods.destruct = @destruct
-	state.methods.setHandler = @setHandler
-	state.methods.setData = @setData
-	state.methods.getNext = @getNext
-	state.methods.reset = @reset
-
-	if not corePtr->register("iterator", @state.methods) then
-		return false
-	end if
-
-	_core = corePtr->require("core")
-	_fault = corePtr->require("fault")
-
-	if _fault = NULL then
-		print ("**** Iterator.load: Missing Fault dependency")
-		return false
-	end if
-
-	errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
-	errors.nullReferenceError = _fault->getCode("NullReferenceError")
-	errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
-	errors.moduleLoadingError = _fault->getCode("ModuleLoadingError")
-
-	if _core = NULL then
-		_fault->throw(_
-			errors.moduleLoadingError, _
-			"iteratorLoadingError", "Iterator module missing Core dependency", _
-			__FILE__, __LINE__ _
-		)
-		return false
-	end if
-
-	return true
-end function
-
-sub unload()
-end sub
 
 function construct(dataSet as any ptr = NULL, length as integer = -1) as IteratorObj ptr
 	dim as IteratorObj ptr iter = allocate (sizeof(IteratorObj))

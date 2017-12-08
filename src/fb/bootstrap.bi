@@ -38,21 +38,32 @@ declare function _register (moduleName as zstring, interface as any ptr) as inte
 declare function _require (moduleName as zstring) as any ptr
 
 function run () as Bootstrap.Dependencies ptr
-
 	corePtr.register = @_register
 	corePtr.require = @_require
 
+	' Preloaded modules
 	Core.load(@corePtr)
 	Tester.load(@corePtr)
 	Console.load(@corePtr)
 	Fault.load(@corePtr)
+
+	if not Console.register() then print "Bootstrap: Failed to register Console"
+
+	' Loaded modules
+	Bst.load(@corePtr)
 	ErrorHandling.load(@corePtr)
+	Identity.load(@corePtr)
 	Iterator.load(@corePtr)
 	List.load(@corePtr)
-	Bst.load(@corePtr)
 	PagedArray.load(@corePtr)
 	ResourceContainer.load(@corePtr)
-	Identity.load(@corePtr)
+
+	if not Bst.register() then print "Bootstrap: Failed to register Bst"
+	if not Identity.register() then print "Bootstrap: Failed to register Identity"
+	if not Iterator.register() then print "Bootstrap: Failed to register Iterator"
+	if not List.register() then print "Bootstrap: Failed to register List"
+	if not PagedArray.register() then print "Bootstrap: Failed to register PagedArray"
+	if not ResourceContainer.register() then print "Bootstrap: Failed to register ResourceContainer"
 
 	return @deps
 end function

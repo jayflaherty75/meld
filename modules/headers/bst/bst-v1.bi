@@ -22,6 +22,8 @@ end type
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
+	register as function () as integer
+	unregister as sub ()
 	construct as function() as Bst.Instance ptr
 	destruct as sub (btreePtr as Bst.Instance ptr)
 	insert as function (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
