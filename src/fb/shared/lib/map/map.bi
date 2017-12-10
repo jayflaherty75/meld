@@ -9,4 +9,9 @@ declare sub unregister()
 declare function construct(byref id as zstring) as MapObj ptr
 declare sub destruct (mapPtr as MapObj ptr)
 
+declare function assign (mapPtr as MapObj ptr, byref mapping as zstring) as Location ptr
+declare function request (mapPtr as MapObj ptr, byref mapping as zstring) as Location ptr
+declare function reference (mapPtr as MapObj ptr, loc as Location ptr) as zstring ptr
+declare sub unassign (mapPtr as MapObj ptr, byref mapping as zstring)
+
 end namespace

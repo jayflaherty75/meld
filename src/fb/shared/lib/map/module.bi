@@ -39,6 +39,10 @@ function load (corePtr as Core.Interface ptr) as integer
 	state.methods.unregister = @unregister
 	state.methods.construct = @construct
 	state.methods.destruct = @destruct
+	state.methods.assign = @assign
+	state.methods.request = @request
+	state.methods.reference = @reference
+	state.methods.unassign = @unassign
 
 	if not corePtr->register("map", @state.methods) then
 		return false
