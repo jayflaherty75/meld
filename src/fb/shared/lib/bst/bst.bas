@@ -1,6 +1,7 @@
 
 #include once "bst.bi"
 #include once "module.bi"
+#include once "errors.bi"
 
 namespace Bst
 
@@ -21,11 +22,7 @@ function construct(byref id as zstring) as BstObj ptr
 	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))
 
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"BstAllocationError", "Failed to allocate BST instance: " & id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstAllocationError(id, __FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -44,11 +41,7 @@ end function
  '/
 sub destruct (btreePtr as BstObj ptr)
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstDestructNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -58,11 +51,7 @@ sub destruct (btreePtr as BstObj ptr)
 	end if
 
 	if btreePtr->length <> 0 then
-		_fault->throw(_
-			errors.releaseResourceError, _
-			"releaseBstError", "Failed to correctly release all resources from BST: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstDestructReleaseError(btreePtr, __FILE__, __LINE__)
 	end if
 
 	deallocate(btreePtr)
@@ -80,31 +69,19 @@ function insert (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 	dim as integer compareValue
 
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstInsertNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstInsertNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	if element = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"BstInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstInsertInvalidArgumentError(btreePtr, __FILE__, __LINE__)
 		return NULL
 	end if
 
 	nodePtr = _createNode(btreePtr, element)
 
 	if nodePtr = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"BstNodeAllocationError", "Failed to allocate BST node: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstNodeAllocationError(btreePtr, __FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -138,20 +115,12 @@ end function
  '/
 sub remove (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstRemoveNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstRemoveNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
 	if nodePtr = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"BstRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstRemoveInvalidArgumentError(btreePtr, __FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -191,11 +160,7 @@ end sub
 '/
 sub purge (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstPurgeNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstPurgeNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -205,11 +170,7 @@ sub purge (btreePtr as Bst.Instance ptr)
 	end if
 
 	if btreePtr->length <> 0 then
-		_fault->throw(_
-			errors.releaseResourceError, _
-			"BstPurgeError", "Failed to correctly purge all nodes from BST: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstPurgeReleaseError(btreePtr, __FILE__, __LINE__)
 	end if
 end sub
 
@@ -226,20 +187,12 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 	dim as Bst.Node ptr searchPtr = NULL
 
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstSearchNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstSearchNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	if element = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"BstSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstSearchInvalidArgumentError(btreePtr, __FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -265,11 +218,7 @@ end function
  '/
 function getLength (btreePtr as BstObj ptr) as integer
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstGetLengthNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstGetLengthNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -286,22 +235,14 @@ function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
 	dim as IteratorObj ptr iter
 
 	if btreePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"BstGetIteratorNullReferenceError", "Attempt to reference a NULL BST", _
-			__FILE__, __LINE__ _
-		)
+		_throwBstGetIteratorNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	iter = _iterator->construct()
 
 	if iter = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"BstIteratorAllocationError", "Failed to allocate BST iterator: " & btreePtr->id, _
-			__FILE__, __LINE__ _
-		)
+		_throwBstIteratorAllocationError(btreePtr, __FILE__, __LINE__)
 		return NULL
 	end if
 
