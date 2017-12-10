@@ -45,7 +45,7 @@ function construct (byref id as zstring, size as integer, pageLength as integer,
 		return NULL
 	end if
 
-	arrayPtr->id = left(id, 32)
+	arrayPtr->id = left(id, 64)
 	arrayPtr->size = size
 	arrayPtr->pageLength = pageLength
 	arrayPtr->warnLimit = warnLimit

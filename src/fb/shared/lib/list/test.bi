@@ -38,7 +38,7 @@ dim shared as ListObj ptr listPtr
 dim shared as List.Node ptr nodePtr
 
 function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
-	dim as integer result = TRUE
+	dim as integer result = true
 
 	_core = corePtr
 	_iterator = _core->require("iterator")
@@ -49,7 +49,7 @@ function testModule (corePtr as Core.Interface ptr, describe as Tester.describeC
 end function
 
 function create (it as Tester.itCallback) as integer
-	dim as integer result = TRUE
+	dim as integer result = true
 
 	result = result ANDALSO it ("creates a new list instance", @test1)
 	result = result ANDALSO it ("inserts a set of nodes", @test2)
@@ -79,15 +79,15 @@ function test1 () as integer
 	listPtr = List.construct()
 
 	if listPtr = NULL then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test2 () as integer
 	dim as integer i
-	dim as integer result = TRUE
+	dim as integer result = true
 
 	nodePtr = NULL
 
@@ -95,7 +95,7 @@ function test2 () as integer
 		nodePtr = List.insert(listPtr, @testData(i), nodePtr)
 
 		if nodePtr = NULL then
-			result = FALSE
+			result = false
 			exit for
 		end if
 	next
@@ -105,10 +105,10 @@ end function
 
 function test3 () as integer
 	if List.getLength(listPtr) <> 8 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test3_1 () as integer
@@ -117,7 +117,7 @@ function test3_1 () as integer
 	dim as string result = ""
 
 	if iter = NULL then
-		return FALSE
+		return false
 	end if
 
 	while (_iterator->getNext(iter, @valPtr))
@@ -125,73 +125,73 @@ function test3_1 () as integer
 	wend
 
 	if result <> "12345678" then
-		return FALSE
+		return false
 	end if
 
 	_iterator->destruct(iter)
 	iter = NULL
 
-	return TRUE
+	return true
 end function
 
 function test4 () as integer
 	nodePtr = List.search (listPtr, @testData(3), @List.defaultCompare)
 
 	if nodePtr = NULL then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test5 () as integer
 	List.remove (listPtr, nodePtr)
 
 	if List.getLength(listPtr) <> 7 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test6 () as integer
 	nodePtr = List.search (listPtr, @testData(0), @List.defaultCompare)
 
 	if nodePtr = NULL then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test7 () as integer
 	List.remove (listPtr, nodePtr)
 
 	if List.getLength(listPtr) <> 6 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test8 () as integer
 	nodePtr = List.search (listPtr, @testData(7), @List.defaultCompare)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testData(7) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test9 () as integer
 	List.remove (listPtr, nodePtr)
 
 	if List.getLength(listPtr) <> 5 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test10 () as integer
@@ -200,90 +200,90 @@ function test10 () as integer
 	nodePtr = List.search (listPtr, @value, @List.defaultCompare)
 
 	if nodePtr <> NULL then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test11 () as integer
 	nodePtr = List.getFirst (listPtr)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testData(1) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test12 () as integer
 	List.remove (listPtr, nodePtr)
 
 	if List.getLength(listPtr) <> 4 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test13 () as integer
 	nodePtr = List.getLast (listPtr)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testData(6) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test14 () as integer
 	List.remove (listPtr, nodePtr)
 
 	if List.getLength(listPtr) <> 3 then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test15 () as integer
 	nodePtr = List.getFirst (listPtr)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testResult(0) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test16 () as integer
 	nodePtr = List.getNext (listPtr, nodePtr)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testResult(1) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test17 () as integer
 	nodePtr = List.getNext (listPtr, nodePtr)
 
 	if nodePtr = NULL ORELSE *cptr(integer ptr, nodePtr->element) <> testResult(2) then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test18 () as integer
 	nodePtr = List.getNext (listPtr, nodePtr)
 
 	if nodePtr <> NULL then
-		return FALSE
+		return false
 	end if
 
-	return TRUE
+	return true
 end function
 
 function test19 () as integer
@@ -292,7 +292,7 @@ function test19 () as integer
 	List.destruct(listPtr)
 	listPtr = NULL
 
-	return TRUE
+	return true
 end function
 
 end namespace

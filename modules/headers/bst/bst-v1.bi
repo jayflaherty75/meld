@@ -14,6 +14,7 @@ type Node
 end type
 
 type Instance
+	id as zstring*64
 	root as Bst.Node ptr
 	length as integer
 	compare as function(criteria as any ptr, element as any ptr) as integer
@@ -24,9 +25,9 @@ type Interface
 	unload as sub()
 	register as function () as integer
 	unregister as sub ()
-	construct as function() as Bst.Instance ptr
+	construct as function(byref id as zstring) as Bst.Instance ptr
 	destruct as sub (btreePtr as Bst.Instance ptr)
-	insert as function (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
+	insert as function (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	search as function (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 	getLength as function (btreePtr as Bst.Instance ptr) as integer
 	getIterator as function (btreePtr as Bst.Instance ptr) as IteratorObj ptr
