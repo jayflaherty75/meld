@@ -4,11 +4,12 @@
 
 namespace Bst
 
-declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
-declare function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
-declare function _nextParentRecurse (btreePtr as BstObj ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
+declare sub _deleteNodeRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
+declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
+declare function _recurseLeft (nodePtr as Bst.Node ptr) as Bst.Node ptr
+declare function _nextParentRecurse (btreePtr as BstObj ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
 
 /''
@@ -52,8 +53,8 @@ sub destruct (btreePtr as BstObj ptr)
 	end if
 
 	if btreePtr->root <> NULL then
-		btreePtr->root->parent = NULL
-		_deleteNode(btreePtr, btreePtr->root)
+		_deleteNodeRecurse(btreePtr, btreePtr->root)
+		btreePtr->root = NULL
 	end if
 
 	if btreePtr->length <> 0 then
@@ -131,6 +132,88 @@ function insert (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 end function
 
 /''
+ ' Removes a node from the tree.
+ ' @param {BstObj ptr} btreePtr
+ ' @param {Bst.Node ptr} nodePtr
+ '/
+sub remove (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
+	if btreePtr = NULL then
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstRemoveNullReferenceError", "Attempt to reference a NULL BST", _
+			__FILE__, __LINE__ _
+		)
+		exit sub
+	end if
+
+	if nodePtr = NULL then
+		_fault->throw(_
+			errors.invalidArgumentError, _
+			"BstRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL: " & btreePtr->id, _
+			__FILE__, __LINE__ _
+		)
+		exit sub
+	end if
+
+	dim as Bst.Node ptr rightPtr = nodePtr->rightPtr
+	dim as Bst.Node ptr leftPtr = nodePtr->leftPtr
+	dim as Bst.Node ptr replacement = NULL
+
+	if rightPtr <> NULL andalso leftPtr <> NULL then
+		replacement = _recurseLeft(rightPtr)
+	elseif rightPtr <> NULL then
+		replacement = rightPtr
+	elseif leftPtr <> NULL then
+		replacement = leftPtr
+	end if
+
+	if replacement <> NULL then
+		nodePtr->element = replacement->element
+		remove(btreePtr, replacement)
+	else
+		dim as Bst.Node ptr parent = nodePtr->parent
+
+		if btreePtr->root = nodePtr then
+			btreePtr->root = NULL
+		elseif nodePtr = parent->rightPtr then
+			parent->rightPtr = NULL
+		elseif nodePtr = parent->leftPtr then
+			parent->leftPtr = NULL
+		end if
+
+		_deleteNode(btreePtr, nodePtr)
+	end if
+end sub
+
+/''
+ ' Purges tree of all elements.
+ ' @param {BstObj ptr} btreePtr
+'/
+sub purge (btreePtr as Bst.Instance ptr)
+	if btreePtr = NULL then
+		_fault->throw(_
+			errors.nullReferenceError, _
+			"BstPurgeNullReferenceError", "Attempt to reference a NULL BST", _
+			__FILE__, __LINE__ _
+		)
+		exit sub
+	end if
+
+	if btreePtr->root <> NULL then
+		_deleteNodeRecurse(btreePtr, btreePtr->root)
+		btreePtr->root = NULL
+	end if
+
+	if btreePtr->length <> 0 then
+		_fault->throw(_
+			errors.releaseResourceError, _
+			"BstPurgeError", "Failed to correctly purge all nodes from BST: " & btreePtr->id, _
+			__FILE__, __LINE__ _
+		)
+	end if
+end sub
+
+/''
  ' Returns the node referencing the given element.  The element values must be
  ' equal, not the element pointers.  Results are based on the BSTs compare
  ' function.
@@ -148,7 +231,7 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 			"BstSearchNullReferenceError", "Attempt to reference a NULL BST", _
 			__FILE__, __LINE__ _
 		)
-		exit function
+		return NULL
 	end if
 
 	if element = NULL then
@@ -157,7 +240,7 @@ function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node p
 			"BstSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL: " & btreePtr->id, _
 			__FILE__, __LINE__ _
 		)
-		exit function
+		return NULL
 	end if
 
 	if start = NULL then
@@ -266,53 +349,32 @@ end function
  ' @private
  '/
 sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
-	if nodePtr->parent <> NULL then
-		dim as Bst.Node ptr parent = nodePtr->parent
-		dim as Bst.Node ptr rightPtr = nodePtr->rightPtr
-		dim as Bst.Node ptr leftPtr = nodePtr->leftPtr
-		dim as Bst.Node ptr replacement = NULL
-
-		if rightPtr <> NULL andalso leftPtr <> NULL then
-			' Deleted node: taken care of
-			' Parent: Can be reset with replacement
-			' replacement: becomes the new node
-			' Get parent of replacement
-			replacement = _nextRecurse(btreePtr, nodePtr->rightPtr)
-		elseif rightPtr <> NULL then
-			replacement = rightPtr
-		elseif leftPtr <> NULL then
-			replacement = leftPtr
-		end if
-
-		if nodePtr = parent->rightPtr then
-			parent->rightPtr = replacement
-		elseif nodePtr = parent->leftPtr then
-			parent->leftPtr = replacement
-		end if
-	else
-		if nodePtr->rightPtr <> NULL then
-			nodePtr->rightPtr->parent = NULL
-			_deleteNode(btreePtr, nodePtr->rightPtr)
-		end if
-
-		if nodePtr->leftPtr <> NULL then
-			nodePtr->leftPtr->parent = NULL
-			_deleteNode(btreePtr, nodePtr->leftPtr)
-		end if
-	end if
-
-	if btreePtr->root = nodePtr then
-		btreePtr->root = NULL
-	end if
-
-	btreePtr->length -= 1
-
 	nodePtr->rightPtr = NULL
 	nodePtr->leftPtr = NULL
 	nodePtr->parent = NULL
 	nodePtr->element = NULL
 
+	btreePtr->length -= 1
+
 	deallocate(nodePtr)
+end sub
+
+/''
+ ' Deletes node and all of it's children.
+ ' @param {BstObj ptr} btreePtr
+ ' @param {Bst.Node ptr} nodePtr
+ ' @private
+ '/
+sub _deleteNodeRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
+	if nodePtr->leftPtr <> NULL then
+		_deleteNodeRecurse(btreePtr, nodePtr->leftPtr)
+	end if
+	
+	if nodePtr->rightPtr <> NULL then
+		_deleteNodeRecurse(btreePtr, nodePtr->rightPtr)
+	end if
+
+	_deleteNode(btreePtr, nodePtr)
 end sub
 
 /''
@@ -348,15 +410,15 @@ end function
  ' traverses left from there.  In a BST, this will always produce the next
  ' highest value, not including the parent.  This can be used to great purpose
  ' in many processes dealing with BSTs, such as removing nodes, balancing the
- ' tree, etc.
+ ' tree, iteration, etc.
  ' @params {BstObj ptr} btreePtr
  ' @params {Bst.Node ptr} nodePtr
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _nextRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr) as Bst.Node ptr
+function _recurseLeft (nodePtr as Bst.Node ptr) as Bst.Node ptr
 	if nodePtr->leftPtr <> NULL then
-		return _nextRecurse(btreePtr, nodePtr->leftPtr)
+		return _recurseLeft(nodePtr->leftPtr)
 	else
 		return nodePtr
 	end if
@@ -392,7 +454,7 @@ function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integ
 
 	if target = NULL then
 		iter->index = 0
-		iter->current = _nextRecurse(btreePtr, btreePtr->root)
+		iter->current = _recurseLeft(btreePtr->root)
 		iter->length = btreePtr->length
 	elseif iter->current <> NULL then
 		current = iter->current
@@ -401,7 +463,7 @@ function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integ
 		*cptr(any ptr ptr, target) = current->element
 
 		if current->rightPtr <> NULL then
-			current = _nextRecurse(btreePtr, current->rightPtr)
+			current = _recurseLeft(current->rightPtr)
 		else
 			current = _nextParentRecurse(btreePtr, parent, current->element)
 		end if

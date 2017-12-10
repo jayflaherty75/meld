@@ -28,6 +28,8 @@ type Interface
 	construct as function(byref id as zstring) as Bst.Instance ptr
 	destruct as sub (btreePtr as Bst.Instance ptr)
 	insert as function (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
+	remove as sub (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
+	purge as sub (btreePtr as Bst.Instance ptr)
 	search as function (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 	getLength as function (btreePtr as Bst.Instance ptr) as integer
 	getIterator as function (btreePtr as Bst.Instance ptr) as IteratorObj ptr
