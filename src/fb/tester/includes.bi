@@ -4,11 +4,12 @@
 #include once "../shared/lib/list/test.bi"
 #include once "../shared/lib/iterator/test.bi"
 #include once "../shared/lib/bst/test.bi"
+#include once "../shared/lib/map/test.bi"
 #include once "../shared/lib/paged-array/test.bi"
 #include once "../shared/lib/resource-container/test.bi"
 #include once "../shared/lib/identity/test.bi"
 
-#define TEST_COUNT			7
+#define TEST_COUNT			8
 
 dim shared as Tester.testModule tests(TEST_COUNT - 1)
 
@@ -19,3 +20,4 @@ tests(3) = @BstTest.testModule
 tests(4) = @PagedArrayTest.testModule
 tests(5) = @ResourceContainerTest.testModule
 tests(6) = @IdentityTest.testModule
+tests(7) = @MapTest.testModule

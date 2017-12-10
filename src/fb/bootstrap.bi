@@ -10,6 +10,7 @@
 #include once "shared/lib/identity/identity.bi"
 #include once "shared/lib/iterator/iterator.bi"
 #include once "shared/lib/list/list.bi"
+#include once "shared/lib/map/map.bi"
 #include once "shared/lib/paged-array/paged-array.bi"
 #include once "shared/lib/resource-container/resource-container.bi"
 
@@ -24,6 +25,7 @@ type Dependencies
 	identity as Identity.Interface ptr
 	iterator as Iterator.Interface ptr
 	list as List.Interface ptr
+	map as Map.Interface ptr
 	pagedArray as PagedArray.Interface ptr
 	resourceContainer as ResourceContainer.Interface ptr
 	tester as Tester.Interface ptr
@@ -55,6 +57,7 @@ function run () as Bootstrap.Dependencies ptr
 	Identity.load(@corePtr)
 	Iterator.load(@corePtr)
 	List.load(@corePtr)
+	Map.load(@corePtr)
 	PagedArray.load(@corePtr)
 	ResourceContainer.load(@corePtr)
 
@@ -62,6 +65,7 @@ function run () as Bootstrap.Dependencies ptr
 	if not Identity.register() then print "Bootstrap: Failed to register Identity"
 	if not Iterator.register() then print "Bootstrap: Failed to register Iterator"
 	if not List.register() then print "Bootstrap: Failed to register List"
+	if not Map.register() then print "Bootstrap: Failed to register Map"
 	if not PagedArray.register() then print "Bootstrap: Failed to register PagedArray"
 	if not ResourceContainer.register() then print "Bootstrap: Failed to register ResourceContainer"
 
@@ -86,6 +90,8 @@ function _register (moduleName as zstring, interface as any ptr) as integer
 			deps.iterator = interface
 		case "list":
 			deps.list = interface
+		case "map":
+			deps.map = interface
 		case "paged-array":
 			deps.pagedArray = interface
 		case "resource-container":
@@ -117,6 +123,8 @@ function _require (moduleName as zstring) as any ptr
 			interface = deps.iterator
 		case "list":
 			interface = deps.list
+		case "map":
+			interface = deps.map
 		case "paged-array":
 			interface = deps.pagedArray
 		case "resource-container":
