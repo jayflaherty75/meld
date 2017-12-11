@@ -37,11 +37,19 @@ namespace Template
 '	#include once "../shared/lib/template/test.bi"
 '	tests(9999) = @TemplateTest.testModule
 
-
+/''
+ ' Creates a map instance to manage named relationships to resources.
+ ' @param {zstring} id
+ ' @returns {TemplateObj ptr}
+ '/
 function construct(byref id as zstring) as TemplateObj ptr
 	return NULL
 end function
 
+/''
+ ' Lifecycle function removing instance from system.
+ ' @param {templateObj ptr} templatePtr
+ '/
 sub destruct (templatePtr as TemplateObj ptr)
 end sub
 
