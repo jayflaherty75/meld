@@ -3,7 +3,7 @@
 #include once "../core/core-v1.bi"
 #include once "../console/console-v1.bi"
 
-#define ERROR_NAME_MAX_LENGTH               32
+#define ERROR_NAME_MAX_LENGTH               64
 
 namespace Fault
 
