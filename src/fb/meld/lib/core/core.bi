@@ -13,6 +13,7 @@ declare function isRunning() as integer
 declare function getStatus() as integer
 declare function register (byref moduleName as zstring, interface as any ptr) as integer
 declare function require (byref moduleName as zstring) as any ptr
+declare function isLoaded (byref moduleName as zstring) as integer
 declare sub shutdown(status as integer)
 declare function getNewline() as zstring ptr
 declare function getDirSep() as zstring ptr

@@ -14,8 +14,8 @@ type Instance
 end type
 
 type Interface
-	load as function (corePtr as Core.Interface ptr) as integer
-	unload as sub ()
+	load as function cdecl (corePtr as Core.Interface ptr) as integer
+	unload as sub cdecl ()
 	register as function () as integer
 	unregister as sub ()
 	construct as function (dataSet as any ptr = NULL, length as integer = -1) as Iterator.Instance ptr

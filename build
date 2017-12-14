@@ -5,6 +5,17 @@ echo
 echo Compiling modules...
 echo
 
+fbc -mt -s console -dylib -export "./src/fb/shared/lib/bst/bst.bas" -x "modules/bst.so" \
+	 || { echo; echo Failed to compile bst module, build terminated; exit 1; }
+fbc -mt -s console -dylib -export "./src/fb/shared/lib/iterator/iterator.bas" -x "modules/iterator.so" \
+	 || { echo; echo Failed to compile iterator module, build terminated; exit 1; }
+fbc -mt -s console -dylib -export "./src/fb/shared/lib/list/list.bas" -x "modules/list.so" \
+	 || { echo; echo Failed to compile list module, build terminated; exit 1; }
+fbc -mt -s console -dylib -export "./src/fb/shared/lib/paged-array/paged-array.bas" -x "modules/paged-array.so" \
+	 || { echo; echo Failed to compile paged-array module, build terminated; exit 1; }
+fbc -mt -s console -dylib -export "./src/fb/shared/lib/resource-container/resource-container.bas" -x "modules/resource-container.so" \
+	 || { echo; echo Failed to compile resource-container module, build terminated; exit 1; }
+
 fbc -mt -c "./src/fb/meld/lib/core/core.bas" || { echo; echo Failed to compile core, build terminated; exit 1; }
 fbc -mt -c "./src/fb/meld/lib/fault/fault.bas" || { echo; echo Failed to compile fault, build terminated; exit 1; }
 fbc -mt -c "./src/fb/meld/lib/error-handling/error-handling.bas" || { echo; echo Failed to compile error-handling, build terminated; exit 1; }

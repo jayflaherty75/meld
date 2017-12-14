@@ -25,7 +25,7 @@ dim shared as ErrorCodes errors
  ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
  '/
-function load (corePtr as Core.Interface ptr) as integer
+function load cdecl alias "load" (byval corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
 		print ("**** PagedArray.load: Invalid corePtr interface pointer")
 		return false
@@ -54,7 +54,7 @@ end function
 /''
  ' Unload lifecycle function called by Meld framework.
  '/
-sub unload()
+sub unload cdecl alias "unload" ()
 end sub
 
 /''

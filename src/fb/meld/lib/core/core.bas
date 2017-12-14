@@ -3,10 +3,6 @@
 
 namespace Core
 
-type Dependencies
-	console as Console.Interface ptr
-end type
-
 type StateType
     isRunning as integer
 	status as integer
@@ -14,8 +10,9 @@ type StateType
 	systemNewLine as zstring*8
 	systemDirChar as zstring*8
 	methods as Interface
-	deps as Dependencies
 end type
+
+dim shared _console as Console.Interface ptr
 
 dim shared as StateType state
 
@@ -106,6 +103,13 @@ end function
  '/
 function require (byref moduleName as zstring) as any ptr
 	return NULL
+end function
+
+/''
+ ' @param {zstring} moduleName
+ '/
+function isLoaded (byref moduleName as zstring) as integer
+	return true
 end function
 
 /''

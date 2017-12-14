@@ -3,8 +3,8 @@
 
 namespace Bst
 
-declare function load (corePtr as Core.Interface ptr) as integer
-declare sub unload()
+declare function load cdecl alias "load" (byval corePtr as Core.Interface ptr) as integer
+declare sub unload cdecl alias "unload" ()
 declare function register() as integer
 declare sub unregister()
 declare function construct(byref id as zstring) as BstObj ptr

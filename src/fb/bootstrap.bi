@@ -131,6 +131,8 @@ function _require (moduleName as zstring) as any ptr
 			interface = deps.resourceContainer
 		case "tester":
 			interface = deps.tester
+		case else:
+			interface = deps.core->require(moduleName)
 	end select
 
 	return interface
