@@ -19,6 +19,8 @@ function load (corePtr as Core.Interface ptr) as integer
 
 	state.methods.load = @load
 	state.methods.unload = @unload
+	state.methods.register = NULL
+	state.methods.unregister = NULL
 	state.methods.run = @run
 	state.methods.describe = @describe
 	state.methods.suite = @suite

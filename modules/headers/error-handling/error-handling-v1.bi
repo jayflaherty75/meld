@@ -9,6 +9,8 @@ namespace ErrorHandling
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
+	register as function () as integer
+	unregister as sub ()
 end type
 
 end namespace

@@ -46,6 +46,8 @@ function load (corePtr as Core.Interface ptr) as integer
 
 	errState.methods.load = @load
 	errState.methods.unload = @unload
+	errState.methods.register = NULL
+	errState.methods.unregister = NULL
 	errState.methods.registerType = @registerType
 	errState.methods.assignHandler = @assignHandler
 	errState.methods.getCode = @getCode

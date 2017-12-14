@@ -17,6 +17,8 @@ type Handler as sub(byref errName as zstring, byref message as string, byref fil
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub ()
+	register as function () as integer
+	unregister as sub ()
 	registerType as function (byref errName as zstring) as integer
 	assignHandler as function (errCode as integer, handler as Fault.Handler) as integer
 	getCode as function (byref errName as zstring) as integer

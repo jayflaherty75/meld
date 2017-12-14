@@ -25,7 +25,7 @@ dim shared as ErrorCodes errors
  ' @param {Core.Interface ptr} corePtr
  ' @returns {integer}
  '/
-function load cdecl alias "load" (byval corePtr as Core.Interface ptr) as integer export
+function load cdecl alias "load" (byval corePtr as Core.Interface ptr) as integer
 	if corePtr = NULL then
 		print ("**** Bst.load: Invalid Core interface pointer")
 		return false
@@ -53,7 +53,7 @@ end function
 /''
  ' Unload lifecycle function called by Meld framework.
  '/
-sub unload cdecl alias "unload" () export
+sub unload cdecl alias "unload" ()
 end sub
 
 /''

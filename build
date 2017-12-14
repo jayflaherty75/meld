@@ -5,29 +5,45 @@ echo
 echo Compiling modules...
 echo
 
+echo bst.so
 fbc -mt -s console -dylib -export "./src/fb/shared/lib/bst/bst.bas" -x "modules/bst.so" \
 	 || { echo; echo Failed to compile bst module, build terminated; exit 1; }
+echo iterator.so
 fbc -mt -s console -dylib -export "./src/fb/shared/lib/iterator/iterator.bas" -x "modules/iterator.so" \
 	 || { echo; echo Failed to compile iterator module, build terminated; exit 1; }
+echo list.so
 fbc -mt -s console -dylib -export "./src/fb/shared/lib/list/list.bas" -x "modules/list.so" \
 	 || { echo; echo Failed to compile list module, build terminated; exit 1; }
+echo paged-array.so
 fbc -mt -s console -dylib -export "./src/fb/shared/lib/paged-array/paged-array.bas" -x "modules/paged-array.so" \
 	 || { echo; echo Failed to compile paged-array module, build terminated; exit 1; }
+echo resource-container.so
 fbc -mt -s console -dylib -export "./src/fb/shared/lib/resource-container/resource-container.bas" -x "modules/resource-container.so" \
 	 || { echo; echo Failed to compile resource-container module, build terminated; exit 1; }
 
+echo core
 fbc -mt -c "./src/fb/meld/lib/core/core.bas" || { echo; echo Failed to compile core, build terminated; exit 1; }
+echo fault
 fbc -mt -c "./src/fb/meld/lib/fault/fault.bas" || { echo; echo Failed to compile fault, build terminated; exit 1; }
+echo error-handling
 fbc -mt -c "./src/fb/meld/lib/error-handling/error-handling.bas" || { echo; echo Failed to compile error-handling, build terminated; exit 1; }
+echo tester/tester
 fbc -mt -c "./src/fb/meld/lib/tester/tester.bas" || { echo; echo Failed to compile tester, build terminated; exit 1; }
 
-fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
+#fbc -mt -c "./src/fb/shared/lib/bst/bst.bas" || { echo; echo Failed to compile bst, build terminated; exit 1; }
+echo console
 fbc -mt -c "./src/fb/shared/lib/console/console.bas" || { echo; echo Failed to compile console, build terminated; exit 1; }
+echo identity
 fbc -mt -c "./src/fb/shared/lib/identity/identity.bas" || { echo; echo Failed to compile identity, build terminated; exit 1; }
+echo iterator
 fbc -mt -c "./src/fb/shared/lib/iterator/iterator.bas" || { echo; echo Failed to compile iterator, build terminated; exit 1; }
+echo list
 fbc -mt -c "./src/fb/shared/lib/list/list.bas" || { echo; echo Failed to compile list, build terminated; exit 1; }
+echo map
 fbc -mt -c "./src/fb/shared/lib/map/map.bas" || { echo; echo Failed to compile map, build terminated; exit 1; }
+echo paged-array
 fbc -mt -c "./src/fb/shared/lib/paged-array/paged-array.bas" || { echo; echo Failed to compile paged-array, build terminated; exit 1; }
+echo resource-container
 fbc -mt -c "./src/fb/shared/lib/resource-container/resource-container.bas" || { echo; echo Failed to compile resource-container, build terminated; exit 1; }
 
 fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
@@ -35,7 +51,6 @@ fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/meld/lib/error-handling/error-handling.o" \
 	"./src/fb/meld/lib/tester/tester.o" \
-	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
@@ -44,6 +59,9 @@ fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
 	"./src/fb/shared/lib/paged-array/paged-array.o" \
 	"./src/fb/shared/lib/resource-container/resource-container.o" \
 	|| { echo; echo Test compilation failed, build terminated; exit 1; }
+
+# Removed
+#	"./src/fb/shared/lib/bst/bst.o" \
 
 echo "";
 
@@ -57,7 +75,6 @@ fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
 	"./src/fb/meld/lib/fault/fault.o" \
 	"./src/fb/meld/lib/error-handling/error-handling.o" \
 	"./src/fb/meld/lib/tester/tester.o" \
-	"./src/fb/shared/lib/bst/bst.o" \
 	"./src/fb/shared/lib/console/console.o" \
 	"./src/fb/shared/lib/identity/identity.o" \
 	"./src/fb/shared/lib/iterator/iterator.o" \
@@ -66,6 +83,9 @@ fbc -mt -C "./src/fb/meld/meld.bas" -x "./meld" \
 	"./src/fb/shared/lib/paged-array/paged-array.o" \
 	"./src/fb/shared/lib/resource-container/resource-container.o" \
 	|| { echo; echo Build failed; exit 1; }
+
+# Removed
+#	"./src/fb/shared/lib/bst/bst.o" \
 
 echo;
 echo Build successful!;

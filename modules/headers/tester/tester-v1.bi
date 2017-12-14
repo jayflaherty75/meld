@@ -13,6 +13,8 @@ type testModule as function (corePtr as Core.Interface ptr, describe as describe
 type Interface
 	load as function (corePtr as Core.Interface ptr) as integer
 	unload as sub()
+	register as function () as integer
+	unregister as sub ()
 	run as function (testArray as testModule ptr, count as integer) as integer
 	describe as function (byref description as string, callback as suiteFunc) as integer
 	suite as function (byref description as string, test as testFunc) as integer

@@ -19,3 +19,7 @@ declare function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
 declare function defaultCompare(criteria as any ptr, element as any ptr) as integer
 
 end namespace
+
+function moduleLoader cdecl alias "moduleLoader" (byval corePtr as Core.Interface ptr) as integer export
+	return Bst.load(corePtr)
+end function

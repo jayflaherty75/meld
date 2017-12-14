@@ -22,6 +22,8 @@ function load (corePtr as Core.Interface ptr) as integer
 
 	state.methods.load = @load
 	state.methods.unload = @unload
+	state.methods.register = NULL
+	state.methods.unregister = NULL
 	state.methods.logMessage = @logMessage
 	state.methods.logWarning = @logWarning
 	state.methods.logError = @logError

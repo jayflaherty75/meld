@@ -1,6 +1,7 @@
 
 #include once "../../../../../modules/headers/tester/tester-v1.bi"
-#include once "bst.bi"
+#include once "../../../../../modules/headers/bst/bst-v1.bi"
+#include once "../../../../../modules/headers/iterator/iterator-v1.bi"
 
 namespace BstTest
 
@@ -17,6 +18,7 @@ declare function test7 () as integer
 declare function test30 () as integer
 
 dim shared _core as Core.Interface ptr
+dim shared _bst as Bst.Interface ptr
 dim shared _iterator as Iterator.Interface ptr
 
 const as integer dataLen = 15
@@ -28,6 +30,7 @@ function testModule (corePtr as Core.Interface ptr, describe as Tester.describeC
 	dim as integer result = true
 
 	_core = corePtr
+	_bst = _core->require("bst")
 	_iterator = _core->require("iterator")
 
 	result = result ANDALSO describe ("The BST module", @create)
@@ -37,6 +40,16 @@ end function
 
 function create (it as Tester.itCallback) as integer
 	dim as integer result = true
+
+	if _bst = NULL then
+		print ("FAILED TO LOAD MODULE")
+		return false
+	end if
+
+	if _iterator = NULL then
+		print ("FAILED TO LOAD DEPENDENCY: iterator")
+		return false
+	end if
 
 	result = result ANDALSO it ("creates a BST instance", @test1)
 	result = result ANDALSO it ("inserts a set of nodes", @test2)
@@ -52,7 +65,7 @@ function create (it as Tester.itCallback) as integer
 end function
 
 function test1 () as integer
-	btreePtr = Bst.construct("TestBst")
+	btreePtr = _bst->construct("TestBst")
 
 	if btreePtr = NULL then
 		return false
@@ -66,7 +79,7 @@ function test2 () as integer
 	dim as integer result = true
 
 	for i = 0 to dataLen-1
-		nodePtr = Bst.insert(btreePtr, @testData(i))
+		nodePtr = _bst->insert(btreePtr, @testData(i))
 
 		if nodePtr = NULL then
 			result = false
@@ -78,7 +91,7 @@ function test2 () as integer
 end function
 
 function test3 () as integer
-	if Bst.getLength(btreePtr) <> dataLen then
+	if _bst->getLength(btreePtr) <> dataLen then
 		return false
 	end if
 
@@ -86,7 +99,7 @@ function test3 () as integer
 end function
 
 function test4() as integer
-	nodePtr = Bst.search(btreePtr, @testData(3))
+	nodePtr = _bst->search(btreePtr, @testData(3))
 
 	if nodePtr = NULL orelse *cptr(integer ptr, nodePtr->element) <> testData(3) then
 		return false
@@ -96,10 +109,10 @@ function test4() as integer
 end function
 
 function test5 () as integer
-	Bst.remove(btreePtr, nodePtr)
+	_bst->remove(btreePtr, nodePtr)
 	nodePtr = NULL
 
-	if Bst.getLength(btreePtr) <> dataLen-1 then
+	if _bst->getLength(btreePtr) <> dataLen-1 then
 		return false
 	end if
 
@@ -107,9 +120,9 @@ function test5 () as integer
 end function
 
 function test6 () as integer
-	Bst.remove(btreePtr, Bst.search(btreePtr, @testData(0)))
+	_bst->remove(btreePtr, _bst->search(btreePtr, @testData(0)))
 
-	if Bst.getLength(btreePtr) <> dataLen-2 then
+	if _bst->getLength(btreePtr) <> dataLen-2 then
 		return false
 	end if
 
@@ -117,7 +130,7 @@ function test6 () as integer
 end function
 
 function test7 () as integer
-	dim as IteratorObj ptr iter = Bst.getIterator(btreePtr)
+	dim as IteratorObj ptr iter = _bst->getIterator(btreePtr)
 	dim as integer ptr valPtr
 	dim as string result = "_"
 
@@ -142,7 +155,7 @@ end function
 function test30 () as integer
 	dim as integer length
 
-	Bst.destruct (btreePtr)
+	_bst->destruct (btreePtr)
 	btreePtr = NULL
 
 	return true
