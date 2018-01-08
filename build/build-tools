@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fbc -C "./build/tools/parse-fb/main.bas" -x "./build/parse-fb"
