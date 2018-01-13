@@ -25,8 +25,8 @@ Type StateTypeAlias As StateType
 
 Type CommandInterface
 	isCommand As Function(ByRef cmd As String) As Short
-	parse As Function(ByRef cmd As String, definition As String, parserPtr As StateTypeAlias, blockPtr As BlockType Ptr) As Short
-	render As Function(parserPtr As StateTypeAlias, blockPtr As BlockType Ptr) As Short
+	parse As Function(ByRef definition As String, parserPtr As StateTypeAlias Ptr, blockPtr As BlockType Ptr) As Short
+	render As Function(parserPtr As StateTypeAlias Ptr, blockPtr As BlockType Ptr) As Short
 End Type
 
 Type StateType

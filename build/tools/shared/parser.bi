@@ -20,9 +20,10 @@ Declare Function _cleanContent(ByRef srcLine As String) As String
 Declare Function _getBlock(blockPtr As BlockType Ptr = NULL) As BlockType Ptr
 Declare Function _splitCommand(ByRef srcLine As String, ByRef cmd As String, ByRef definition As String) As Short
 Declare Sub _cleanup(blockPtr As BlockType Ptr)
+Declare Function _setCommandInterface(ByRef cmd As String) As Short
 Declare Sub _setDefaultInterface()
-Declare Function _defaultParse(ByRef cmd As String, definition As String, parserPtr As StateType, blockPtr As BlockType Ptr) As Short
-Declare Function _defaultRender(parserPtr As StateType, blockPtr As BlockType Ptr) As Short
+Declare Function _defaultParse(ByRef definition As String, parserPtr As StateType Ptr, blockPtr As BlockType Ptr) As Short
+Declare Function _defaultRender(parserPtr As StateType Ptr, blockPtr As BlockType Ptr) As Short
 
 Sub initialize(startup as function(parserState As StateType ptr) as short)
 	config.docStart = "/**"
@@ -75,10 +76,22 @@ End Sub
 Function process(ByVal srcLine As String) As Integer
 	Dim as String lineCopy = Trim(srcLine)
 
+	if state.commandCount = 0 then
+		print("Error: Parser commands have not been configured")
+		return false
+	end if
+
 	if not state.isDocBlock then
 		if instr(lineCopy, config.docStart) > 0 then
 			state.isDocBlock = true
-			state.current = CAllocate(SizeOf(BlockType Ptr))
+			state.current = CAllocate(SizeOf(BlockType))
+
+			if state.current <> NULL then
+				state.current->objName = ""
+				state.current->description = ""
+			else
+				print("Error: Failed to allocate block")
+			end if
 		end if
 	else
 		if instr(lineCopy, config.docEnd) = 0 then
@@ -86,10 +99,15 @@ Function process(ByVal srcLine As String) As Integer
 				return false
 			end if
 		else
-			state.current->child = NULL
-			_cleanup(state.current)
+			if state.current <> NULL then
+				'state.currentCmd.render(@state, state.current)
 
-			state.current = NULL
+				'state.current->child = NULL
+				_cleanup(state.current)
+
+				state.current = NULL
+			end if
+
 			state.isDocBlock = false
 		end if
 	end if
@@ -98,13 +116,24 @@ Function process(ByVal srcLine As String) As Integer
 End Function
 
 Function _processContent(ByRef srcLine As String) As Integer
+	Dim As BlockType ptr blockPtr = _getBlock()
 	Dim As String cmd
 	Dim As String definition
 
 	if _splitCommand(srcLine, cmd, definition) then
+		_setCommandInterface(cmd)
+
+		if state.currentCmd.parse then
+			if not state.currentCmd.parse(definition, @state, blockPtr) then
+				print("Error in line: " & srcLine)
+				return false
+			end if
+		end if
+
 		'print(cmd & ": " & definition)
-	else
+	elseif blockPtr <> NULL then
 		'print("     " & srcLine)
+		blockPtr->description &= srcLine
 	end if
 
 	return true
@@ -182,11 +211,21 @@ Sub _setDefaultInterface()
 	state.currentCmd.render = @_defaultRender
 End Sub
 
-Function _defaultParse(ByRef cmd As String, definition As String, parserPtr As StateType, blockPtr As BlockType Ptr) As Short
+Function _defaultParse(ByRef definition As String, parserPtr As StateType Ptr, blockPtr As BlockType Ptr) As Short
+	if blockPtr->description <> "" then
+		blockPtr->description &= !"\r\n"
+	end if
+
+	blockPtr->description &= definition
+
 	Return true
 End Function
 
-Function _defaultRender(parserPtr As StateType, blockPtr As BlockType Ptr) As Short
+Function _defaultRender(parserPtr As StateType Ptr, blockPtr As BlockType Ptr) As Short
+	parserPtr->description = blockPtr->description
+
+	print ("Default rendering: " & parserPtr->description)
+
 	Return true
 End Function
 
