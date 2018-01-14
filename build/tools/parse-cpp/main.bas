@@ -7,9 +7,6 @@ Function main() As Integer
 	Dim as long lineNum = 1
 
 	Parser.Initialize(@ParserXmlWriter.startup)
-	Parser.setDocStart("/''")
-	Parser.setDocEnd("'/")
-	Parser.setLineStart("'")
 
 	parserSetup()
 

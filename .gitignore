@@ -41,4 +41,5 @@ luac.out
 
 /meld
 /tester
-parse-fb
+/build/parse-*
+/modules/definitions/*.xml
