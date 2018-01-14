@@ -11,32 +11,20 @@ Type ConfigType
 	descStart As String
 	typeStart As String
 	typeEnd As String
-End Type
-
-Type BlockType
-	objName As String
-	objType As Short
-	description As String
-	dataPtr As Any Ptr
-	child As BlockType ptr
-End Type
-
-Type StateTypeAlias As StateType
-
-Type CommandInterface
-	isCommand As Function(ByRef cmd As String) As Short
-	parse As Function(ByRef definition As String, parserPtr As StateTypeAlias Ptr, blockPtr As BlockType Ptr) As Short
-	render As Function(parserPtr As StateTypeAlias Ptr, blockPtr As BlockType Ptr) As Short
+	newline as String
 End Type
 
 Type StateType
+	config as ConfigType Ptr
 	namespc As String
 	description As String
-	current As BlockType Ptr
-	currentCmd As CommandInterface
+	blockDesc as String
 	isDocBlock As Short
-	commands(50) As CommandInterface
-	commandCount As Short
+	directives(50) As Function(ByRef cmd As String, ByRef definition As String, parserPtr As StateType Ptr) As Short
+	directiveCount As Short
+	onExtraLine As Function(ByRef srcLine As String, parserPtr As StateType Ptr) As Short
+	onDirectiveEnd As Function(parserPtr As StateType Ptr) As Short
+	onBlockEnd As Function(parserPtr As StateType Ptr) As Short
 End Type
 
 End Namespace

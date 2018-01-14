@@ -1,47 +1,46 @@
 
-#define PARSER_COMMAND_FUNCTION			1
+#include once "global.bi"
+#include once "parser-types.bi"
 
 namespace ParserXmlCmdFunction
 
-declare function isCommand(ByRef cmd As String) As Short
-declare function parse(ByRef definition As String, parserPtr As Parser.StateType Ptr, blockPtr As Parser.BlockType Ptr) As Short
-declare function render(parserPtr As Parser.StateType Ptr, blockPtr As Parser.BlockType Ptr) As Short
+declare function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
+declare Function onBlockEnd(parserPtr As Parser.StateType Ptr) As Short
 
-function isCommand(ByRef cmd As String) As Short
-	if lcase(cmd) = "function" then
-		return true
-	end if
-
-	return false
-end function
-
-function parse(byref definition As String, parserPtr As Parser.StateType Ptr, blockPtr As Parser.BlockType Ptr) As Short
+function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
+	dim as string objName
 
-	blockPtr->objType = PARSER_COMMAND_FUNCTION
-
-	if definition <> "" then
-		if blockPtr->objName = "" then
-			position = instr(definition, " ")
-
-			if position = 0 then
-				blockPtr->objName = definition
-			else
-				blockPtr->objName = left(definition, position)
-				blockPtr->description = mid(definition, position + 1)
-			end if
-		else
-			blockPtr->description &= definition
+	if lcase(cmd) = "function" then
+		if trim(definition) = "" then
+			print("Error: Missing name in function directive")
+			return false
 		end if
+
+		parserPtr->onBlockEnd = @onBlockEnd
+
+		position = instr(definition, " ")
+
+		if position = 0 then
+			objName = definition
+		else
+			objName = left(definition, position)
+		end if
+
+		print("  <function name='" & objName & "'>")
 	end if
 
 	return true
 end function
 
-function render(parserPtr As Parser.StateType Ptr, blockPtr As Parser.BlockType Ptr) As Short
-	print("Function: " & blockPtr->objName & " - " & blockPtr->description)
+Function onBlockEnd(parserPtr As Parser.StateType Ptr) As Short
+	if parserPtr->blockDesc <> "" then
+		print("    <description>" & parserPtr->blockDesc & "</description>")
+	end if
+
+	print("  </function>")
 
 	return true
-end function
+End Function
 
 end namespace

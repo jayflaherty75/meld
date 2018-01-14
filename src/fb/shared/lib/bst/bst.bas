@@ -4,8 +4,7 @@
 #include once "errors.bi"
 
 /''
- ' Here's a temporary description for testing purposes.
- ' Helps if it's multi-line.
+ ' Binary Search Tree
  ' @namespace Bst
  '/
 namespace Bst
