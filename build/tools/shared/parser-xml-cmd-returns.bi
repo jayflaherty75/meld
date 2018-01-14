@@ -3,11 +3,10 @@
 #include once "parser-types.bi"
 #include once "parser-lib.bi"
 
-namespace ParserXmlCmdParam
+namespace ParserXmlCmdReturns
 
 type StateType
-	paramName as string
-	paramType as string
+	returnType as string
 	description as string
 end type
 
@@ -22,17 +21,16 @@ declare function _parseDescription(parserPtr as Parser.StateType ptr, byref sour
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "param" then
+	if lcase(cmd) = "returns" then
 		if trim(definition) = "" then
-			print("Error: Missing type in @param directive")
+			print("Error: Missing type in @returns directive")
 			return false
 		end if
 
 		parserPtr->onExtraLine = @onExtraLine
 		parserPtr->onDirectiveEnd = @onDirectiveEnd
 
-		state.paramName = ""
-		state.paramType = ""
+		state.returnType = ""
 		state.description = ""
 
 		if not _parseDescription(parserPtr, definition) then
@@ -51,19 +49,11 @@ end function
 
 Function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 	if state.description <> "" then
-		if state.paramType <> "" then
-			print("    <param name='" & state.paramName & "' type='" & state.paramType & "'>")
-		else
-			print("    <param name='" & state.paramName & "'>")
-		end if
+		print("    <returns type='" & state.returnType & "'>")
 		print("      <description>" & state.description & "</description>")
-		print("    </param>")
+		print("    </returns>")
 	else
-		if state.paramType <> "" then
-			print("    <param name='" & state.paramName & "' type='" & state.paramType & "' />")
-		else
-			print("    <param name='" & state.paramName & "' />")
-		end if
+		print("    <returns type='" & state.returnType & "' />")
 	end if
 
 	return true
@@ -71,18 +61,14 @@ End Function
 
 function _parseDescription(parserPtr as Parser.StateType ptr, byref source as string) as short
 	dim as short typeEnd
-	dim as short nameEnd
 
-	typeEnd = ParserLib.parseType(source, state.paramType)
+	typeEnd = ParserLib.parseType(source, state.returnType)
 	if typeEnd = 0 then
-		print("Error: Missing delimiter in @param")
+		print("Error: Missing delimiter in @returns")
 		return false
 	end if
 
-	nameEnd = ParserLib.parseWord(source, state.paramName, typeEnd - 1)
-	if nameEnd = 0 then return true
-
-	ParserLib.parseDescription(source, state.description, nameEnd - 1)
+	ParserLib.parseDescription(source, state.description, typeEnd)
 
 	return true
 end function
