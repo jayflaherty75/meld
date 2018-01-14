@@ -13,7 +13,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 
 	if lcase(cmd) = "function" then
 		if trim(definition) = "" then
-			print("Error: Missing name in @function directive")
+			logError("Error: Missing name in @function directive")
 			return false
 		end if
 

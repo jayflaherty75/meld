@@ -11,7 +11,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 
 	if lcase(cmd) = "namespace" then
 		if trim(definition) = "" then
-			print("Error: Missing name in @namespace directive")
+			logError("Error: Missing name in @namespace directive")
 			return false
 		end if
 

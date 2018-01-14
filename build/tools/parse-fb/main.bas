@@ -2,24 +2,35 @@
 #include once "../shared/parser-xml-writer.bi"
 #include once "commands.bi"
 
-Dim srcLine as String
+Function main() As Integer
+	Dim as String srcLine
+	Dim as long lineNum = 1
 
-Parser.Initialize(@ParserXmlWriter.startup)
-Parser.setDocStart("/''")
-Parser.setDocEnd("'/")
-Parser.setLineStart("'")
+	Parser.Initialize(@ParserXmlWriter.startup)
+	Parser.setDocStart("/''")
+	Parser.setDocEnd("'/")
+	Parser.setLineStart("'")
 
-parserSetup()
+	parserSetup()
 
-Open Cons For Input As #1
+	Open Cons For Input As #1
 
-Do Until EOF(1)
-	Line Input #1, srcLine
-	Parser.process(srcLine)
-Loop
+	Do Until EOF(1)
+		Line Input #1, srcLine
 
-Close #1
+		if not Parser.process(srcLine) then
+			print(" -> Line " & lineNum & ": " & srcLine)
+			return 1
+		end if
 
-Parser.Uninitialize(@ParserXmlWriter.finish)
+		lineNum += 1
+	Loop
 
-End
+	Close #1
+
+	Parser.Uninitialize(@ParserXmlWriter.finish)
+
+	return 0
+End Function
+
+End main()

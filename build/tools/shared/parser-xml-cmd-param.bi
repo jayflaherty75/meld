@@ -24,7 +24,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 
 	if lcase(cmd) = "param" then
 		if trim(definition) = "" then
-			print("Error: Missing type in @param directive")
+			logError("Error: Missing type in @param directive")
 			return false
 		end if
 
@@ -74,8 +74,8 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 	dim as short nameEnd
 
 	typeEnd = ParserLib.parseType(source, state.paramType)
-	if typeEnd = 0 then
-		print("Error: Missing delimiter in @param")
+	if typeEnd = -1 then
+		logError("Error: Missing type delimiter in @param")
 		return false
 	end if
 

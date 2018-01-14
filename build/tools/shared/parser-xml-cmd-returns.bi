@@ -23,7 +23,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 
 	if lcase(cmd) = "returns" then
 		if trim(definition) = "" then
-			print("Error: Missing type in @returns directive")
+			logError("Error: Missing type in @returns directive")
 			return false
 		end if
 
@@ -63,8 +63,8 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 	dim as short typeEnd
 
 	typeEnd = ParserLib.parseType(source, state.returnType)
-	if typeEnd = 0 then
-		print("Error: Missing delimiter in @returns")
+	if typeEnd = -1 then
+		logError("Error: Missing delimiter in @returns")
 		return false
 	end if
 

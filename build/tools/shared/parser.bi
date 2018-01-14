@@ -87,7 +87,6 @@ Function process(ByVal srcLine As String) As Integer
 	else
 		if instr(lineCopy, config.docEnd) = 0 then
 			if not _processLine(ParserLib.decommentify(lineCopy)) then
-				print(" -> " & srcLine)
 				return false
 			end if
 		else
@@ -97,7 +96,6 @@ Function process(ByVal srcLine As String) As Integer
 
 			if state.onBlockEnd <> NULL then
 				if not state.onBlockEnd(@state) then
-					print("Error: Failed to close block")
 					return false
 				end if
 			else
