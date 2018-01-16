@@ -20,7 +20,7 @@
 	end type
 
 	type Interface
-		' TODO: Move lifecycle functions into a shared type definition
+		
 		load as function cdecl (corePtr as Core.Interface ptr) as integer
 		unload as sub cdecl ()
 		register as function () as integer

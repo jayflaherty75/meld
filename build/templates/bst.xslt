@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-	<xsl:output indent="yes" omit-xml-declaration="yes" />
+	<xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 	<xsl:template match="module">
 
-<xsl:for-each select="requires">
+	<xsl:for-each select="requires">
 		<xsl:text>&#x9;</xsl:text>
 		<xsl:text>#include once "../</xsl:text>
 		<xsl:value-of select="@module" />
@@ -31,15 +31,15 @@
 	end type
 
 	type Interface
-		' TODO: Move lifecycle functions into a shared type definition
+		<xsl:comment>TODO: Move lifecycle functions into a shared type definition</xsl:comment>
 		load as function cdecl (corePtr as Core.Interface ptr) as integer
 		unload as sub cdecl ()
 		register as function () as integer
 		unregister as sub ()
-<xsl:for-each select="function">
+		<xsl:for-each select="function">
 			<xsl:choose>
 				<xsl:when test="not(private)">
-					<xsl:text>&#x9;&#x9;</xsl:text>
+					<xsl:if test="position()!=1"><xsl:text>&#x9;&#x9;</xsl:text></xsl:if>
 					<xsl:value-of select="@name" />
 					<xsl:text> as </xsl:text>
 					<xsl:choose>
