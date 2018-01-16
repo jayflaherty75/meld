@@ -2,11 +2,18 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 	<xsl:output indent="yes" omit-xml-declaration="yes" />
 	<xsl:template match="module">
-	#include once "../constants/constants-v1.bi"
-	#include once "../core/core-v1.bi"
-	#include once "../fault/fault-v1.bi"
-	#include once "../iterator/iterator-v1.bi"
 
+<xsl:for-each select="requires">
+		<xsl:text>&#x9;</xsl:text>
+		<xsl:text>#include once "../</xsl:text>
+		<xsl:value-of select="@module" />
+		<xsl:text>/</xsl:text>
+		<xsl:value-of select="@module" />
+		<xsl:text>-v</xsl:text>
+		<xsl:value-of select="@version" />
+		<xsl:text>.bi"</xsl:text>
+		<xsl:text>&#xa;</xsl:text>
+	</xsl:for-each>
 	namespace <xsl:value-of select="namespace" />
 
 	type Node

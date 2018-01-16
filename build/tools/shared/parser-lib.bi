@@ -90,8 +90,6 @@ Function parseWord(ByRef source As String, ByRef result As String, start as shor
 	dim as short wordEnd
 
 	wordStart = instr(start, source, " ")
-	if wordStart = 0 then return 0
-
 	wordEnd = instr(wordStart + 1, source, " ")
 
 	if wordEnd = 0 then

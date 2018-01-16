@@ -2,7 +2,7 @@
 /''
  ' @requires constants
  ' @requires core
- ' @requires [fault = 1]
+ ' @requires fault
  ' @requires iterator
  '/
 
