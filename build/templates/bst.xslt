@@ -3,8 +3,8 @@
 	<xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 	<xsl:template match="module">
 
+	<xsl:text>&#xa;</xsl:text>
 	<xsl:for-each select="requires">
-		<xsl:text>&#x9;</xsl:text>
 		<xsl:text>#include once "../</xsl:text>
 		<xsl:value-of select="@module" />
 		<xsl:text>/</xsl:text>
@@ -14,32 +14,22 @@
 		<xsl:text>.bi"</xsl:text>
 		<xsl:text>&#xa;</xsl:text>
 	</xsl:for-each>
-	namespace <xsl:value-of select="namespace" />
+	<xsl:text>&#xa;</xsl:text>
 
-	type Node
-		rightPtr as Bst.Node ptr
-		leftPtr as Bst.Node ptr
-		parent as Bst.Node ptr
-		element as any ptr
-	end type
+	<xsl:text>namespace </xsl:text>
+	<xsl:value-of select="namespace" />
+	<xsl:text>&#xa;&#xa;</xsl:text>
 
-	type Instance
-		id as zstring*64
-		root as Bst.Node ptr
-		length as integer
-		compare as function(criteria as any ptr, element as any ptr) as integer
-	end type
-
-	type Interface
-		<xsl:comment>TODO: Move lifecycle functions into a shared type definition</xsl:comment>
-		load as function cdecl (corePtr as Core.Interface ptr) as integer
-		unload as sub cdecl ()
-		register as function () as integer
-		unregister as sub ()
+	<xsl:text>type Interface&#xa;</xsl:text>
+		<xsl:comment>TODO: Move lifecycle functions into a shared type definition&#xa;</xsl:comment>
+		<xsl:text>&#x9;load as function cdecl (corePtr as Core.Interface ptr) as integer&#xa;</xsl:text>
+		<xsl:text>&#x9;unload as sub cdecl ()&#xa;</xsl:text>
+		<xsl:text>&#x9;register as function () as integer&#xa;</xsl:text>
+		<xsl:text>&#x9;unregister as sub ()&#xa;</xsl:text>
 		<xsl:for-each select="function">
 			<xsl:choose>
 				<xsl:when test="not(private)">
-					<xsl:if test="position()!=1"><xsl:text>&#x9;&#x9;</xsl:text></xsl:if>
+					<xsl:text>&#x9;</xsl:text>
 					<xsl:value-of select="@name" />
 					<xsl:text> as </xsl:text>
 					<xsl:choose>
@@ -82,8 +72,10 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
-	end type
+	<xsl:text>end type</xsl:text>
+	<xsl:text>&#xa;&#xa;</xsl:text>
 
-	end namespace
+	<xsl:text>end namespace</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
 	</xsl:template>
 </xsl:stylesheet>

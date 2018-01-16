@@ -3,6 +3,20 @@
 
 namespace Bst
 
+type Node
+	rightPtr as Bst.Node ptr
+	leftPtr as Bst.Node ptr
+	parent as Bst.Node ptr
+	element as any ptr
+end type
+
+type Instance
+	id as zstring*64
+	root as Bst.Node ptr
+	length as integer
+	compare as function(criteria as any ptr, element as any ptr) as integer
+end type
+
 declare function load cdecl alias "load" (byval corePtr as Core.Interface ptr) as integer
 declare sub unload cdecl alias "unload" ()
 declare function register() as integer
