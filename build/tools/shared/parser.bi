@@ -13,6 +13,7 @@ Declare Sub uninitialize(finish as function(parserState As StateType ptr) as sho
 Declare Sub setDocStart(ByRef token As ZString)
 Declare Sub setDocEnd(ByRef token As ZString)
 Declare Sub setLineStart(ByRef token As ZString)
+Declare Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString)
 Declare Sub addCommand(handler as Function(ByRef cmd As String, ByRef definition As String, parserPtr As StateType Ptr) As Short)
 Declare Function process(ByVal srcLine As String) As Integer
 
@@ -25,8 +26,14 @@ Sub initialize(startup as function(parserState As StateType ptr) as short)
 	config.lineStart = "*"
 	config.cmdStart = "@"
 	config.descStart = "-"
+	config.nameStart = "["
+	config.nameEnd = "]"
+	config.defaultDelimiter = "="
 	config.typeStart = "{"
 	config.typeEnd = "}"
+	config.constParam = "const "
+	config.refParam = "&"
+	config.ptrParam = "*"
 
 	#IFDEF __FB_WIN32__
 	config.newline = !"\r\n"
@@ -63,6 +70,12 @@ End Sub
 
 Sub setLineStart(ByRef token As ZString)
 	config.lineStart = token
+End Sub
+
+Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString)
+	config.constParam = constParam
+	config.refParam = refParam
+	config.ptrParam = ptrParam
 End Sub
 
 Sub addCommand(handler as Function(ByRef cmd As String, ByRef definition As String, parserPtr As StateType Ptr) As Short)

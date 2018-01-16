@@ -9,8 +9,14 @@ Type ConfigType
 	lineStart As String
 	cmdStart As String
 	descStart As String
+	nameStart As String
+	nameEnd As String
+	defaultDelimiter As String
 	typeStart As String
 	typeEnd As String
+	constParam As String
+	refParam As String
+	ptrParam As String
 	newline as String
 End Type
 

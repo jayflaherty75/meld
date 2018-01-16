@@ -10,6 +10,7 @@ Function main() As Integer
 	Parser.setDocStart("/''")
 	Parser.setDocEnd("'/")
 	Parser.setLineStart("'")
+	Parser.setParamModifiers("const ", "byref ", " ptr")
 
 	parserSetup()
 

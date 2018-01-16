@@ -8,6 +8,7 @@ namespace ParserXmlCmdReturns
 type StateType
 	returnType as string
 	description as string
+	modifier as string
 end type
 
 dim shared as StateType state
@@ -17,6 +18,7 @@ declare function onExtraLine(ByRef srcLine As String, parserPtr As Parser.StateT
 declare function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 
 declare function _parseDescription(parserPtr as Parser.StateType ptr, byref source as string) as short
+declare function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref returnType as string) as short
 
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
@@ -32,6 +34,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 
 		state.returnType = ""
 		state.description = ""
+		state.modifier = "value"
 
 		if not _parseDescription(parserPtr, definition) then
 			return false
@@ -49,11 +52,11 @@ end function
 
 Function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 	if state.description <> "" then
-		print("    <returns type='" & state.returnType & "'>")
+		print("    <returns type='" & state.returnType & "' modifier='" & state.modifier & "'>")
 		print("      <description>" & state.description & "</description>")
 		print("    </returns>")
 	else
-		print("    <returns type='" & state.returnType & "' />")
+		print("    <returns type='" & state.returnType & "' modifier='" & state.modifier & "' />")
 	end if
 
 	return true
@@ -68,7 +71,22 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 		return false
 	end if
 
+	_parseTypeModifiers(parserPtr, state.returnType)
+
 	ParserLib.parseDescription(source, state.description, typeEnd)
+
+	return true
+end function
+
+function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref returnType as string) as short
+	dim as short ptrPos = instrrev(returnType, parserPtr->config->ptrParam)
+
+	if ptrPos > 0 then
+		state.modifier = "pointer"
+		mid(returnType, ptrPos) = space(len(parserPtr->config->ptrParam))
+	end if
+
+	returnType = trim(returnType)
 
 	return true
 end function

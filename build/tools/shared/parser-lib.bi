@@ -48,6 +48,7 @@ Function parseType(ByRef source As String, ByRef result As String, start as shor
 	dim as short typeStart
 	dim as short typeEnd
 
+	' Types are always required
 	typeStart = instr(start, source, config->typeStart)
 	if typeStart = 0 then return -1
 
@@ -57,6 +58,31 @@ Function parseType(ByRef source As String, ByRef result As String, start as shor
 	result = trim(mid(source, typeStart + 1, typeEnd - typeStart - 1))
 
 	return typeEnd
+End Function
+
+Function parseName(ByRef source As String, ByRef result As String, ByRef defaultValue As String, start as short = 1) As Short
+	dim as short nameStart
+	dim as short nameEnd
+	dim as short defaultStart
+
+	' Name may not be required so return zero
+	nameStart = instr(start, source, config->nameStart)
+	if nameStart = 0 then return 0
+
+	' The ending delimiter is requred when name is present, return error
+	nameEnd = instr(start, source, config->nameEnd)
+	if nameEnd = 0 then return -1
+
+	result = trim(mid(source, nameStart + 1, nameEnd - nameStart - 1))
+
+	defaultStart = instr(result, config->defaultDelimiter)
+
+	if defaultStart > 0 then
+		defaultValue = trim(mid(result, defaultStart + 1))
+		result = trim(left(result, defaultStart - 1))
+	end if
+
+	return nameEnd
 End Function
 
 Function parseWord(ByRef source As String, ByRef result As String, start as short = 1) As Short
