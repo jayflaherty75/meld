@@ -76,6 +76,7 @@ end sub
  ' @param {Bst.Instance ptr} btreePtr
  ' @param {any ptr} element
  ' @returns {Bst.Node ptr}
+ ' @throws {NullReferenceError|InvalidArgumentError|ResourceAllocationError}
  '/
 function insert (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 	dim as Bst.Node ptr nodePtr = NULL
