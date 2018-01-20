@@ -1,8 +1,19 @@
 
+/''
+ ' @requires constants
+ ' @requires core
+ ' @requires fault
+ ' @requires iterator
+ '/
+
 #include once "bst.bi"
 #include once "module.bi"
 #include once "errors.bi"
 
+/''
+ ' Binary Search Tree
+ ' @namespace Bst
+ '/
 namespace Bst
 
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
@@ -15,8 +26,9 @@ declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) 
 
 /''
  ' Creates a new binary search tree.
- ' @param {ztring} id - Used to tag BST for errors and messages
- ' @returns {BstObj ptr}
+ ' @function construct
+ ' @param {byref zstring} id - Used to tag BST for errors and messages
+ ' @returns {Bst.Instance ptr}
  '/
 function construct(byref id as zstring) as BstObj ptr
 	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))
@@ -37,7 +49,8 @@ end function
 /''
  ' Destroys a binary search tree and any nodes within it.  It does not affect
  ' any data the nodes point to.
- ' @param {BstObj ptr} btreePtr
+ ' @function destruct
+ ' @param {Bst.Instance ptr} btreePtr
  '/
 sub destruct (btreePtr as BstObj ptr)
 	if btreePtr = NULL then
@@ -59,7 +72,8 @@ end sub
 
 /''
  ' Creates a node for the given element and places it within the tree.
- ' @param {BstObj ptr} btreePtr
+ ' @function insert
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {any ptr} element
  ' @returns {Bst.Node ptr}
  '/
@@ -110,7 +124,8 @@ end function
 
 /''
  ' Removes a node from the tree.
- ' @param {BstObj ptr} btreePtr
+ ' @function remove
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} nodePtr
  '/
 sub remove (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
@@ -156,7 +171,8 @@ end sub
 
 /''
  ' Purges tree of all elements.
- ' @param {BstObj ptr} btreePtr
+ ' @function purge
+ ' @param {Bst.Instance ptr} btreePtr
 '/
 sub purge (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
@@ -178,9 +194,10 @@ end sub
  ' Returns the node referencing the given element.  The element values must be
  ' equal, not the element pointers.  Results are based on the BSTs compare
  ' function.
- ' @param {BstObj ptr} btreePtr
+ ' @function search
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {any ptr} element
- ' @param {Bst.Node ptr} start - Defaults to root node
+ ' @param {Bst.Node ptr} [start=NULL] - Defaults to root node
  ' @returns {Bst.Node ptr}
  '/
 function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
@@ -213,7 +230,8 @@ end function
 
 /''
  ' Returns the number of nodes in the tree.
- ' @param {BstObj ptr} btreePtr
+ ' @function getLength
+ ' @param {Bst.Instance ptr} btreePtr
  ' @returns {integer}
  '/
 function getLength (btreePtr as BstObj ptr) as integer
@@ -228,7 +246,8 @@ end function
 /''
  ' Creates a new Iterator for the tree.  Use the Iterator->destruct function
  ' to destroy the iterator.
- ' @param {BstObj ptr} btreePtr
+ ' @function getIterator
+ ' @param {Bst.Instance ptr} btreePtr
  ' @returns {IteratorObj ptr}
  '/
 function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
@@ -255,6 +274,7 @@ end function
 
 /''
  ' Default compare function operating on integer values.
+ ' @function defaultCompare
  ' @param {any ptr} criteria
  ' @param {any ptr} element
  ' @returns {integer}
@@ -265,7 +285,8 @@ end function
 
 /''
  ' Creates a node, increments the length but does not place in the tree.
- ' @param {BstObj ptr} btreePtr
+ ' @function _createNode
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {any ptr} element
  ' @returns {Bst.Node ptr}
  ' @private
@@ -285,7 +306,8 @@ end function
 
 /''
  ' Deletes node completely from tree.
- ' @param {BstObj ptr} btreePtr
+ ' @function _deleteNode
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
@@ -302,7 +324,8 @@ end sub
 
 /''
  ' Deletes node and all of it's children.
- ' @param {BstObj ptr} btreePtr
+ ' @function _deleteNodeRecurse
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
@@ -320,7 +343,8 @@ end sub
 
 /''
  ' Handles search recursion.
- ' @param {BstObj ptr} btreePtr
+ ' @function _searchRecurse
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} nodePtr
  ' @param {any ptr} element
  ' @returns {Bst.Node ptr} Last node in search, never returns NULL.
@@ -352,7 +376,8 @@ end function
  ' highest value, not including the parent.  This can be used to great purpose
  ' in many processes dealing with BSTs, such as removing nodes, balancing the
  ' tree, iteration, etc.
- ' @params {BstObj ptr} btreePtr
+ ' @function _recurseLeft
+ ' @params {Bst.Instance ptr} btreePtr
  ' @params {Bst.Node ptr} nodePtr
  ' @returns {Bst.Node ptr}
  ' @private
@@ -367,7 +392,8 @@ end function
 
 /''
  ' Searches up the tree through parents to find next highest parent.
- ' @param {BstObj ptr} btreePtr
+ ' @function _nextParentRecurse
+ ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} current
  ' @param {any ptr} element
  ' @returns {Bst.Node ptr}
@@ -383,6 +409,7 @@ end function
 
 /''
  ' Handler for generic Iterator.
+ ' @function _iterationHandler
  ' @param {IteratorObj ptr} iter
  ' @param {any ptr} target
  ' @returns {integer}

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# TODO: Module directories will be moved to fb and reference main.bas
+# cat "./src/fb/$1/main.bas"
+cat "./src/fb/shared/lib/$1/$1.bas" | ./build/parse-fb > ./modules/definitions/$1.xml

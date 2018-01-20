@@ -19,5 +19,5 @@ tests(2) = @IteratorTest.testModule
 tests(3) = @PagedArrayTest.testModule
 tests(4) = @ResourceContainerTest.testModule
 tests(5) = @IdentityTest.testModule
-'tests(6) = @MapTest.testModule
-'tests(7) = @BstTest.testModule
+'tests(6) = @BstTest.testModule
+'tests(7) = @MapTest.testModule

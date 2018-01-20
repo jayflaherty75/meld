@@ -41,3 +41,5 @@ luac.out
 
 /meld
 /tester
+/build/parse-*
+/modules/definitions/*.xml

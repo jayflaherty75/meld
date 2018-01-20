@@ -1,0 +1,53 @@
+#!/bin/bash
+
+compileExternal () {
+	echo $2
+	fbc -mt -s console -dylib -export "./src/fb/$1/lib/$2/$2.bas" -x "modules/$2.so" \
+		|| { echo; echo Failed to compile $2 module, build terminated; exit 1; }
+}
+
+#compile () {
+#	echo $2
+#	fbc -mt -c "./src/fb/$1/lib/$2/$2.bas" || { echo; echo Failed to compile $2, build terminated; exit 1; }
+#}
+
+echo Starting Meld Core build...
+echo
+echo Compiling modules...
+echo
+
+compileExternal meld core
+compileExternal shared bst
+compileExternal shared iterator
+compileExternal shared list
+compileExternal shared paged-array
+compileExternal shared resource-container
+
+#compile meld core
+#compile meld fault
+#compile meld error-handling
+#compile meld tester
+##compile shared bst
+#compile shared console
+#compile shared identity
+#compile shared iterator
+#compile shared list
+#compile shared map
+#compile shared paged-array
+#compile shared resource-container
+
+fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
+	|| { echo; echo Test compilation failed, build terminated; exit 1; }
+
+echo "";
+
+./tester || { echo; echo Test failed, build terminated; exit 1; }
+
+echo;
+echo Building Meld Core...;
+
+fbc -mt -C "./src/fb/meld.bas" -x "./meld" \
+	|| { echo; echo Build failed; exit 1; }
+
+echo;
+echo Build successful!;
