@@ -8,6 +8,8 @@
 #include once "../shared/parser-xml-cmd-private.bi"
 #include once "../shared/parser-xml-cmd-deprecated.bi"
 #include once "../shared/parser-xml-cmd-throws.bi"
+#include once "../shared/parser-xml-cmd-const.bi"
+#include once "../shared/parser-xml-cmd-implements.bi"
 
 declare sub parserSetup()
 
@@ -20,4 +22,6 @@ sub parserSetup()
 	Parser.addCommand(@ParserXmlCmdPrivate.handler)
 	Parser.addCommand(@ParserXmlCmdDeprecated.handler)
 	Parser.addCommand(@ParserXmlCmdThrows.handler)
+	Parser.addCommand(@ParserXmlCmdConst.handler)
+	Parser.addCommand(@ParserXmlCmdImplements.handler)
 end sub

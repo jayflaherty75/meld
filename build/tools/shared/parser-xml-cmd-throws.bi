@@ -14,7 +14,7 @@ declare function _render(parserPtr As Parser.StateType Ptr, byref errorType as s
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "throws" then
+	if cmd = "throws" then
 		if trim(definition) = "" then
 			logError("Error: Missing type in @throws directive")
 			return false

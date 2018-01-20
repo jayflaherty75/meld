@@ -19,6 +19,10 @@ function finish(parser As Parser.StateType ptr) as short
 		print("  <namespace>" & parser->namespc & "</namespace>")
 	end if
 
+	if parser->implements <> "" then
+		print("  <implements>" & parser->implements & "</implements>")
+	end if
+
 	if parser->description <> "" then
 		print("  <description>" & parser->description & "</description>")
 	end if

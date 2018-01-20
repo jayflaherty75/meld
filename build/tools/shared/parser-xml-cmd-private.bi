@@ -9,7 +9,7 @@ declare function handler(ByRef cmd As String, ByRef definition As String, parser
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "private" then
+	if cmd = "private" then
 		print("    <private />")
 	end if
 

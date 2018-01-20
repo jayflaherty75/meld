@@ -23,6 +23,7 @@ End Type
 Type StateType
 	config as ConfigType Ptr
 	namespc As String
+	implements As String
 	description As String
 	blockDesc as String
 	isDocBlock As Short
