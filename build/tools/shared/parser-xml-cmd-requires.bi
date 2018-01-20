@@ -19,7 +19,7 @@ declare function _parseDescription(parserPtr as Parser.StateType ptr, byref sour
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "requires" then
+	if cmd = "requires" then
 		if trim(definition) = "" then
 			logError("Error: Incomplete @requires directive")
 			return false

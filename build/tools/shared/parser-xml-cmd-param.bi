@@ -26,7 +26,7 @@ declare function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref pa
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "param" orelse lcase(cmd) = "arg" orelse lcase(cmd) = "argument" then
+	if cmd = "param" orelse cmd = "arg" orelse cmd = "argument" then
 		if trim(definition) = "" then
 			logError("Error: Missing type in @param directive")
 			return false
@@ -61,7 +61,7 @@ Function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 		if state.paramName <> "" then
 			print("    <param name='" & state.paramName & "' type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
 		else
-			print("    <param type='" & state.paramType & "'> modifier='" & state.modifier & "' const='" & state.isConst & "'")
+			print("    <param type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
 		end if
 		if state.description <> "" then
 			print("      <description>" & state.description & "</description>")

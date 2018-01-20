@@ -43,6 +43,7 @@ Sub initialize(startup as function(parserState As StateType ptr) as short)
 
 	state.config = @config
 	state.namespc = ""
+	state.implements = ""
 	state.description = ""
 	state.blockDesc = ""
 	state.isDocBlock = false
@@ -140,7 +141,7 @@ Function _processLine(ByRef srcLine As String) As Integer
 		state.onDirectiveEnd = NULL
 
 		For index = 0 To state.directiveCount - 1
-			if not state.directives(index)(cmd, definition, @state) then
+			if not state.directives(index)(lcase(cmd), definition, @state) then
 				return false
 			end if
 		Next index

@@ -9,7 +9,7 @@ declare function handler(ByRef cmd As String, ByRef definition As String, parser
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
 
-	if lcase(cmd) = "deprecated" then
+	if cmd = "deprecated" then
 		print("    <deprecated />")
 	end if
 

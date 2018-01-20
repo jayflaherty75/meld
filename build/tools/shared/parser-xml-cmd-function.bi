@@ -11,7 +11,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 	dim as short position
 	dim as string objName
 
-	if lcase(cmd) = "function" then
+	if cmd = "function" then
 		if trim(definition) = "" then
 			logError("Error: Missing name in @function directive")
 			return false
