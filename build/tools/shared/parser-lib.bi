@@ -11,6 +11,7 @@ Declare Function parseDirective(ByRef srcLine As String, ByRef cmd As String, By
 Declare Function parseType(ByRef source As String, ByRef result As String, start as short = 1) As Short
 Declare Function parseWord(ByRef source As String, ByRef result As String, start as short = 1) As Short
 Declare Sub parseDescription(ByRef source As String, ByRef result As String, start as short = 1)
+Declare Function parseMultiples(ByRef source As String, ByRef result As String, start as short = 1) As Short
 
 Sub initialize(configPtr As Parser.ConfigType Ptr)
 	config = configPtr
@@ -110,5 +111,22 @@ Sub parseDescription(ByRef source As String, ByRef result As String, start as sh
 
 	result = trim(mid(source, descStart + 1))
 End Sub
+
+Function parseMultiples(ByRef source As String, ByRef result As String, start as short = 1) As Short
+	dim as short multiEnd
+
+	' Clear the result, if nothing found it will return empty
+	result = ""
+
+	multiEnd = instr(start + 1, source, "|")
+
+	if multiEnd = 0 then
+		result = trim(mid(source, start + 1))
+	else
+		result = trim(mid(source, start + 1, multiEnd - start - 1))
+	end if
+
+	return multiEnd
+End Function
 
 end namespace
