@@ -10,6 +10,7 @@
 #include once "../shared/parser-xml-cmd-throws.bi"
 #include once "../shared/parser-xml-cmd-const.bi"
 #include once "../shared/parser-xml-cmd-implements.bi"
+#include once "../shared/parser-xml-cmd-typedef.bi"
 
 declare sub parserSetup()
 
@@ -24,4 +25,5 @@ sub parserSetup()
 	Parser.addCommand(@ParserXmlCmdThrows.handler)
 	Parser.addCommand(@ParserXmlCmdConst.handler)
 	Parser.addCommand(@ParserXmlCmdImplements.handler)
+	Parser.addCommand(@ParserXmlCmdTypedef.handler)
 end sub

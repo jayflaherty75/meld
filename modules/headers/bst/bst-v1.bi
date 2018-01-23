@@ -6,6 +6,10 @@
 
 namespace Bst
 
+type BstId as any ptr
+
+type CompareFunction as function cdecl (criteria as any ptr, element as any ptr) as short
+
 type Interface
 	load as function cdecl (corePtr as Core.Interface ptr) as integer
 	unload as sub cdecl ()

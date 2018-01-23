@@ -20,6 +20,59 @@
 	<xsl:value-of select="namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
+	<xsl:for-each select="typedef">
+		<xsl:text>type </xsl:text>
+		<xsl:value-of select="@name" />
+		<xsl:text> as </xsl:text>
+		<xsl:choose>
+			<xsl:when test="@type='function'">
+				<xsl:choose>
+					<xsl:when test="returns">function</xsl:when>
+					<xsl:otherwise>sub</xsl:otherwise>
+				</xsl:choose>
+				<xsl:text> cdecl (</xsl:text>
+				<xsl:for-each select="param">
+					<xsl:choose>
+						<xsl:when test="@const='true'">const </xsl:when>
+					</xsl:choose>
+					<xsl:choose>
+						<xsl:when test="@modifier='reference'">byref </xsl:when>
+					</xsl:choose>
+					<xsl:value-of select="@name" />
+					<xsl:text> as </xsl:text>
+					<xsl:value-of select="@type" />
+					<xsl:choose>
+						<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
+					</xsl:choose>
+					<xsl:choose>
+						<xsl:when test="default">
+							<xsl:text> = </xsl:text>
+							<xsl:value-of select="default" />
+						</xsl:when>
+					</xsl:choose>
+					<xsl:if test="position()!=last()">, </xsl:if>
+				</xsl:for-each>
+				<xsl:text>)</xsl:text>
+				<xsl:choose>
+					<xsl:when test="returns">
+						<xsl:text> as </xsl:text>
+						<xsl:value-of select="returns/@type" />
+						<xsl:choose>
+							<xsl:when test="returns/@modifier='pointer'"> ptr</xsl:when>
+						</xsl:choose>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="@type" />
+				<xsl:choose>
+					<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:text>&#xa;&#xa;</xsl:text>
+	</xsl:for-each>
+
 	<xsl:text>type Interface&#xa;</xsl:text>
 		<xsl:comment>TODO: Move lifecycle functions into a shared type definition&#xa;</xsl:comment>
 		<xsl:text>&#x9;load as function cdecl (corePtr as Core.Interface ptr) as integer&#xa;</xsl:text>
