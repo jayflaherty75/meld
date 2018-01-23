@@ -16,6 +16,17 @@
  '/
 namespace Bst
 
+/''
+ ' @typedef {any ptr} BstId
+ '/
+
+/''
+ ' @typedef {function} CompareFunction
+ ' @param {any ptr} criteria
+ ' @param {any ptr} element
+ ' @returns {short}
+ '/
+
 declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
 declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
 declare sub _deleteNodeRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)

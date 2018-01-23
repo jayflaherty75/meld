@@ -24,8 +24,6 @@ declare function _parseDescription(parserPtr as Parser.StateType ptr, byref sour
 declare function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref paramType as string) as short
 
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
-	dim as short position
-
 	if cmd = "param" orelse cmd = "arg" orelse cmd = "argument" then
 		if trim(definition) = "" then
 			logError("Error: Missing type in @param directive")
