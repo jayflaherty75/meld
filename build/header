@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # TODO: Add version argument, ex: $1-$2.bi
-xsltproc -o ./modules/headers/$1/$1-v${2:-1}.bi ./build/templates/$1.xslt ./modules/definitions/$1.xml
+xsltproc -o ./modules/headers/$1/$1-v${2:-1}.bi ./build/templates/header-fb.xslt ./modules/definitions/$1.xml
