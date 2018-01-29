@@ -20,6 +20,24 @@
 	<xsl:value-of select="namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
+	<xsl:for-each select="class">
+		<xsl:text>type </xsl:text>
+		<xsl:value-of select="@name" />
+		<xsl:text>&#xa;</xsl:text>
+		<xsl:for-each select="property">
+			<xsl:text>&#x9;</xsl:text>
+			<xsl:value-of select="@name" />
+			<xsl:text> as </xsl:text>
+			<xsl:value-of select="@type" />
+			<xsl:choose>
+				<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
+			</xsl:choose>
+			<xsl:text>&#xa;</xsl:text>
+		</xsl:for-each>
+		<xsl:text>end type</xsl:text>
+		<xsl:text>&#xa;&#xa;</xsl:text>
+	</xsl:for-each>
+
 	<xsl:for-each select="typedef">
 		<xsl:text>type </xsl:text>
 		<xsl:value-of select="@name" />

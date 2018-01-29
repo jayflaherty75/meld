@@ -6,10 +6,10 @@ compileExternal () {
 		|| { echo; echo Failed to compile $2 module, build terminated; exit 1; }
 }
 
-#compile () {
-#	echo $2
-#	fbc -mt -c "./src/fb/$1/lib/$2/$2.bas" || { echo; echo Failed to compile $2, build terminated; exit 1; }
-#}
+compile () {
+	echo $2
+	fbc -mt -c "./src/fb/$1/lib/$2/$2.bas" || { echo; echo Failed to compile $2, build terminated; exit 1; }
+}
 
 echo Starting Meld Core build...
 echo
@@ -23,6 +23,7 @@ echo
 #compileExternal shared paged-array
 #compileExternal shared resource-container
 
+compile meld module
 #compile meld core
 #compile meld fault
 #compile meld error-handling
@@ -47,6 +48,7 @@ echo;
 echo Building Meld Core...;
 
 fbc -mt -C "./src/fb/meld.bas" -x "./meld" \
+	"./src/fb/meld/lib/module/module.o" \
 	|| { echo; echo Build failed; exit 1; }
 
 echo;

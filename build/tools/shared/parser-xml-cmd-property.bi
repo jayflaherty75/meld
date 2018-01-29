@@ -3,11 +3,11 @@
 #include once "parser-types.bi"
 #include once "parser-lib.bi"
 
-namespace ParserXmlCmdParam
+namespace ParserXmlCmdProperty
 
 type StateType
-	paramName as string
-	paramType as string
+	propertyName as string
+	propertyType as string
 	description as string
 	modifier as string
 	isConst as string
@@ -21,20 +21,20 @@ declare function onExtraLine(ByRef srcLine As String, parserPtr As Parser.StateT
 declare function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 
 declare function _parseDescription(parserPtr as Parser.StateType ptr, byref source as string) as short
-declare function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref paramType as string) as short
+declare function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref propertyType as string) as short
 
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
-	if cmd = "param" orelse cmd = "arg" orelse cmd = "argument" then
+	if cmd = "property" orelse cmd = "member" then
 		if trim(definition) = "" then
-			logError("Error: Missing type in @param directive")
+			logError("Error: Missing type in @" & cmd & " directive")
 			return false
 		end if
 
 		parserPtr->onExtraLine = @onExtraLine
 		parserPtr->onDirectiveEnd = @onDirectiveEnd
 
-		state.paramName = ""
-		state.paramType = ""
+		state.propertyName = ""
+		state.propertyType = ""
 		state.description = ""
 		state.modifier = "value"
 		state.isConst = "false"
@@ -56,10 +56,10 @@ end function
 
 Function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 	if state.description <> ""  orelse state.defaultValue <> "" then
-		if state.paramName <> "" then
-			print("    <param name='" & state.paramName & "' type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
+		if state.propertyName <> "" then
+			print("    <property name='" & state.propertyName & "' type='" & state.propertyType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
 		else
-			print("    <param type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
+			print("    <property type='" & state.propertyType & "' modifier='" & state.modifier & "' const='" & state.isConst & "'>")
 		end if
 		if state.description <> "" then
 			print("      <description>" & state.description & "</description>")
@@ -67,12 +67,12 @@ Function onDirectiveEnd(parserPtr As Parser.StateType Ptr) As Short
 		if state.defaultValue <> "" then
 			print("      <default>" & state.defaultValue & "</default>")
 		end if
-		print("    </param>")
+		print("    </property>")
 	else
-		if state.paramName <> "" then
-			print("    <param name='" & state.paramName & "' type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "' />")
+		if state.propertyName <> "" then
+			print("    <property name='" & state.propertyName & "' type='" & state.propertyType & "' modifier='" & state.modifier & "' const='" & state.isConst & "' />")
 		else
-			print("    <param type='" & state.paramType & "' modifier='" & state.modifier & "' const='" & state.isConst & "' />")
+			print("    <property type='" & state.propertyType & "' modifier='" & state.modifier & "' const='" & state.isConst & "' />")
 		end if
 	end if
 
@@ -83,22 +83,22 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 	dim as short typeEnd
 	dim as short nameEnd
 
-	typeEnd = ParserLib.parseType(source, state.paramType)
+	typeEnd = ParserLib.parseType(source, state.propertyType)
 	if typeEnd = -1 then
-		logError("Error: Missing type delimiter in @param")
+		logError("Error: Missing type delimiter in @property")
 		return false
 	end if
 
-	_parseTypeModifiers(parserPtr, state.paramType)
+	_parseTypeModifiers(parserPtr, state.propertyType)
 
-	nameEnd = ParserLib.parseName(source, state.paramName, state.defaultValue, typeEnd - 1)
+	nameEnd = ParserLib.parseName(source, state.propertyName, state.defaultValue, typeEnd - 1)
 	if nameEnd = -1 then
-		logError("Error: Missing name delimiter in @param")
+		logError("Error: Missing name delimiter in @property")
 		return false
 	end if
 
 	if nameEnd = 0 then
-		nameEnd = ParserLib.parseWord(source, state.paramName, typeEnd - 1)
+		nameEnd = ParserLib.parseWord(source, state.propertyName, typeEnd - 1)
 		if nameEnd = 0 then return true
 	end if
 
@@ -107,25 +107,25 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 	return true
 end function
 
-function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref paramType as string) as short
-	dim as short constPos = instr(paramType, parserPtr->config->constParam)
-	dim as short refPos = instr(paramType, parserPtr->config->refParam)
-	dim as short ptrPos = instrrev(paramType, parserPtr->config->ptrParam)
+function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref propertyType as string) as short
+	dim as short constPos = instr(propertyType, parserPtr->config->constParam)
+	dim as short refPos = instr(propertyType, parserPtr->config->refParam)
+	dim as short ptrPos = instrrev(propertyType, parserPtr->config->ptrParam)
 
 	if constPos > 0 then
 		state.isConst = "true"
-		mid(paramType, 1, constPos + len(parserPtr->config->constParam)) = space(len(parserPtr->config->constParam))
+		mid(propertyType, 1, constPos + len(parserPtr->config->constParam)) = space(len(parserPtr->config->constParam))
 	end if
 
 	if refPos > 0 then
 		state.modifier = "reference"
-		mid(paramType, 1, refPos + len(parserPtr->config->refParam)) = space(len(parserPtr->config->refParam))
+		mid(propertyType, 1, refPos + len(parserPtr->config->refParam)) = space(len(parserPtr->config->refParam))
 	elseif ptrPos > 0 then
 		state.modifier = "pointer"
-		mid(paramType, ptrPos) = space(len(parserPtr->config->ptrParam))
+		mid(propertyType, ptrPos) = space(len(parserPtr->config->ptrParam))
 	end if
 
-	paramType = trim(paramType)
+	propertyType = trim(propertyType)
 
 	return true
 end function

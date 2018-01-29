@@ -1,33 +1,26 @@
 
-#include once "../../modules/headers/core/core-v1.bi"
-#include once "file.bi"
-
-#IFDEF __FB_WIN32__
-	#define CORE_MODULE		"modules\\core.dll"
-#ELSE
-	#define CORE_MODULE		"modules/core.so"
-#ENDIF
+#include once "meld/lib/module/module.bi"
 
 function main() As Integer
-	dim as Core.Interface _core
 	dim as zstring*64 config = command(1)
-	dim as string filename = CORE_MODULE
-	dim as any ptr library
+	dim as Module.Interface ptr modulePtr
+	dim as any ptr bstPtr
 
-	if not fileexists(filename) then
-		print("**** Missing module: " & filename)
+	Module.initialize()
+
+	modulePtr = Module.require("module")
+
+	if modulePtr = NULL then
+		print("**** main: Failed to obtain Module interface")
 		return 1
 	end if
 
-	library = dylibload (filename)
+	bstPtr = modulePtr->require("bst")
 
-	if library = NULL then
-		print("**** Failed to core module")
+	if bstPtr = NULL then
+		print("**** main: Failed to obtain Bst interface")
 		return 1
 	end if
-
-	' TODO: This message is temporary and must be removed
-	print("Core library loaded successfully: " + config)
 
 	return 0
 end function
