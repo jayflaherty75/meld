@@ -16,7 +16,7 @@ dim shared as TemplateObj ptr templatePtr
 function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
 	dim as integer result = true
 
-	result = result ANDALSO describe ("The Template module", @create)
+	result = result andalso describe ("The Template module", @create)
 
 	return result
 end function
@@ -24,7 +24,7 @@ end function
 function create (it as Tester.itCallback) as integer
 	dim as integer result = true
 
-	result = result ANDALSO it ("creates a Template instance", @test1)
+	result = result andalso it ("creates a Template instance", @test1)
 
 	return result
 end function

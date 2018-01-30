@@ -92,11 +92,6 @@
 	</xsl:for-each>
 
 	<xsl:text>type Interface&#xa;</xsl:text>
-		<xsl:comment>TODO: Move lifecycle functions into a shared type definition&#xa;</xsl:comment>
-		<xsl:text>&#x9;load as function cdecl (corePtr as Core.Interface ptr) as integer&#xa;</xsl:text>
-		<xsl:text>&#x9;unload as sub cdecl ()&#xa;</xsl:text>
-		<xsl:text>&#x9;register as function () as integer&#xa;</xsl:text>
-		<xsl:text>&#x9;unregister as sub ()&#xa;</xsl:text>
 		<xsl:for-each select="function">
 			<xsl:choose>
 				<xsl:when test="not(private)">

@@ -1,7 +1,7 @@
 
 /''
  ' @requires constants
- ' @requires core
+ ' @requires meld
  '/
 
 #include once "module.bi"
@@ -61,21 +61,21 @@ sub initialize cdecl()
 	apiPtr->test = @test
 
 	if not apiPtr->exports("module", apiPtr) then
-		print ("**** Module.initialize: Failed to register module interface")
+		print("**** Module.initialize: Failed to register module interface")
 		exit sub
 	end if
 
 	testPtr = apiPtr->require("module")
 
 	if testPtr = NULL then
-		print ("**** Module.initialize: Failed to load module interface")
+		print("**** Module.initialize: Failed to load module interface")
 		exit sub
 	end if
 
 	if testPtr->test(21) <> 42 then
-		print ("**** Module.initialize: Module test failed")
+		print("**** Module.initialize: Module test failed")
 	else
-		print ("Meld loaded successfully!")
+		print("Meld loaded successfully!")
 	end if
 end sub
 
@@ -90,12 +90,12 @@ function exports cdecl (byref moduleName as zstring, interfacePtr as any ptr) as
 	dim as Entry ptr entryPtr = @state.entries(state.entryCount)
 
 	if moduleName = "" then
-		print ("**** Module.exports: Missing moduleName argument")
+		print("**** Module.exports: Missing moduleName argument")
 		return false
 	end if
 
 	if interfacePtr = NULL then
-		print ("**** Module.exports: Missing interfacePtr argument")
+		print("**** Module.exports: Missing interfacePtr argument")
 		return false
 	end if
 
@@ -128,7 +128,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as any ptr loadFn
 
 	if moduleName = "" then
-		print ("**** Module.require: Missing moduleName argument")
+		print("**** Module.require: Missing moduleName argument")
 		return NULL
 	end if
 
@@ -159,9 +159,11 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return false
 	end if
 
-	' TODO: Write a simple test module as kick off RM-9
+	' TODO: Write a simple test module as kick off RM-9 and write module pointer
+	'	and other relevant data to module entry
+
 	'if entryPtr = NULL then
-	'	print ("**** Module.require: Failed to find interface for " & moduleName)
+	'	print("**** Module.require: Failed to find interface for " & moduleName)
 	'end if
 
 	return entryPtr
@@ -175,7 +177,7 @@ end function
  '/
 sub setHandlers cdecl (setEntry as SetEntryFnc = NULL, getEntry as GetEntryFnc)
 	if getEntry = NULL then
-		print ("**** Module.setHandlers: Missing getEntry argument")
+		print("**** Module.setHandlers: Missing getEntry argument")
 		exit sub
 	end if
 
