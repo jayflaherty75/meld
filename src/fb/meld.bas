@@ -2,23 +2,23 @@
 #include once "meld/lib/module/module.bi"
 
 function main() As Integer
-	dim as zstring*64 config = command(1)
-	dim as Module.Interface ptr modulePtr
-	dim as any ptr bstPtr
+	dim as zstring*64 app = command(1)
+	dim as Meld.Interface ptr appPtr
 
-	Module.initialize()
-
-	modulePtr = Module.require("module")
-
-	if modulePtr = NULL then
-		print("**** main: Failed to obtain Module interface")
+	if not Module.initialize() then
+		print("**** main: Failed to initialize Module")
 		return 1
 	end if
 
-	bstPtr = modulePtr->require("bst")
+	appPtr = Module.require(app)
 
-	if bstPtr = NULL then
-		print("**** main: Failed to obtain Bst interface")
+	if appPtr = NULL then
+		print("**** main: Failed to obtain " & app & " interface")
+		return 1
+	end if
+
+	if not Module.uninitialize() then
+		print("**** main: An error occurred while attempting to uninitialize Meld")
 		return 1
 	end if
 
