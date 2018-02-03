@@ -1,7 +1,6 @@
 
 /''
  ' @requires constants
- ' @requires meld
  '/
 
 #include once "module.bi"
@@ -11,31 +10,9 @@
  '/
 namespace Module
 
-/''
- ' @class Entry
- ' @property {string} moduleName
- ' @property {any ptr} interfacePtr
- ' @property {any ptr} library
- '/
-
-/''
- ' @typedef {function} SetEntryFnc
- ' @param {byref zstring} moduleName
- ' @param {Entry ptr} module
- ' @returns {short}
- '/
-
-/''
- ' @typedef {function} GetEntryFnc
- ' @param {byref zstring} moduleName
- ' @returns {Entry ptr}
- '/
-
 type StateType
-	entries(MODULE_MAX_ENTRIES) as Entry
-	entryCount as short
-	setEntry as SetEntryFnc
-	getEntry as GetEntryFnc
+	libraries(MODULE_MAX_ENTRIES) as any ptr
+	libraryCount as short
 end type
 
 dim shared as StateType state
@@ -44,75 +21,54 @@ dim shared as Interface api
 /''
  ' Initializes (or reinitializes) base module system.
  ' @function initialize
+ ' @returns {short}
  '/
-sub initialize cdecl()
+function initialize cdecl() as short
 	dim as Interface ptr apiPtr = @api
 	dim as Interface ptr testPtr
 	dim as any ptr library
 
-	state.entryCount = 0
-	state.setEntry = NULL
-	state.getEntry = @_getEntryDefault
+	state.libraryCount = 0
 
 	apiPtr->initialize = @initialize
-	apiPtr->exports = @exports
+	apiPtr->uninitialize = @uninitialize
 	apiPtr->require = @require
-	apiPtr->setHandlers = @setHandlers
-	apiPtr->test = @test
-
-	if not apiPtr->exports("module", apiPtr) then
-		print("**** Module.initialize: Failed to register module interface")
-		exit sub
-	end if
-
-	testPtr = apiPtr->require("module")
-
-	if testPtr = NULL then
-		print("**** Module.initialize: Failed to load module interface")
-		exit sub
-	end if
-
-	if testPtr->test(21) <> 42 then
-		print("**** Module.initialize: Module test failed")
-	else
-		print("Meld loaded successfully!")
-	end if
-end sub
-
-/''
- ' Export a named module interface.
- ' @function exports
- ' @param {byref zstring} moduleName
- ' @param {any ptr} interfacePtr
- ' @returns {short}
- '/
-function exports cdecl (byref moduleName as zstring, interfacePtr as any ptr) as short
-	dim as Entry ptr entryPtr = @state.entries(state.entryCount)
-
-	if moduleName = "" then
-		print("**** Module.exports: Missing moduleName argument")
-		return false
-	end if
-
-	if interfacePtr = NULL then
-		print("**** Module.exports: Missing interfacePtr argument")
-		return false
-	end if
-
-	if state.setEntry <> NULL then
-		if not state.setEntry(moduleName, entryPtr) then
-			print("**** Module.exports: Call to setEntry handler failed for " _
-				& moduleName)
-			return false
-		end if
-	end if
-
-	state.entryCount += 1
-
-	entryPtr->moduleName = moduleName
-	entryPtr->interfacePtr = interfacePtr
 
 	return true
+end function
+
+/''
+ ' Releases all external libraries.
+ ' @function uninitialize
+ ' @returns {short}
+ '/
+function uninitialize cdecl() as short
+	dim as function cdecl () as short shutdownFn
+	dim as sub cdecl () unloadFn
+
+	dim as any ptr library
+	dim as integer index
+	dim as short result = true
+
+	for index = 0 to state.libraryCount - 1
+		library = state.libraries(index)
+
+		shutdownFn = dylibsymbol (library, "shutdown")
+		if shutdownFn <> NULL andalso not shutdownFn() then
+			print("**** Module.uninitialize: Module shutdown failed")
+			result = false
+		end if
+
+		unloadFn = dylibsymbol (library, "unload")
+		if unloadFn <> NULL then
+			unloadFn()
+		end if
+
+		dylibfree(library)
+		state.libraries(index) = NULL
+	next
+
+	return result
 end function
 
 /''
@@ -122,103 +78,63 @@ end function
  ' @returns {any ptr}
  '/
 function require cdecl (byref moduleName as zstring) as any ptr
-	dim as Entry ptr entryPtr
+	dim as function cdecl (modulePtr as Interface ptr) as short loadFn
+	dim as function cdecl () as any ptr exportsFn
+	dim as function cdecl () as short startupFn
+
+	dim as Interface safeApi = api
 	dim as string filename
 	dim as any ptr library
-	dim as any ptr loadFn
 
 	if moduleName = "" then
 		print("**** Module.require: Missing moduleName argument")
 		return NULL
 	end if
 
-	entryPtr = state.getEntry(moduleName)
-
-	if entryPtr <> NULL then
-		return entryPtr
-	end if
-
 	filename = "modules" & DIR_SEP & moduleName & "." & EXTERNAL_MODULE_EXTENSION
-
 	if not fileexists(filename) then
-		print("**** Module.exports: Missing module: " & filename)
-		return false
-	end if
-
-	library = dylibload(filename)
-
-	if library = NULL then
-		print("**** Module.exports: Failed to load module: " & filename)
-		return false
-	end if
-
-	loadFn = dylibsymbol (library, "moduleLoader")
-
-	if loadFn = NULL then
-		print("**** Module.exports: Missing moduleLoader function: " & filename)
-		return false
-	end if
-
-	' TODO: Write a simple test module as kick off RM-9 and write module pointer
-	'	and other relevant data to module entry
-
-	'if entryPtr = NULL then
-	'	print("**** Module.require: Failed to find interface for " & moduleName)
-	'end if
-
-	return entryPtr
-end function
-
-/''
- ' Override search functions.
- ' @function setHandlers
- ' @param {SetEntryFnc} [setEntry=NULL]
- ' @param {GetEntryFnc} getEntry required
- '/
-sub setHandlers cdecl (setEntry as SetEntryFnc = NULL, getEntry as GetEntryFnc)
-	if getEntry = NULL then
-		print("**** Module.setHandlers: Missing getEntry argument")
-		exit sub
-	end if
-
-	state.setEntry = setEntry
-	state.getEntry = getEntry
-end sub
-
-/''
- ' Simple test function to ensure module libraries are working.
- ' @function test
- ' @param {short} value
- ' @returns {short}
- '/
-function test cdecl (value as short) as short
-	return value * 2
-end function
-
-/''
- ' Default interface search handler.
- ' @function _getEntryDefault
- ' @param {byref zstring} moduleName
- ' @returns {any ptr}
- ' @private
- '/
-function _getEntryDefault (byref moduleName as zstring) as Entry ptr
-	dim as Entry ptr entryPtr = NULL
-	dim as short index = 0
-
-	do
-		if state.entries(index).moduleName = moduleName then
-			entryPtr = @state.entries(index)
-		end if
-
-		index += 1
-	loop while entryPtr = NULL andalso index < state.entryCount
-
-	if entryPtr = NULL then
+		print("**** Module.require: Missing module: " & filename)
 		return NULL
 	end if
 
-	return entryPtr->interfacePtr
+	library = dylibload(filename)
+	if library = NULL then
+		print("**** Module.require: Failed to load module: " & filename)
+		return NULL
+	end if
+
+	state.libraries(state.libraryCount) = library
+	state.libraryCount += 1
+
+	exportsFn = dylibsymbol (library, "exports")
+	if exportsFn = NULL then
+		print("**** Module.require: Missing exports function: " & filename)
+		return NULL
+	end if
+
+	loadFn = dylibsymbol (library, "load")
+	if loadFn = NULL then
+		print("**** Module.require: Missing load function: " & filename)
+		return false
+	end if
+
+	startupFn = dylibsymbol (library, "startup")
+	if startupFn = NULL then
+		print("**** Module.require: Missing startup function: " & filename)
+		return false
+	end if
+
+	if not loadFn(@safeApi) then
+		print("**** Module.require: Call to load() method failed: " & filename)
+		return false
+	end if
+
+	if not startupFn() then
+		print("**** Module.require: Call to startup() method failed: " & filename)
+		return false
+	end if
+
+	return exportsFn()
 end function
 
 end namespace
