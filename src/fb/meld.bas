@@ -5,6 +5,10 @@ function main() As Integer
 	dim as zstring*64 app = command(1)
 	dim as Meld.Interface ptr appPtr
 
+	if app = "" then
+		app = "default"
+	end if
+
 	if not Module.initialize() then
 		print("**** main: Failed to initialize Module")
 		return 1
