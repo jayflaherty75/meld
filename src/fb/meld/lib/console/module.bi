@@ -1,30 +1,28 @@
 
-namespace Console
+#include once "../../../../../modules/headers/console/console-v1.bi"
+#include once "console.bi"
 
-type StateType
-	methods as Interface
+type ModuleStateType
+	methods as Console.Interface
+	isLoaded as short
+	references as integer
+	startups as integer
 end type
 
-dim shared as StateType state
+dim shared as ModuleStateType moduleState
 
 /''
  ' Loading lifecycle function called by Meld framework.
  ' @param {Module.Interface ptr} modulePtr
- ' @returns {short}
+ ' @returns {any ptr}
  '/
-function exports cdecl alias "exports" () as short export
-	state.methods.logMessage = @logMessage
-	state.methods.logWarning = @logWarning
-	state.methods.logError = @logError
-	state.methods.logSuccess = @logSuccess
+function exports cdecl alias "exports" () as any ptr export
+	moduleState.methods.logMessage = @Console.logMessage
+	moduleState.methods.logWarning = @Console.logWarning
+	moduleState.methods.logError = @Console.logError
+	moduleState.methods.logSuccess = @Console.logSuccess
 
-	if not corePtr->register("console", @state.methods) then
-		return false
-	end if
-
-	_core = corePtr
-
-	return true
+	return @moduleState.methods
 end function
 
 /''
@@ -33,21 +31,18 @@ end function
  ' @returns {short}
  '/
 function load cdecl alias "load" (modulePtr as Module.Interface ptr) as short export
-	if corePtr = NULL then
+	if modulePtr = NULL then
 		print ("**** Console.load: Invalid Module interface pointer")
 		return false
 	end if
 
-	state.methods.logMessage = @logMessage
-	state.methods.logWarning = @logWarning
-	state.methods.logError = @logError
-	state.methods.logSuccess = @logSuccess
-
-	if not corePtr->register("console", @state.methods) then
-		return false
+	if not moduleState.isLoaded then
+		moduleState.references = 0
+		moduleState.startups = 0
+		moduleState.isLoaded = true
 	end if
 
-	_core = corePtr
+	moduleState.references += 1
 
 	return true
 end function
@@ -56,19 +51,25 @@ end function
  ' Unload lifecycle function called by Meld framework.
  '/
 sub unload cdecl alias "unload" () export
+	moduleState.references -= 1
+
+	if moduleState.references <= 0 then
+		moduleState.references = 0
+		moduleState.startups = 0
+		moduleState.isLoaded = false
+	end if
 end sub
 
 /''
  ' Register lifecycle function called by Meld framework.
  ' @returns {short}
  '/
-function register cdecl alias "register" () as short export
-	_core = _core->require("core")
-
-	if _core = NULL then
-		print ("**** Console.load: Missing Core dependency")
-		return false
+function startup cdecl alias "startup" () as short export
+	if moduleState.startups = 0 then
+		' Do startup
 	end if
+
+	moduleState.startups += 1
 
 	return true
 end function
@@ -76,7 +77,14 @@ end function
 /''
  ' Unregister lifecycle function called by Meld framework.
  '/
-sub unregister cdecl alias "unregister" () export
-end sub
+function shutdown cdecl alias "shutdown" () as short export
+	moduleState.startups -= 1
 
-end namespace
+	if moduleState.startups <= 0 then
+		moduleState.startups = 0
+
+		' Do shutdown
+	end if
+
+	return true
+end function

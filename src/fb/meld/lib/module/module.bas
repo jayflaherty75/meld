@@ -25,8 +25,6 @@ dim shared as Interface api
  '/
 function initialize cdecl() as short
 	dim as Interface ptr apiPtr = @api
-	dim as Interface ptr testPtr
-	dim as any ptr library
 
 	state.libraryCount = 0
 
@@ -85,6 +83,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as Interface safeApi = api
 	dim as string filename
 	dim as any ptr library
+	dim as any ptr interfacePtr
 
 	if moduleName = "" then
 		print("**** Module.require: Missing moduleName argument")
@@ -112,15 +111,15 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return NULL
 	end if
 
+	interfacePtr = exportsFn()
+	if interfacePtr = NULL then
+		print("**** Module.require: Missing interface: " & filename)
+		return NULL
+	end if
+
 	loadFn = dylibsymbol (library, "load")
 	if loadFn = NULL then
 		print("**** Module.require: Missing load function: " & filename)
-		return false
-	end if
-
-	startupFn = dylibsymbol (library, "startup")
-	if startupFn = NULL then
-		print("**** Module.require: Missing startup function: " & filename)
 		return false
 	end if
 
@@ -129,12 +128,13 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return false
 	end if
 
-	if not startupFn() then
+	startupFn = dylibsymbol (library, "startup")
+	if startupFn <> NULL andalso not startupFn() then
 		print("**** Module.require: Call to startup() method failed: " & filename)
 		return false
 	end if
 
-	return exportsFn()
+	return interfacePtr
 end function
 
 end namespace
