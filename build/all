@@ -1,14 +1,14 @@
 #!/bin/bash
 
 compileExternal () {
-	echo $2
-	fbc -mt -s console -dylib -export "./src/fb/$1/lib/$2/$2.bas" -x "modules/$2.so" \
-		|| { echo; echo Failed to compile $2 module, build terminated; exit 1; }
+	echo $3
+	fbc -mt -s console -dylib -export "./src/fb/$1/$2/$3/$3.bas" -x "modules/$3.so" \
+		|| { echo; echo Failed to compile $3 module, build terminated; exit 1; }
 }
 
 compile () {
-	echo $2
-	fbc -mt -c "./src/fb/$1/lib/$2/$2.bas" || { echo; echo Failed to compile $2, build terminated; exit 1; }
+	echo $3
+	fbc -mt -c "./src/fb/$1/$2/$3/$3.bas" || { echo; echo Failed to compile $3, build terminated; exit 1; }
 }
 
 echo Starting Meld Core build...
@@ -16,6 +16,7 @@ echo
 #echo Compiling modules...
 #echo
 
+compileExternal meld lib console
 #compileExternal meld core
 #compileExternal shared bst
 #compileExternal shared iterator
@@ -23,7 +24,7 @@ echo
 #compileExternal shared paged-array
 #compileExternal shared resource-container
 
-compile meld module
+compile meld lib module
 #compile meld core
 #compile meld fault
 #compile meld error-handling

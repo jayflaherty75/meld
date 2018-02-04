@@ -2,10 +2,10 @@
 /''
  ' @requires constants
  ' @requires module
- ' @requires meld
  '/
 
-#include once "console.bi"
+#include once "module.bi"
+' #include once "errors.bi"
 
 /''
  ' Console interface
@@ -18,7 +18,7 @@ namespace Console
  ' @function logMessage
  ' @param {byref string} message
  '/
-sub logMessage (byref message as string)
+sub logMessage cdecl (byref message as string)
 	print(Time () & " - " & message)
 end sub
 
@@ -30,7 +30,7 @@ end sub
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logWarning (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logWarning cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 6
@@ -46,7 +46,7 @@ end sub
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logError(byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logError cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 4
@@ -62,7 +62,7 @@ end sub
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logSuccess (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logSuccess cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 2
@@ -83,12 +83,12 @@ end sub
 function _format (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer) as string
 	dim as zstring*3 newline
 
-	if _core->getNewline <> NULL then
-		newline = *_core->getNewline()
-	else
-		logMessage ("**** Console logger not properly initialized")
-		newline = ""
-	end if
+	'if _core->getNewline <> NULL then
+		newline = !"\n" ' *_core->getNewline()
+	'else
+	'	logMessage ("**** Console logger not properly initialized")
+	'	newline = " "
+	'end if
 
 	return Time () & " - " & source & "(" & lineNum & ") " & newline & id & ": " & message
 end function
