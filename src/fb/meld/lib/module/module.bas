@@ -51,13 +51,13 @@ function uninitialize cdecl() as short
 	for index = 0 to state.libraryCount - 1
 		library = state.libraries(index)
 
-		shutdownFn = dylibsymbol (library, "shutdown")
+		shutdownFn = dylibsymbol(library, "shutdown")
 		if shutdownFn <> NULL andalso not shutdownFn() then
 			print("**** Module.uninitialize: Module shutdown failed")
 			result = false
 		end if
 
-		unloadFn = dylibsymbol (library, "unload")
+		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn <> NULL then
 			unloadFn()
 		end if
@@ -105,7 +105,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	state.libraries(state.libraryCount) = library
 	state.libraryCount += 1
 
-	exportsFn = dylibsymbol (library, "exports")
+	exportsFn = dylibsymbol(library, "exports")
 	if exportsFn = NULL then
 		print("**** Module.require: Missing exports function: " & filename)
 		return NULL
@@ -117,7 +117,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return NULL
 	end if
 
-	loadFn = dylibsymbol (library, "load")
+	loadFn = dylibsymbol(library, "load")
 	if loadFn = NULL then
 		print("**** Module.require: Missing load function: " & filename)
 		return false
@@ -128,7 +128,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return false
 	end if
 
-	startupFn = dylibsymbol (library, "startup")
+	startupFn = dylibsymbol(library, "startup")
 	if startupFn <> NULL andalso not startupFn() then
 		print("**** Module.require: Call to startup() method failed: " & filename)
 		return false

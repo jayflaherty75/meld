@@ -1,37 +1,24 @@
 
 #include once "../constants/constants-v1.bi"
-#include once "../core/core-v1.bi"
+#include once "../module/module-v1.bi"
 #include once "../console/console-v1.bi"
-
-#define ERROR_NAME_MAX_LENGTH               64
 
 namespace Fault
 
 type Header
-	name as zstring*ERROR_NAME_MAX_LENGTH
-	code as uinteger
+	name as zstring*64
+	code as ushort
 end type
 
-type Handler as sub(byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+type Handler as sub cdecl (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 
 type Interface
-	load as function (corePtr as Core.Interface ptr) as integer
-	unload as sub ()
-	register as function () as integer
-	unregister as sub ()
-	registerType as function (byref errName as zstring) as integer
-	assignHandler as function (errCode as integer, handler as Fault.Handler) as integer
-	getCode as function (byref errName as zstring) as integer
-	throw as sub (_
-		errCode as integer, _
-		byref errName as zstring, _
-		byref message as string, _
-		byref filename as zstring, _
-		linenum as integer _	
-	)
-	defaultFatalHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	defaultErrorHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	defaultWarningHandler as sub (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	startup as function cdecl () as short
+	shutdown as function cdecl () as short
+	registerType as function cdecl (byref errName as zstring) as short
+	assignHandler as function cdecl (errCode as short, handler as Handler) as short
+	getCode as function cdecl (errName as zstring) as short
+	throw as sub cdecl (errCode as integer, errName as zstring, message as string, filename as zstring, lineNum as integer)
 end type
 
 end namespace

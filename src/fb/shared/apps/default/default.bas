@@ -2,6 +2,8 @@
 /''
  ' @requires constants
  ' @requires module
+ ' @requires console
+ ' @requires fault
  '/
 
 #include once "module.bi"
@@ -14,10 +16,13 @@ namespace Default
 
 /''
  ' Application main routine.
- ' @function main
+ ' @function startup
+ ' @returns {short}
  '/
-sub main cdecl ()
-	print("TEST")
-end sub
+function startup cdecl () as short
+	_console->logMessage("TEST")
+
+	return true
+end function
 
 end namespace

@@ -1,11 +1,13 @@
 
 #include once "../constants/constants-v1.bi"
 #include once "../module/module-v1.bi"
+#include once "../console/console-v1.bi"
+#include once "../fault/fault-v1.bi"
 
 namespace Default
 
 type Interface
-	main as sub cdecl ()
+	startup as function cdecl () as short
 end type
 
 end namespace

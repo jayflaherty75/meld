@@ -1,28 +1,43 @@
 
-#include once "fault.bi"
+/''
+ ' @requires constants
+ ' @requires module
+ ' @requires console
+ '/
+
+#include once "module.bi"
 
 #define ERROR_MAX_TYPES                     256
 
+/''
+ ' @namespace Fault
+ '/
 namespace Fault
+
+/''
+ ' @class Header
+ ' @property {zstring*64} name
+ ' @property {ushort} code
+ '/
+
+/''
+ ' @typedef {function} Handler
+ ' @param {byref zstring} errName
+ ' @param {byref string} message
+ ' @param {byref zstring} filename
+ ' @param {integer} lineNum
+ '/
 
 type ErrorCodes
 	uncaughtError as integer
 	internalSystemError as integer
 end type
 
-type Dependencies
-	core as Core.Interface ptr
-	console as Console.Interface ptr
-end type
-
 type State
-	mutexId as any ptr
 	errors(ERROR_MAX_TYPES) as Header
 	errorCount as uinteger
 	handlers(ERROR_MAX_TYPES) as Handler
 	typeLimitErrorMsg as string
-	methods as Interface
-	deps as Dependencies
 	errs as ErrorCodes
 end type
 
@@ -31,57 +46,13 @@ static shared as zstring*24 internalSystemError = "InternalSystemError"
 
 dim shared as State errState
 
-declare function _initialize () as integer
-declare sub _uninitialize()
-declare sub _clearAll()
-
-/''
- ' @param {Core.Interface ptr} corePtr
- '/
-function load (corePtr as Core.Interface ptr) as integer
-	if corePtr = NULL then
-		print ("load: Invalid Core interface pointer")
-		return false
-	end if
-
-	errState.methods.load = @load
-	errState.methods.unload = @unload
-	errState.methods.register = NULL
-	errState.methods.unregister = NULL
-	errState.methods.registerType = @registerType
-	errState.methods.assignHandler = @assignHandler
-	errState.methods.getCode = @getCode
-	errState.methods.throw = @throw
-	errState.methods.defaultFatalHandler = @defaultFatalHandler
-	errState.methods.defaultErrorHandler = @defaultErrorHandler
-	errState.methods.defaultWarningHandler = @defaultWarningHandler
-
-	if not corePtr->register("fault", @errState.methods) then
-		return false
-	end if
-
-	errState.deps.core = corePtr->require("core")
-	errState.deps.console = corePtr->require("console")
-
-	if not _initialize() then
-		print ("load: Failed to initialize")
-		return false
-	end if
-
-	return true
-end function
-
-sub unload ()
-	_uninitialize()
-end sub
-
 /''
  ' Error system setup.
+ ' @function startup
+ ' @returns {short}
  '/
-function _initialize () as integer
+function startup cdecl () as short
 	errState.typeLimitErrorMsg = "Can not create new error types.  The system has reached the limit it can handle."
-
-	errState.mutexId = mutexcreate()
 	errState.errorCount = 0
 
 	errState.errs.uncaughtError = registerType(uncaughtError)
@@ -99,32 +70,36 @@ end function
 
 /''
  ' Error system shutdown.
+ ' @function shutdown
+ ' @returns {short}
  '/
-sub _uninitialize()
-	_clearAll()
+function shutdown cdecl () as short
+	dim as integer i
 
-	if errState.mutexId <> NULL then
-		mutexdestroy(errState.mutexId)
-		errState.mutexId = NULL
-	end if
-end sub
+	for i = 0 to errState.errorCount - 1
+		errState.errors(i).code = 0
+		errState.handlers(i) = NULL
+	next
+
+	errState.errorCount = 0
+
+	return true
+end function
 
 /''
  ' Registers a new error type and returns the assigned error code.
- ' @param {zstring} errName
- ' @returns {integer}
+ ' @function registerType
+ ' @param {byref zstring} errName
+ ' @returns {short}
+ ' @throws {InternalSystemError}
  '/
-function registerType (byref errName as zstring) as integer
-	dim as integer errCode = -1
+function registerType cdecl (byref errName as zstring) as short
+	dim as short errCode = -1
 	dim as Fault.Header ptr errPtr
 
 	if errState.errorCount < ERROR_MAX_TYPES then
-		mutexlock(errState.mutexId)
-
 		errCode = errState.errorCount
 		errState.errorCount += 1
-
-		mutexunlock(errState.mutexId)
 
 		errPtr = @errState.errors(errCode)
 		errPtr->name = errName
@@ -142,14 +117,13 @@ end function
 
 /''
  ' Assigns a handler for a specific registered error type.
- ' @param {integer} errCode
- ' @param {errorHandler} handler
- ' @returns {integer}
+ ' @function assignHandler
+ ' @param {short} errCode
+ ' @param {Handler} handler
+ ' @returns {short}
  '/
-function assignHandler (errCode as integer, handler as Fault.Handler) as integer
-	DIM as integer result = true
-
-	mutexlock (errState.mutexId)
+function assignHandler cdecl (errCode as short, handler as Handler) as short
+	DIM as short result = true
 
 	if errCode < 0 ORELSE errState.errors(errCode).code < 0 then
 		result = false
@@ -157,21 +131,18 @@ function assignHandler (errCode as integer, handler as Fault.Handler) as integer
 		errState.handlers(errCode) = handler
 	end if
 
-	mutexunlock (errState.mutexId)
-
 	return result
 end function
 
 /''
  ' Returns the error code for the registered error name
+ ' @function getCode
  ' @param {zstring} errName
- ' @returns {integer} - Error code or -1 if none found
+ ' @returns {short} - Error code or -1 if none found
  '/
-function getCode (byref errName as zstring) as integer
-	dim as integer result = -1
-	dim as integer index = 0
-
-	mutexlock (errState.mutexId)
+function getCode cdecl (byref errName as zstring) as short
+	dim as short result = -1
+	dim as short index = 0
 
 	while (result = -1 ANDALSO index < errState.errorCount)
 		if errState.errors(index).name = errName then
@@ -180,14 +151,13 @@ function getCode (byref errName as zstring) as integer
 		index += 1
 	wend
 
-	mutexunlock (errState.mutexId)
-
 	return result
 end function
 
 /''
  ' Pass an error to be handled.  Make sure you do trust exercises with whoever
  ' writes your error handlers.
+ ' @function throw
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
  ' @param {zstring} errName
@@ -197,12 +167,12 @@ end function
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw (errCode as integer, byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub throw cdecl (errCode as integer, byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
 		errState.handlers(errCode) (errName, message, filename, lineNum)
-else
+	else
 		' All unhandled errors go to uncaught handler defined during
 		' initialization of error system.
 		errState.handlers(0) (errName, message, filename, lineNum)
@@ -210,53 +180,43 @@ else
 end sub
 
 /''
- ' Thread-safe clearing of all error types and handlers
- ' @private
- '/
-sub _clearAll()
-	dim as integer i
-
-	mutexlock(errState.mutexId)
-
-	for i = 0 to errState.errorCount - 1
-		errState.errors(i).code = 0
-		errState.handlers(i) = NULL
-	next
-
-	errState.errorCount = 0
-
-	mutexunlock(errState.mutexId)
-end sub
-
-/''
  ' Default error handler for fatal errors.
+ ' @function defaultFatalHandler
+ ' @param {byref zstring} errName
+ ' @param {byref string} message
+ ' @param {byref zstring} filename
+ ' @param {integer} lineNum
  ' @private
  '/
 sub defaultFatalHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	dim as Dependencies ptr deps = @errState.deps
-
-	deps->console->logError(errName, message, filename, lineNum)
-	deps->core->shutdown(1)
+	_console->logError(errName, message, filename, lineNum)
+	'_core->shutdown(1)
 end sub
 
 /''
  ' Default error handler for non-fatal errors.
+ ' @function defaultErrorHandler
+ ' @param {byref zstring} errName
+ ' @param {byref string} message
+ ' @param {byref zstring} filename
+ ' @param {integer} lineNum
  ' @private
  '/
 sub defaultErrorHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	dim as Dependencies ptr deps = @errState.deps
-
-	deps->console->logError(errName, message, filename, lineNum)
+	_console->logError(errName, message, filename, lineNum)
 end sub
 
 /''
  ' Handler for logging warnings.
+ ' @function defaultWarningHandler
+ ' @param {byref zstring} errName
+ ' @param {byref string} message
+ ' @param {byref zstring} filename
+ ' @param {integer} lineNum
  ' @private
  '/
 sub defaultWarningHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-	dim as Dependencies ptr deps = @errState.deps
-
-	deps->console->logWarning(errName, message, filename, lineNum)
+	_console->logWarning(errName, message, filename, lineNum)
 end sub
 
 end namespace

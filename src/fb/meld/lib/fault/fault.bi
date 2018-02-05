@@ -1,15 +1,16 @@
 
 #include once "../../../../../modules/headers/fault/fault-v1.bi"
 
+dim shared _console as Console.Interface ptr
+
 namespace Fault
 
-declare function load (corePtr as Core.Interface ptr) as integer
-declare sub unload ()
-
-declare function registerType (byref errName as zstring) as integer
-declare function assignHandler (errCode as integer, handler as Fault.Handler) as integer
-declare function getCode (byref errName as zstring) as integer
-declare sub throw (_
+declare function startup cdecl () as short
+declare function shutdown cdecl () as short
+declare function registerType cdecl (byref errName as zstring) as short
+declare function assignHandler cdecl (errCode as short, handler as Handler) as short
+declare function getCode cdecl (byref errName as zstring) as short
+declare sub throw cdecl (_
 	errCode as integer, _
 	byref errName as zstring, _
 	byref message as string, _

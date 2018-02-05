@@ -1,9 +1,9 @@
 
-#include once "../../../../../modules/headers/default/default-v1.bi"
-#include once "default.bi"
+#include once "../../../../../modules/headers/fault/fault-v1.bi"
+#include once "fault.bi"
 
 type ModuleStateType
-	methods as Default.Interface
+	methods as Fault.Interface
 	isLoaded as short
 	references as integer
 	startups as integer
@@ -17,7 +17,12 @@ dim shared as ModuleStateType moduleState
  ' @returns {any ptr}
  '/
 function exports cdecl alias "exports" () as any ptr export
-	moduleState.methods.startup = @Default.startup
+	moduleState.methods.startup = @Fault.startup
+	moduleState.methods.shutdown = @Fault.shutdown
+	moduleState.methods.registerType = @Fault.registerType
+	moduleState.methods.assignHandler = @Fault.assignHandler
+	moduleState.methods.getCode = @Fault.getCode
+	moduleState.methods.throw = @Fault.throw
 
 	return @moduleState.methods
 end function
@@ -29,21 +34,15 @@ end function
  '/
 function load cdecl alias "load" (modulePtr as Module.Interface ptr) as short export
 	if modulePtr = NULL then
-		print ("**** Default.load: Invalid Module interface pointer")
+		print ("**** Fault.load: Invalid Module interface pointer")
 		return false
 	end if
 
 	if not moduleState.isLoaded then
 		_console = modulePtr->require("console")
-		_fault = modulePtr->require("fault")
 
 		if _console = NULL then
-			print ("**** Default.load: Failed to load Console dependency")
-			return false
-		end if
-
-		if _fault = NULL then
-			print ("**** Default.load: Failed to load Fault dependency")
+			print ("**** Fault.load: Failed to load Console dependency")
 			return false
 		end if
 
@@ -78,7 +77,7 @@ function startup cdecl alias "startup" () as short export
 	if moduleState.startups = 0 then
 		if moduleState.methods.startup <> NULL then
 			if not moduleState.methods.startup() then
-				print ("**** Default.startup: Module startup handler failed")
+				print ("**** Fault.startup: Module startup handler failed")
 			end if
 		end if
 	end if
@@ -97,7 +96,11 @@ function shutdown cdecl alias "shutdown" () as short export
 	if moduleState.startups <= 0 then
 		moduleState.startups = 0
 
-		' Do shutdown
+		if moduleState.methods.shutdown <> NULL then
+			if not moduleState.methods.shutdown() then
+				print ("**** Fault.startup: Module shutdown handler failed")
+			end if
+		end if
 	end if
 
 	return true
