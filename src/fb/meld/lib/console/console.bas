@@ -16,9 +16,9 @@ namespace Console
 /''
  ' Log a message to the console.
  ' @function logMessage
- ' @param {byref string} message
+ ' @param {byref zstring} message
  '/
-sub logMessage cdecl (byref message as string)
+sub logMessage cdecl (byref message as zstring)
 	print(Time () & " - " & message)
 end sub
 
@@ -26,11 +26,11 @@ end sub
  ' Log a warning to the console.
  ' @function logWarning
  ' @param {byref zstring} id
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logWarning cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logWarning cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 6
@@ -42,11 +42,11 @@ end sub
  ' Log an error to the console.
  ' @function logError
  ' @param {byref zstring} id
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logError cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logError cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 4
@@ -58,11 +58,11 @@ end sub
  ' Log a success message to the console.
  ' @function logSuccess
  ' @param {byref zstring} id
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  '/
-sub logSuccess cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+sub logSuccess cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 2
@@ -74,13 +74,13 @@ end sub
  ' Write all messages to a standard format.
  ' @function _format
  ' @param {byref zstring} id
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} source
  ' @param {integer} lineNum
  ' @returns {string}
  ' @private
  '/
-function _format (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer) as string
+function _format (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
 	dim as zstring*3 newline
 
 	'if _core->getNewline <> NULL then

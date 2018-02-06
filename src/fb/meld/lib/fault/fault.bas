@@ -23,7 +23,7 @@ namespace Fault
 /''
  ' @typedef {function} Handler
  ' @param {byref zstring} errName
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
@@ -161,13 +161,13 @@ end function
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
  ' @param {zstring} errName
- ' @param {string} message - Contains full error message
+ ' @param {zstring} message - Contains full error message
  ' @param {zstring} filename - Pointer to a string containing the current
  '	filename.  Can be set to a constant containing __FILE__.
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw cdecl (errCode as integer, byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub throw cdecl (errCode as integer, byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
@@ -183,11 +183,11 @@ end sub
  ' Default error handler for fatal errors.
  ' @function defaultFatalHandler
  ' @param {byref zstring} errName
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultFatalHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub defaultFatalHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 	'_core->shutdown(1)
 end sub
@@ -196,11 +196,11 @@ end sub
  ' Default error handler for non-fatal errors.
  ' @function defaultErrorHandler
  ' @param {byref zstring} errName
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultErrorHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub defaultErrorHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 end sub
 
@@ -208,11 +208,11 @@ end sub
  ' Handler for logging warnings.
  ' @function defaultWarningHandler
  ' @param {byref zstring} errName
- ' @param {byref string} message
+ ' @param {byref zstring} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultWarningHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+sub defaultWarningHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logWarning(errName, message, filename, lineNum)
 end sub
 

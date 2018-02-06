@@ -5,10 +5,10 @@
 namespace Console
 
 type Interface
-	logMessage as sub cdecl (byref message as string)
-	logWarning as sub cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
-	logError as sub cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
-	logSuccess as sub cdecl (byref id as zstring, byref message as string, byref source as zstring, lineNum as integer)
+	logMessage as sub cdecl (byref message as zstring)
+	logWarning as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+	logError as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+	logSuccess as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
 end type
 
 end namespace
