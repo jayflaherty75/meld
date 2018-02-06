@@ -16,9 +16,9 @@ echo
 #echo Compiling modules...
 #echo
 
-compileExternal meld lib console
-compileExternal meld lib fault
-compileExternal shared apps default
+#compileExternal meld lib console
+#compileExternal meld lib fault
+#compileExternal shared apps default
 #compileExternal meld core
 #compileExternal shared bst
 #compileExternal shared iterator

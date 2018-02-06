@@ -1,67 +1,24 @@
 
-#include once "error-handling.bi"
+/''
+ ' @requires constants
+ ' @requires module
+ ' @requires console
+ ' @requires fault
+ '/
 
+#include once "module.bi"
+
+/''
+ ' @namespace ErrorHandling
+ '/
 namespace ErrorHandling
-
-type ErrorCodes
-	uncaughtError as integer
-	internalSystemError as integer
-	fatalOperationalError as integer
-	moduleLoadingError as integer
-	resourceAllocationError as integer
-	releaseResourceError as integer
-	nullReferenceError as integer
-	resourceMissingError as integer
-	invalidArgumentError as integer
-	outOfBoundsError as integer
-	resourceLimitSurpassed as integer
-	generalError as integer
-end type
-
-type Dependencies
-	core as Core.Interface ptr
-	console as Console.Interface ptr
-	fault as Fault.Interface ptr
-end type
-
-type StateType
-	methods as Interface
-	deps as Dependencies
-	errs as ErrorCodes
-end type
-
-dim shared as StateType state
-
-declare sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring, handler as Fault.handler)
 
 /''
  ' Loading lifecycle function called by Meld framework.
- ' @param {Core.Interface ptr} corePtr
- ' @returns {integer} Signals framework whether module load was successful or not.
+ ' @function startup
+ ' @returns {short}
  '/
-function load (corePtr as Core.Interface ptr) as integer
-	dim as Core.Interface ptr _core
-	dim as Console.Interface ptr _console
-	dim as Fault.Interface ptr _fault
-
-	if corePtr = NULL then
-		print ("load: Invalid Core interface pointer")
-		return false
-	end if
-
-	state.methods.load = @load
-	state.methods.unload = @unload
-	state.methods.register = NULL
-	state.methods.unregister = NULL
-
-	if not corePtr->register("error-handling", @state.methods) then
-		return false
-	end if
-
-	_core = corePtr->require("core")
-	_console = corePtr->require("console")
-	_fault = corePtr->require("fault")
-
+function startup cdecl () as short
 	state.errs.uncaughtError = _fault->getCode("UncaughtError")
 	state.errs.internalSystemError = _fault->getCode("InternalSystemError")
 
@@ -76,28 +33,29 @@ function load (corePtr as Core.Interface ptr) as integer
 	_assignHandler(_fault, @state.errs.resourceLimitSurpassed, "ResourceLimitSurpassed", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.generalError, "GeneralError", _fault->defaultWarningHandler)
 
-	state.deps.core = _core
-	state.deps.console = _console
-	state.deps.fault = _fault
-
 	return true
 end function
 
 /''
  ' Unload lifecycle function called by Meld framework.
+ ' @function shutdown
+ ' @returns {short}
  '/
-sub unload ()
-end sub
+function shutdown cdecl () as short
+	return true
+end function
 
 /''
  ' Helper function to assign a handler to an error code.
+ ' @function _assignHandler
  ' @param {Fault.Interface ptr} _fault
  ' @param {integer ptr} errCodePtr
- ' @param {zstring} errName
+ ' @param {byref zstring} errName
  ' @param {Fault.handler} handler
+ ' @private
  ' @throws {UncaughtError}
  '/
-sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring, handler as Fault.handler)
+sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, byref errName as zstring, handler as Fault.handler)
 	dim as integer errCode = _fault->registerType(errName)
 
 	if not _fault->assignHandler(errCode, handler) then
