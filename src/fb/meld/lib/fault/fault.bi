@@ -13,12 +13,12 @@ declare function getCode cdecl (byref errName as zstring) as short
 declare sub throw cdecl (_
 	errCode as integer, _
 	byref errName as zstring, _
-	byref message as string, _
+	byref message as zstring, _
 	byref filename as zstring, _
 	linenum as integer _	
 )
-declare sub defaultFatalHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-declare sub defaultErrorHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
-declare sub defaultWarningHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+declare sub defaultFatalHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+declare sub defaultErrorHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+declare sub defaultWarningHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 
 end namespace
