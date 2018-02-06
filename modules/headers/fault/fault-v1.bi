@@ -19,6 +19,9 @@ type Interface
 	assignHandler as function cdecl (errCode as short, handler as Handler) as short
 	getCode as function cdecl (errName as zstring) as short
 	throw as sub cdecl (errCode as integer, errName as zstring, message as string, filename as zstring, lineNum as integer)
+	defaultFatalHandler as sub cdecl (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	defaultErrorHandler as sub cdecl (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
+	defaultWarningHandler as sub cdecl (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 end type
 
 end namespace

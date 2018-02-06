@@ -23,6 +23,9 @@ function exports cdecl alias "exports" () as any ptr export
 	moduleState.methods.assignHandler = @Fault.assignHandler
 	moduleState.methods.getCode = @Fault.getCode
 	moduleState.methods.throw = @Fault.throw
+	moduleState.methods.defaultFatalHandler = @Fault.defaultFatalHandler
+	moduleState.methods.defaultErrorHandler = @Fault.defaultErrorHandler
+	moduleState.methods.defaultWarningHandler = @Fault.defaultWarningHandler
 
 	return @moduleState.methods
 end function

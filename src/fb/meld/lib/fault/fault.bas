@@ -186,7 +186,6 @@ end sub
  ' @param {byref string} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
- ' @private
  '/
 sub defaultFatalHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
@@ -200,7 +199,6 @@ end sub
  ' @param {byref string} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
- ' @private
  '/
 sub defaultErrorHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
@@ -213,7 +211,6 @@ end sub
  ' @param {byref string} message
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
- ' @private
  '/
 sub defaultWarningHandler (byref errName as zstring, byref message as string, byref filename as zstring, lineNum as integer)
 	_console->logWarning(errName, message, filename, lineNum)
