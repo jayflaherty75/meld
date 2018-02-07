@@ -46,7 +46,6 @@ function uninitialize cdecl() as short
 	dim as integer index
 	dim as short result = true
 
-	'for index = state.libraryCount - 1 to 0 step -1
 	for index = 0 to state.libraryCount - 1
 		library = state.libraries(index)
 
@@ -63,11 +62,8 @@ function uninitialize cdecl() as short
 		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn = NULL orelse not unloadFn() then
 			dylibfree(library)
+			state.libraries(index) = NULL
 		end if
-	next
-
-	for index = 0 to state.libraryCount - 1
-		state.libraries(index) = NULL
 	next
 
 	return result
