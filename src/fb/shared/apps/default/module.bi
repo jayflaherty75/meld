@@ -57,8 +57,9 @@ end function
 
 /''
  ' Unload lifecycle function called by Meld framework.
+ ' @returns {short} - State of module isLoaded property
  '/
-sub unload cdecl alias "unload" () export
+function unload cdecl alias "unload" () as short export
 	moduleState.references -= 1
 
 	if moduleState.references <= 0 then
@@ -66,7 +67,9 @@ sub unload cdecl alias "unload" () export
 		moduleState.startups = 0
 		moduleState.isLoaded = false
 	end if
-end sub
+
+	return moduleState.isLoaded
+end function
 
 /''
  ' Register lifecycle function called by Meld framework.

@@ -17,8 +17,8 @@ declare sub throw cdecl (_
 	byref filename as zstring, _
 	linenum as integer _	
 )
-declare sub defaultFatalHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
-declare sub defaultErrorHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
-declare sub defaultWarningHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+declare sub defaultFatalHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+declare sub defaultErrorHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+declare sub defaultWarningHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 
 end namespace

@@ -24,13 +24,11 @@ dim shared as Interface api
  ' @returns {short}
  '/
 function initialize cdecl() as short
-	dim as Interface ptr apiPtr = @api
-
 	state.libraryCount = 0
 
-	apiPtr->initialize = @initialize
-	apiPtr->uninitialize = @uninitialize
-	apiPtr->require = @require
+	api.initialize = @initialize
+	api.uninitialize = @uninitialize
+	api.require = @require
 
 	return true
 end function
@@ -42,12 +40,13 @@ end function
  '/
 function uninitialize cdecl() as short
 	dim as function cdecl () as short shutdownFn
-	dim as sub cdecl () unloadFn
+	dim as function cdecl () as short unloadFn
 
 	dim as any ptr library
 	dim as integer index
 	dim as short result = true
 
+	'for index = state.libraryCount - 1 to 0 step -1
 	for index = 0 to state.libraryCount - 1
 		library = state.libraries(index)
 
@@ -56,13 +55,18 @@ function uninitialize cdecl() as short
 			print("**** Module.uninitialize: Module shutdown failed")
 			result = false
 		end if
+	next
+
+	for index = 0 to state.libraryCount - 1
+		library = state.libraries(index)
 
 		unloadFn = dylibsymbol(library, "unload")
-		if unloadFn <> NULL then
-			unloadFn()
+		if unloadFn = NULL orelse not unloadFn() then
+			dylibfree(library)
 		end if
+	next
 
-		dylibfree(library)
+	for index = 0 to state.libraryCount - 1
 		state.libraries(index) = NULL
 	next
 
