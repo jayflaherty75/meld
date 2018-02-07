@@ -23,6 +23,7 @@
 /''
  ' Used by Meld to disassociates a module from the rest of the system.
  ' @function unload
+ ' @returns {short}
  '/
  
 /''

@@ -187,7 +187,7 @@ end sub
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultFatalHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultFatalHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 	'_core->shutdown(1)
 end sub
@@ -200,7 +200,7 @@ end sub
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultErrorHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultErrorHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 end sub
 
@@ -212,7 +212,7 @@ end sub
  ' @param {byref zstring} filename
  ' @param {integer} lineNum
  '/
-sub defaultWarningHandler (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultWarningHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 	_console->logWarning(errName, message, filename, lineNum)
 end sub
 
