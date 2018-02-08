@@ -1,61 +1,87 @@
 
-#include once "tester.bi"
+/''
+ ' @requires constants
+ ' @requires module
+ ' @requires console
+ '/
 
+#include once "module.bi"
+
+/''
+ ' @namespace Tester
+ '/
 namespace Tester
 
-type StateType
-	methods as Interface
-end type
+/''
+ ' @typedef {function} testFunc
+ ' @returns {short}
+ '/
 
-dim shared as Core.Interface ptr _core
+/''
+ ' @typedef {function} itCallback
+ ' @param {byref zstring} description
+ ' @param {testFunc} test
+ ' @returns {short}
+ '/
 
-dim shared as StateType state
+/''
+ ' @typedef {function} suiteFunc
+ ' @param {itCallback} it
+ ' @returns {short}
+ '/
 
-function load (corePtr as Core.Interface ptr) as integer
-	if corePtr = NULL then
-		print ("*** Tester.load: Invalid corePtr interface pointer")
-		return false
-	end if
+/''
+ ' @typedef {function} describeCallback
+ ' @param {byref zstring} description
+ ' @param {suiteFunc} callback
+ ' @returns {short}
+ '/
 
-	state.methods.load = @load
-	state.methods.unload = @unload
-	state.methods.register = NULL
-	state.methods.unregister = NULL
-	state.methods.run = @run
-	state.methods.describe = @describe
-	state.methods.suite = @suite
+/''
+ ' @typedef {function} testModule
+ ' @param {any ptr} interfacePtr
+ ' @param {describeCallback} describe
+ ' @returns {short}
+ '/
 
-	if not corePtr->register("tester", @state.methods) then
-		return false
-	end if
-
-	' TODO: Use require() to get Core once Core require is finished
-	_core = corePtr
-
+/''
+ ' Application main routine.
+ ' @function startup
+ ' @returns {short}
+ '/
+function startup cdecl () as short
 	return true
 end function
 
-sub unload()
-end sub
+/''
+ ' Application main routine.
+ ' @function shutdown
+ ' @returns {short}
+ '/
+function shutdown cdecl () as short
+	return true
+end function
 
 /''
  ' Given a pointer to an array of test modules and a count, runs all tests up
  ' until a first failure and returns true if all passed or false if any one
  ' fails.
- ' @param {function ptr} tests 
- ' @param {integer} count 
- ' @returns {integer}
+ ' @function run
+ ' @param {testModule ptr} tests 
+ ' @param {any ptr} interfacePtr 
+ ' @param {short} count 
+ ' @returns {short}
  '/
-function run (tests as testModule ptr, count as integer) as integer
-	dim as integer i = 0
-	dim as integer result = true
+function run (tests as testModule ptr, interfacePtr as any ptr, count as short) as short
+	dim as short i = 0
+	dim as short result = true
 
 	while (i < count AND result = true)
 		if tests[i] <> NULL then
-			result = tests[i] (_core, @describe)
+			result = tests[i] (interfacePtr, @describe)
 			i += 1
 		else
-			print ("run: WARNING! Null test function found.")
+			_console->logMessage("run: WARNING! Null test function found.")
 			result = false
 		end if
 	wend
@@ -65,15 +91,16 @@ end function
 
 /''
  ' Passed to the test module so the module can provide a description.
- ' @param {string} description
- ' @param {function} callback
- ' @returns {integer}
+ ' @function describe
+ ' @param {zstring} description
+ ' @param {suiteFunc} callback
+ ' @returns {short}
  '/
-function describe (byref description as string, callback as suiteFunc) as integer
-	print (description & "...")
+function describe (byref description as zstring, callback as suiteFunc) as short
+	_console->logMessage(description & "...")
 
 	if callback = NULL then
-		print ("describe: WARNING! Null test function found.")
+		_console->logMessage("describe: WARNING! Null test function found.")
 		return false
 	end if
 
@@ -82,15 +109,16 @@ end function
 
 /''
  ' Passed to the test so the test can describe and run each individual testunit.
- ' @param {string} description
- ' @param {function} test
- ' @returns {integer}
+ ' @function suite
+ ' @param {zstring} description
+ ' @param {testFunc} test
+ ' @returns {short}
  '/
-function suite (byref description as string, test as testFunc) as integer
-	print ("  ..." & description)
+function suite (byref description as zstring, test as testFunc) as short
+	_console->logMessage("  ..." & description)
 
 	if test = NULL then
-		print ("suite: WARNING! Null test function found.")
+		_console->logMessage("suite: WARNING! Null test function found.")
 		return false
 	end if
 
