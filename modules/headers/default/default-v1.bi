@@ -4,6 +4,7 @@
 #include once "../console/console-v1.bi"
 #include once "../fault/fault-v1.bi"
 #include once "../error-handling/error-handling-v1.bi"
+#include once "../tester/tester-v1.bi"
 
 namespace Default
 
