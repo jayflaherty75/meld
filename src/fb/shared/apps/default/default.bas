@@ -29,13 +29,10 @@ function startup cdecl () as short
 	tests(0) = @testModule
 
 	errors.generalError = _fault->getCode("GeneralError")
-
 	_console->logMessage("TEST")
-
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
 
 	if not _tester->run(@tests(0), interfacePtr, 1) then
-		print ("TEST FAILED!")
 		return false
 	end if
 

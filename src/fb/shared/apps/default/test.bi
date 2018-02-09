@@ -29,7 +29,7 @@ function test2 () as short
 end function
 
 function test3 () as short
-	return false
+	return true
 end function
 
 function test4 () as short
