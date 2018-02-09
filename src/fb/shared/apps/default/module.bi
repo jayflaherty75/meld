@@ -27,21 +27,26 @@ function load cdecl alias "load" (modulePtr as Module.Interface ptr) as short ex
 
 	if not moduleState.isLoaded then
 		_console = modulePtr->require("console")
-		_fault = modulePtr->require("fault")
-		_errorHandling = modulePtr->require("error-handling")
-
 		if _console = NULL then
 			print ("**** Default.load: Failed to load Console dependency")
 			return false
 		end if
 
+		_fault = modulePtr->require("fault")
 		if _fault = NULL then
 			print ("**** Default.load: Failed to load Fault dependency")
 			return false
 		end if
 
+		_errorHandling = modulePtr->require("error-handling")
 		if _errorHandling = NULL then
 			print ("**** Default.load: Failed to load ErrorHandling dependency")
+			return false
+		end if
+
+		_tester = modulePtr->require("tester")
+		if _tester = NULL then
+			print ("**** Default.load: Failed to load Tester dependency")
 			return false
 		end if
 
