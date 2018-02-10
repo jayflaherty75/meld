@@ -13,8 +13,22 @@
 namespace Tester
 
 /''
- ' @typedef {function} testFunc
+ ' @typedef {function} expectFn
+ ' @param {long} result
+ ' @param {long} expected
+ ' @param {byref zstring} message
  ' @returns {short}
+ '/
+
+/''
+ ' @typedef {function} doneFn
+ ' @param {short} hasPassed
+ '/
+
+/''
+ ' @typedef {function} testFunc
+ ' @param {expectFn} expect
+ ' @param {doneFn} done
  '/
 
 /''
@@ -42,17 +56,6 @@ namespace Tester
  ' @param {any ptr} interfacePtr
  ' @param {describeCallback} describe
  ' @returns {short}
- '/
-
-/''
- ' @typedef {function} expect
- ' @param {long} expected
- ' @param {long} result
- ' @param {zstring} message
- '/
-
-/''
- ' @typedef {function} done
  '/
 
 /''
@@ -135,5 +138,33 @@ function suite (byref description as zstring, test as testFunc) as short
 
 	return test()
 end function
+
+/''
+ ' @function _expect
+ ' @param {long} result
+ ' @param {long} expected
+ ' @param {byref zstring} message
+ ' @returns {short}
+ ' @private
+ '/
+function _expect (result as long, expected as long, byref message as zstring)
+	if result <> expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		return false
+	end if
+
+	return true
+end function
+
+/''
+ ' @function _done
+ ' @param {short} hasPassed
+ ' @private
+ '/
+sub _done (hasPassed as short)
+end sub
 
 end namespace

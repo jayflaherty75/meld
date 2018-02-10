@@ -12,19 +12,19 @@ function create (it as Tester.itCallback) as short
 	return result
 end function
 
-function test1 () as short
+function test1 (expect as expectFn, done as doneFn) as short
 	return true
 end function
 
-function test2 () as short
+function test2 (expect as expectFn, done as doneFn) as short
 	return true
 end function
 
-function test3 () as short
+function test3 (expect as expectFn, done as doneFn) as short
 	return true
 end function
 
-function test4 () as short
+function test4 (expect as expectFn, done as doneFn) as short
 	return true
 end function
 
