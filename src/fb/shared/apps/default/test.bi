@@ -1,14 +1,6 @@
 
 namespace Default
 
-function testModule (interfacePtr as any ptr, describe as Tester.describeCallback) as short
-	dim as short result = true
-
-	result = result andalso describe ("The Default module", @create)
-
-	return result
-end function
-
 function create (it as Tester.itCallback) as short
 	dim as short result = true
 

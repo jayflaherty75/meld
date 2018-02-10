@@ -24,8 +24,8 @@ namespace Default
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
+declare function test (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 
-declare function testModule (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 declare function create (it as Tester.itCallback) as short
 declare function test1 () as short
 declare function test2 () as short

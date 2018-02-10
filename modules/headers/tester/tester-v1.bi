@@ -15,6 +15,10 @@ type describeCallback as function cdecl (byref description as zstring, callback 
 
 type testModule as function cdecl (interfacePtr as any ptr, describe as describeCallback) as short
 
+type expect as sub cdecl (expected as long, result as long, message as zstring)
+
+type done as sub cdecl ()
+
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short

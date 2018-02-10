@@ -45,6 +45,17 @@ namespace Tester
  '/
 
 /''
+ ' @typedef {function} expect
+ ' @param {long} expected
+ ' @param {long} result
+ ' @param {zstring} message
+ '/
+
+/''
+ ' @typedef {function} done
+ '/
+
+/''
  ' Application main routine.
  ' @function startup
  ' @returns {short}
@@ -81,7 +92,7 @@ function run (tests as testModule ptr, interfacePtr as any ptr, count as short) 
 			result = tests[i] (interfacePtr, @describe)
 			i += 1
 		else
-			_console->logMessage("run: WARNING! Null test function found.")
+			_console->logMessage("Tester.run: WARNING! Null test function found.")
 			result = false
 		end if
 	wend
@@ -100,7 +111,7 @@ function describe (byref description as zstring, callback as suiteFunc) as short
 	_console->logMessage(description & "...")
 
 	if callback = NULL then
-		_console->logMessage("describe: WARNING! Null test function found.")
+		_console->logMessage("Tester.describe: WARNING! Null test function found.")
 		return false
 	end if
 
@@ -118,7 +129,7 @@ function suite (byref description as zstring, test as testFunc) as short
 	_console->logMessage("  ..." & description)
 
 	if test = NULL then
-		_console->logMessage("suite: WARNING! Null test function found.")
+		_console->logMessage("Tester.suite: WARNING! Null test function found.")
 		return false
 	end if
 
