@@ -51,7 +51,7 @@ end function
 function test (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describe ("The Default module", @create)
+	result = result andalso describe ("The Default module", @Default.testCreate)
 
 	return result
 end function

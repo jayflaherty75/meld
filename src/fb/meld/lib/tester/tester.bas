@@ -17,12 +17,10 @@ namespace Tester
  ' @param {long} result
  ' @param {long} expected
  ' @param {byref zstring} message
- ' @returns {short}
  '/
 
 /''
  ' @typedef {function} doneFn
- ' @param {short} hasPassed
  '/
 
 /''
@@ -57,6 +55,13 @@ namespace Tester
  ' @param {describeCallback} describe
  ' @returns {short}
  '/
+
+type StateType
+	isDone as short
+	result as short
+end type
+
+dim shared as StateType state
 
 /''
  ' Application main routine.
@@ -111,6 +116,8 @@ end function
  ' @returns {short}
  '/
 function describe (byref description as zstring, callback as suiteFunc) as short
+	state.result = true
+
 	_console->logMessage(description & "...")
 
 	if callback = NULL then
@@ -129,6 +136,8 @@ end function
  ' @returns {short}
  '/
 function suite (byref description as zstring, test as testFunc) as short
+	dim as integer waitTime = 0
+
 	_console->logMessage("  ..." & description)
 
 	if test = NULL then
@@ -136,7 +145,21 @@ function suite (byref description as zstring, test as testFunc) as short
 		return false
 	end if
 
-	return test()
+	state.isDone = false
+
+	test(@_expect, @_done)
+
+	while waitTime < TESTER_TIMEOUT_DEFAULT andalso state.isDone = false
+		sleep(50, 1)
+		waitTime += 50
+	wend
+
+	if state.isDone = false then
+		_console->logMessage("    - Test exceeded " & TESTER_TIMEOUT_DEFAULT / 1000 & " seconds")
+		state.result = false
+	end if
+
+	return state.result
 end function
 
 /''
@@ -144,27 +167,24 @@ end function
  ' @param {long} result
  ' @param {long} expected
  ' @param {byref zstring} message
- ' @returns {short}
  ' @private
  '/
-function _expect (result as long, expected as long, byref message as zstring)
+sub _expect (result as long, expected as long, byref message as zstring)
 	if result <> expected then
 		_console->logMessage("    - " & message)
 		_console->logMessage("      Expected: " & expected)
 		_console->logMessage("      Actual:   " & result)
 
-		return false
+		state.result = false
 	end if
-
-	return true
-end function
+end sub
 
 /''
  ' @function _done
- ' @param {short} hasPassed
  ' @private
  '/
-sub _done (hasPassed as short)
+sub _done ()
+	state.isDone = true
 end sub
 
 end namespace

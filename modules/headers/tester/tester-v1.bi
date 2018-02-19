@@ -5,7 +5,11 @@
 
 namespace Tester
 
-type testFunc as function cdecl () as short
+type expectFn as sub cdecl (result as long, expected as long, byref message as zstring)
+
+type doneFn as sub cdecl ()
+
+type testFunc as sub cdecl (expect as expectFn, done as doneFn)
 
 type itCallback as function cdecl (byref description as zstring, test as testFunc) as short
 
@@ -14,10 +18,6 @@ type suiteFunc as function cdecl (it as itCallback) as short
 type describeCallback as function cdecl (byref description as zstring, callback as suiteFunc) as short
 
 type testModule as function cdecl (interfacePtr as any ptr, describe as describeCallback) as short
-
-type expect as sub cdecl (expected as long, result as long, message as zstring)
-
-type done as sub cdecl ()
 
 type Interface
 	startup as function cdecl () as short
