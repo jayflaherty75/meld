@@ -13,8 +13,20 @@
 namespace Tester
 
 /''
+ ' @typedef {function} expectFn
+ ' @param {long} result
+ ' @param {long} expected
+ ' @param {byref zstring} message
+ '/
+
+/''
+ ' @typedef {function} doneFn
+ '/
+
+/''
  ' @typedef {function} testFunc
- ' @returns {short}
+ ' @param {expectFn} expect
+ ' @param {doneFn} done
  '/
 
 /''
@@ -43,6 +55,13 @@ namespace Tester
  ' @param {describeCallback} describe
  ' @returns {short}
  '/
+
+type StateType
+	isDone as short
+	result as short
+end type
+
+dim shared as StateType state
 
 /''
  ' Application main routine.
@@ -81,7 +100,7 @@ function run (tests as testModule ptr, interfacePtr as any ptr, count as short) 
 			result = tests[i] (interfacePtr, @describe)
 			i += 1
 		else
-			_console->logMessage("run: WARNING! Null test function found.")
+			_console->logMessage("Tester.run: WARNING! Null test function found.")
 			result = false
 		end if
 	wend
@@ -97,10 +116,12 @@ end function
  ' @returns {short}
  '/
 function describe (byref description as zstring, callback as suiteFunc) as short
+	state.result = true
+
 	_console->logMessage(description & "...")
 
 	if callback = NULL then
-		_console->logMessage("describe: WARNING! Null test function found.")
+		_console->logMessage("Tester.describe: WARNING! Null test function found.")
 		return false
 	end if
 
@@ -115,14 +136,55 @@ end function
  ' @returns {short}
  '/
 function suite (byref description as zstring, test as testFunc) as short
+	dim as integer waitTime = 0
+
 	_console->logMessage("  ..." & description)
 
 	if test = NULL then
-		_console->logMessage("suite: WARNING! Null test function found.")
+		_console->logMessage("Tester.suite: WARNING! Null test function found.")
 		return false
 	end if
 
-	return test()
+	state.isDone = false
+
+	test(@_expect, @_done)
+
+	while waitTime < TESTER_TIMEOUT_DEFAULT andalso state.isDone = false
+		sleep(50, 1)
+		waitTime += 50
+	wend
+
+	if state.isDone = false then
+		_console->logMessage("    - Test exceeded " & TESTER_TIMEOUT_DEFAULT / 1000 & " seconds")
+		state.result = false
+	end if
+
+	return state.result
 end function
+
+/''
+ ' @function _expect
+ ' @param {long} result
+ ' @param {long} expected
+ ' @param {byref zstring} message
+ ' @private
+ '/
+sub _expect (result as long, expected as long, byref message as zstring)
+	if result <> expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
+ ' @function _done
+ ' @private
+ '/
+sub _done ()
+	state.isDone = true
+end sub
 
 end namespace

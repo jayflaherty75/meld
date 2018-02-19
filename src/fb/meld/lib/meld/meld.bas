@@ -1,6 +1,7 @@
 
 /''
  ' @requires module
+ ' @requires tester
  '/
  
 /''
@@ -38,5 +39,13 @@
  ' Shutdown lifecycle function called by Meld to disassociates a module from
  ' the rest of the system before unloading.
  ' @function shutdown
+ ' @returns {short}
+ '/
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {any ptr} interfacePtr
+ ' @param {Tester.describeCallback} describe
  ' @returns {short}
  '/

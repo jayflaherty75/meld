@@ -5,7 +5,11 @@
 
 namespace Tester
 
-type testFunc as function cdecl () as short
+type expectFn as sub cdecl (result as long, expected as long, byref message as zstring)
+
+type doneFn as sub cdecl ()
+
+type testFunc as sub cdecl (expect as expectFn, done as doneFn)
 
 type itCallback as function cdecl (byref description as zstring, test as testFunc) as short
 
