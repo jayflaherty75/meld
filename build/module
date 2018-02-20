@@ -5,8 +5,6 @@ compileExternal () {
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
 
-# TODO: Module directories will be moved to fb and reference main.bas
-# cat "./src/fb/$1/main.bas"
 cat "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" | ./build/parse-fb > ./modules/definitions/$1.xml
 ./build/header $1
 
