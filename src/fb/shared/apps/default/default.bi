@@ -26,10 +26,4 @@ declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function test (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 
-declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
-
 end namespace

@@ -23,7 +23,6 @@ namespace Default
  ' @returns {short}
  '/
 function startup cdecl () as short
-	errors.generalError = _fault->getCode("GeneralError")
 	_console->logMessage("TEST")
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
 
