@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! -f ./modules/definitions/$1.xml ]; then
+    echo -n "<?xml version="1.0" encoding="UTF-8"?><module><namespace>" >> ./modules/definitions/$1.xml
+	./build/kebab-to-pascal $1 | tr '\n' '<' >> ./modules/definitions/$1.xml
+	echo "/namespace></module>" >> ./modules/definitions/$1.xml
+fi
+
+mkdir -p "./src/fb/${3:-shared}/${2:-lib}/$1"
