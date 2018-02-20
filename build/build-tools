@@ -2,3 +2,4 @@
 
 fbc -C -s console "./build/tools/parse-fb/main.bas" -x "./build/parse-fb"
 fbc -C -s console "./build/tools/parse-cpp/main.bas" -x "./build/parse-cpp"
+fbc -C -s console "./build/tools/kebab-to-pascal/main.bas" -x "./build/kebab-to-pascal"
