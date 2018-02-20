@@ -51,6 +51,8 @@ function load cdecl alias "load" (modulePtr as Module.Interface ptr) as short ex
 			return false
 		end if
 
+		errors.generalError = _fault->getCode("GeneralError")
+
 		moduleState.references = 0
 		moduleState.startups = 0
 		moduleState.isLoaded = true
@@ -84,6 +86,8 @@ end function
 function test () as short export
 	dim as Default.Interface ptr interfacePtr = exports()
 	dim as Tester.testModule tests(1)
+
+	if interfacePtr->test = NULL then return true
 
 	tests(0) = interfacePtr->test
 
