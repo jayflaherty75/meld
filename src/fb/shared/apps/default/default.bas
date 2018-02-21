@@ -1,13 +1,12 @@
 
 /''
- ' @requires constants
- ' @requires module
  ' @requires console
  ' @requires fault
  ' @requires error-handling
  ' @requires tester
  '/
 
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
 #include once "errors.bi"
 #include once "test.bi"
@@ -21,6 +20,7 @@ namespace Default
  ' Application main routine.
  ' @function startup
  ' @returns {short}
+ ' @throws {GeneralError}
  '/
 function startup cdecl () as short
 	_console->logMessage("TEST")

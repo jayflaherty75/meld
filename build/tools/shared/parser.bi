@@ -8,7 +8,7 @@ Namespace Parser
 Dim Shared As ConfigType config 
 Dim Shared As StateType state
 
-Declare Sub initialize(startup as function(parserState As StateType ptr) as short)
+Declare Sub initialize(byref moduleName as string, startup as function(parserState As StateType ptr) as short)
 Declare Sub uninitialize(finish as function(parserState As StateType ptr) as short)
 Declare Sub setDocStart(ByRef token As ZString)
 Declare Sub setDocEnd(ByRef token As ZString)
@@ -20,7 +20,7 @@ Declare Function process(ByVal srcLine As String) As Integer
 Declare Function _processLine(ByRef srcLine As String) As Integer
 Declare Function _directiveEnd() As Short
 
-Sub initialize(startup as function(parserState As StateType ptr) as short)
+Sub initialize(byref moduleName as string, startup as function(parserState As StateType ptr) as short)
 	config.docStart = "/**"
 	config.docEnd = "*/"
 	config.lineStart = "*"
@@ -42,6 +42,7 @@ Sub initialize(startup as function(parserState As StateType ptr) as short)
 	#ENDIF
 
 	state.config = @config
+	state.moduleName = moduleName
 	state.namespc = ""
 	state.implements = ""
 	state.description = ""

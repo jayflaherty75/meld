@@ -14,7 +14,7 @@
 
 	<xsl:text>sub _throwDefaultGeneralError (byref id as zstring, byref filename as zstring, lineNum as integer)&#xa;</xsl:text>
 	<xsl:text>&#x9;_fault->throw(_&#xa;</xsl:text>
-	<xsl:text>&#x9;&#x9;errors.generalError, _&#xa;</xsl:text>
+	<xsl:text>&#x9;&#x9;errors.GeneralError, _&#xa;</xsl:text>
 	<xsl:text>&#x9;&#x9;"DefaultGeneralError", "Testing errors: " &amp; id, _&#xa;</xsl:text>
 	<xsl:text>&#x9;&#x9;filename, lineNum _&#xa;</xsl:text>
 	<xsl:text>&#x9;)&#xa;</xsl:text>

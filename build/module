@@ -5,7 +5,9 @@ compileExternal () {
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
 
-cat "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" | ./build/parse-fb > ./modules/definitions/$1.xml
+cat "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" | ./build/parse-fb $1 > ./modules/definitions/$1.xml
 ./build/header $1
+
+xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/module-fb.xslt ./modules/definitions/$1.xml
 
 compileExternal $1 ${2:-lib} ${3:-shared}

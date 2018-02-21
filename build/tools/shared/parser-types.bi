@@ -22,6 +22,7 @@ End Type
 
 Type StateType
 	config as ConfigType Ptr
+	moduleName As String
 	namespc As String
 	implements As String
 	description As String

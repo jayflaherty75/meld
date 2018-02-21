@@ -1,12 +1,14 @@
 #!/bin/bash
 
 if [ ! -f ./modules/definitions/$1.xml ]; then
-    echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module><namespace>" >> ./modules/definitions/$1.xml
+    echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$1\"><namespace>" >> ./modules/definitions/$1.xml
 	./build/kebab-to-pascal $1 | tr '\n' '<' >> ./modules/definitions/$1.xml
 	echo "/namespace></module>" >> ./modules/definitions/$1.xml
 fi
 
 mkdir -p "./src/fb/${3:-shared}/${2:-lib}/$1"
+
+xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/module-fb.xslt ./modules/definitions/$1.xml
 
 if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ./build/templates/test-fb.xslt ./modules/definitions/$1.xml
