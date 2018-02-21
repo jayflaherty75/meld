@@ -3,10 +3,11 @@
 #include once "../shared/parser-setup.bi"
 
 Function main() As Integer
+	Dim as string moduleName = command(1)
 	Dim as String srcLine
 	Dim as long lineNum = 1
 
-	Parser.Initialize(@ParserXmlWriter.startup)
+	Parser.Initialize(moduleName, @ParserXmlWriter.startup)
 	Parser.setDocStart("/''")
 	Parser.setDocEnd("'/")
 	Parser.setLineStart("'")

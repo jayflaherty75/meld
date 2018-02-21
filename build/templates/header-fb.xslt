@@ -4,6 +4,8 @@
 	<xsl:template match="module">
 
 	<xsl:text>&#xa;</xsl:text>
+	<xsl:text>#include once "../constants/constants-v1.bi"&#xa;</xsl:text>
+	<xsl:text>#include once "../module/module-v1.bi"&#xa;</xsl:text>
 	<xsl:for-each select="requires">
 		<xsl:text>#include once "../</xsl:text>
 		<xsl:value-of select="@module" />
@@ -92,52 +94,52 @@
 	</xsl:for-each>
 
 	<xsl:text>type Interface&#xa;</xsl:text>
-		<xsl:for-each select="function">
-			<xsl:choose>
-				<xsl:when test="not(private)">
-					<xsl:text>&#x9;</xsl:text>
+	<xsl:for-each select="function">
+		<xsl:choose>
+			<xsl:when test="not(private)">
+				<xsl:text>&#x9;</xsl:text>
+				<xsl:value-of select="@name" />
+				<xsl:text> as </xsl:text>
+				<xsl:choose>
+					<xsl:when test="returns">function</xsl:when>
+					<xsl:otherwise>sub</xsl:otherwise>
+				</xsl:choose>
+				<xsl:text> cdecl (</xsl:text>
+				<xsl:for-each select="param">
+					<xsl:choose>
+						<xsl:when test="@const='true'">const </xsl:when>
+					</xsl:choose>
+					<xsl:choose>
+						<xsl:when test="@modifier='reference'">byref </xsl:when>
+					</xsl:choose>
 					<xsl:value-of select="@name" />
 					<xsl:text> as </xsl:text>
+					<xsl:value-of select="@type" />
 					<xsl:choose>
-						<xsl:when test="returns">function</xsl:when>
-						<xsl:otherwise>sub</xsl:otherwise>
+						<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
 					</xsl:choose>
-					<xsl:text> cdecl (</xsl:text>
-					<xsl:for-each select="param">
-						<xsl:choose>
-							<xsl:when test="@const='true'">const </xsl:when>
-						</xsl:choose>
-						<xsl:choose>
-							<xsl:when test="@modifier='reference'">byref </xsl:when>
-						</xsl:choose>
-						<xsl:value-of select="@name" />
-						<xsl:text> as </xsl:text>
-						<xsl:value-of select="@type" />
-						<xsl:choose>
-							<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
-						</xsl:choose>
-						<xsl:choose>
-							<xsl:when test="default">
-								<xsl:text> = </xsl:text>
-								<xsl:value-of select="default" />
-							</xsl:when>
-						</xsl:choose>
-						<xsl:if test="position()!=last()">, </xsl:if>
-					</xsl:for-each>
-					<xsl:text>)</xsl:text>
 					<xsl:choose>
-						<xsl:when test="returns">
-							<xsl:text> as </xsl:text>
-							<xsl:value-of select="returns/@type" />
-							<xsl:choose>
-								<xsl:when test="returns/@modifier='pointer'"> ptr</xsl:when>
-							</xsl:choose>
+						<xsl:when test="default">
+							<xsl:text> = </xsl:text>
+							<xsl:value-of select="default" />
 						</xsl:when>
 					</xsl:choose>
-					<xsl:text>&#xa;</xsl:text>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:for-each>
+					<xsl:if test="position()!=last()">, </xsl:if>
+				</xsl:for-each>
+				<xsl:text>)</xsl:text>
+				<xsl:choose>
+					<xsl:when test="returns">
+						<xsl:text> as </xsl:text>
+						<xsl:value-of select="returns/@type" />
+						<xsl:choose>
+							<xsl:when test="returns/@modifier='pointer'"> ptr</xsl:when>
+						</xsl:choose>
+					</xsl:when>
+				</xsl:choose>
+				<xsl:text>&#xa;</xsl:text>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:for-each>
 	<xsl:text>end type</xsl:text>
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
