@@ -12,6 +12,10 @@ xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/modul
 
 xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bi ./build/templates/include-fb.xslt ./modules/definitions/$1.xml
 
+if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas ]; then
+	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas ./build/templates/source-fb.xslt ./modules/definitions/$1.xml
+fi
+
 if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ./build/templates/test-fb.xslt ./modules/definitions/$1.xml
 fi
