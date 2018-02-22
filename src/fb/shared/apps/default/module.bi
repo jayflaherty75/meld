@@ -9,10 +9,10 @@
 #include once "default.bi"
 
 Function exports cdecl Alias "exports" () As any ptr export
+	
 	moduleState.methods.startup = @Default.startup
-moduleState.methods.shutdown = @Default.shutdown
-moduleState.methods.test = @Default.test
-
+	moduleState.methods.shutdown = @Default.shutdown
+	moduleState.methods.test = @Default.test
 
 	return @moduleState.methods
 End Function
@@ -24,36 +24,37 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
+		
 		_console = modulePtr->require("console")
-If _console = NULL then
-print("**** Default.load: Failed to load console dependency")
-Return false
-End If
-_fault = modulePtr->require("fault")
-If _fault = NULL then
-print("**** Default.load: Failed to load fault dependency")
-Return false
-End If
-_errorHandling = modulePtr->require("error-handling")
-If _errorHandling = NULL then
-print("**** Default.load: Failed to load error-handling dependency")
-Return false
-End If
-_tester = modulePtr->require("tester")
-If _tester = NULL then
-print("**** Default.load: Failed to load tester dependency")
-Return false
-End If
+		If _console = NULL then
+			print("**** Default.load: Failed to load console dependency")
+			Return false
+		End If
+
+		_fault = modulePtr->require("fault")
+		If _fault = NULL then
+			print("**** Default.load: Failed to load fault dependency")
+			Return false
+		End If
+
+		_errorHandling = modulePtr->require("error-handling")
+		If _errorHandling = NULL then
+			print("**** Default.load: Failed to load error-handling dependency")
+			Return false
+		End If
+
+		_tester = modulePtr->require("tester")
+		If _tester = NULL then
+			print("**** Default.load: Failed to load tester dependency")
+			Return false
+		End If
 
 
-errors.GeneralError = _fault->getCode("GeneralError")
-If errors.GeneralError = NULL then
-print("**** Default.load: Missing error definition for GeneralError")
-Return false
-End If
-
-
-
+		errors.generalError = _fault->getCode("GeneralError")
+		If errors.generalError = NULL then
+			print("**** Default.load: Missing error definition for GeneralError")
+			Return false
+		End If
 
 
 		moduleState.references = 0
