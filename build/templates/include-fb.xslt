@@ -44,24 +44,28 @@
 	<xsl:text>end type&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
-	<xsl:text>type ErrorCodes&#xa;</xsl:text>
-	<xsl:for-each select="function/throws">
-		<xsl:variable name="err-name">
-			<xsl:call-template name="decapitalize">
-				<xsl:with-param name="text" select="@type"/>
-			</xsl:call-template>
-		</xsl:variable>
+	<xsl:if test="/function/throws">
+		<xsl:text>type ErrorCodes&#xa;</xsl:text>
+		<xsl:for-each select="function/throws">
+			<xsl:variable name="err-name">
+				<xsl:call-template name="decapitalize">
+					<xsl:with-param name="text" select="@type"/>
+				</xsl:call-template>
+			</xsl:variable>
 
-		<xsl:text>&#x9;</xsl:text>
-		<xsl:value-of select="$err-name" />
-		<xsl:text> as integer</xsl:text>
+			<xsl:text>&#x9;</xsl:text>
+			<xsl:value-of select="$err-name" />
+			<xsl:text> as integer</xsl:text>
+			<xsl:text>&#xa;</xsl:text>
+		</xsl:for-each>
+		<xsl:text>end type&#xa;</xsl:text>
 		<xsl:text>&#xa;</xsl:text>
-	</xsl:for-each>
-	<xsl:text>end type&#xa;</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
+	</xsl:if>
 
 	<xsl:text>dim shared as ModuleStateType moduleState&#xa;</xsl:text>
-	<xsl:text>dim shared as ErrorCodes errors&#xa;</xsl:text>
+	<xsl:if test="/function/throws">
+		<xsl:text>dim shared as ErrorCodes errors&#xa;</xsl:text>
+	</xsl:if>
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>namespace </xsl:text>
