@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
+
+<xsl:include href="lib/convert-case.xslt" />
+<xsl:include href="lib/capitalize.xslt" />
+
 <xsl:template match="module">
 	<xsl:variable name="module" select="@name" />
 	<xsl:variable name="namespace" select="namespace" />
@@ -14,9 +18,11 @@
 #include once "<xsl:value-of select="$module" />.bi"
 
 Function exports cdecl Alias "exports" () As any ptr export
+	<xsl:text>&#xa;</xsl:text>
 	<xsl:for-each select="function">
 		<xsl:choose>
 			<xsl:when test="not(private)">
+				<xsl:text>&#x9;</xsl:text>
 				<xsl:text>moduleState.methods.</xsl:text>
 				<xsl:value-of select="@name" />
 				<xsl:text> = @</xsl:text>
@@ -27,7 +33,6 @@ Function exports cdecl Alias "exports" () As any ptr export
 			</xsl:when>
 		</xsl:choose>
 	</xsl:for-each>
-
 	return @moduleState.methods
 End Function
 
@@ -38,46 +43,59 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
+		<xsl:text>&#xa;</xsl:text>
 		<xsl:for-each select="requires">
 			<xsl:variable name="var-name">
-				<xsl:call-template name="camelCase">
+				<xsl:call-template name="convertCase">
 					<xsl:with-param name="text" select="@module"/>
 				</xsl:call-template>
 			</xsl:variable>
+			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>_</xsl:text>
 			<xsl:value-of select="$var-name" />
 			<xsl:text> = modulePtr->require("</xsl:text>
 			<xsl:value-of select="@module" />
 			<xsl:text>")&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>If _</xsl:text>
 			<xsl:value-of select="$var-name" />
 			<xsl:text> = NULL then&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:text>print("**** Default.load: Failed to load </xsl:text>
 			<xsl:value-of select="@module" />
 			<xsl:text> dependency")&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:text>Return false&#xa;</xsl:text>
-			<xsl:text>End If&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;</xsl:text>
+			<xsl:text>End If&#xa;&#xa;</xsl:text>
 		</xsl:for-each>
-		<xsl:text>&#xa;&#xa;</xsl:text>
+		<xsl:text>&#xa;</xsl:text>
 
 		<xsl:for-each select="function/throws">
+			<xsl:variable name="err-name">
+				<xsl:call-template name="decapitalize">
+					<xsl:with-param name="text" select="@type"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>errors.</xsl:text>
-			<xsl:value-of select="@type" />
+			<xsl:value-of select="$err-name" />
 			<xsl:text> = _fault->getCode("</xsl:text>
 			<xsl:value-of select="@type" />
 			<xsl:text>")&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>If errors.</xsl:text>
-			<xsl:value-of select="@type" />
+			<xsl:value-of select="$err-name" />
 			<xsl:text> = NULL then&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:text>print("**** Default.load: Missing error definition for </xsl:text>
 			<xsl:value-of select="@type" />
 			<xsl:text>")&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:text>Return false&#xa;</xsl:text>
-			<xsl:text>End If&#xa;</xsl:text>
+			<xsl:text>&#x9;&#x9;</xsl:text>
+			<xsl:text>End If&#xa;&#xa;</xsl:text>
 		</xsl:for-each>
-		<xsl:text>&#xa;&#xa;</xsl:text>
-
-
 		moduleState.references = 0
 		moduleState.startups = 0
 		moduleState.isLoaded = true
@@ -150,33 +168,6 @@ Function shutdown cdecl Alias "shutdown" () As short export
 
 	return true
 End Function
-</xsl:template>
-
-<xsl:template name="camelCase">
-	<xsl:param name="text" />
-	<xsl:param name="pascal" />
-	<xsl:param name="delimiter" select="'-'" />
-	<xsl:param name="upper-case" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
-	<xsl:param name="lower-case" select="'abcdefghijklmnopqrstuvwxyz'" />
-
-	<xsl:variable name="token" select="substring-before(concat($text, $delimiter), $delimiter)" />
-
-	<xsl:choose>
-		<xsl:when test="$pascal=1">
-			<xsl:value-of select="translate(substring($token, 1, 1), $lower-case, $upper-case)" />
-			<xsl:value-of select="translate(substring($token, 2), $upper-case, $lower-case)" />
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:value-of select="$token" />
-		</xsl:otherwise>
-	</xsl:choose>
-
-	<xsl:if test="contains($text, $delimiter)">
-		<xsl:call-template name="camelCase">
-			<xsl:with-param name="text" select="substring-after($text, $delimiter)" />
-			<xsl:with-param name="pascal" select="1" />
-		</xsl:call-template>
-	</xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>
