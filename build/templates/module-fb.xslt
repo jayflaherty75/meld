@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
 <xsl:include href="lib/convert-case.xslt" />
@@ -50,6 +51,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 					<xsl:with-param name="text" select="@module"/>
 				</xsl:call-template>
 			</xsl:variable>
+
 			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>_</xsl:text>
 			<xsl:value-of select="$var-name" />
@@ -77,6 +79,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 					<xsl:with-param name="text" select="@type"/>
 				</xsl:call-template>
 			</xsl:variable>
+
 			<xsl:text>&#x9;&#x9;</xsl:text>
 			<xsl:text>errors.</xsl:text>
 			<xsl:value-of select="$err-name" />
@@ -169,5 +172,4 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	return true
 End Function
 </xsl:template>
-
 </xsl:stylesheet>

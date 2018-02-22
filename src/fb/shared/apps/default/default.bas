@@ -47,7 +47,7 @@ end function
  ' @param {Tester.describeCallback} describe
  ' @returns {short}
  '/
-function test (interfacePtr as any ptr, describe as Tester.describeCallback) as short
+function test cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 	dim as short result = true
 
 	result = result andalso describe ("The Default module", @Default.testCreate)

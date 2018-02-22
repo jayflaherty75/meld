@@ -10,10 +10,12 @@ mkdir -p "./src/fb/${3:-shared}/${2:-lib}/$1"
 
 xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/module-fb.xslt ./modules/definitions/$1.xml
 
+xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bi ./build/templates/include-fb.xslt ./modules/definitions/$1.xml
+
 if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ./build/templates/test-fb.xslt ./modules/definitions/$1.xml
 fi
 
-if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/error.bi ]; then
-	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/error.bi ./build/templates/error-fb.xslt ./modules/definitions/$1.xml
+if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/errors.bi ]; then
+	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/errors.bi ./build/templates/errors-fb.xslt ./modules/definitions/$1.xml
 fi
