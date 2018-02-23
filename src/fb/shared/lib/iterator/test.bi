@@ -1,85 +1,22 @@
 
-#include once "../../../../../modules/headers/tester/tester-v1.bi"
-#include once "iterator.bi"
+namespace Iterator
 
-namespace IteratorTest
+declare function testCreate (it as Tester.itCallback) as short
+declare sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
 
-declare function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
-declare function create (it as Tester.itCallback) as integer
-declare function test1 () as integer
-declare function test2 () as integer
-declare function test3 () as integer
-declare function test4 () as integer
+function testCreate (it as Tester.itCallback) as short
+	dim as short result = true
 
-dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
-dim shared as IteratorObj ptr iter
-
-function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
-	dim as integer result = true
-
-	result = result ANDALSO describe ("The Iterator module", @create)
+	result = result andalso it("performs test 1 successfully", @test1)
+	' result = result andalso it("performs test 2 successfully", @test2)
 
 	return result
 end function
 
-function create (it as Tester.itCallback) as integer
-	dim as integer result = true
-
-	result = result ANDALSO it ("creates an iterator instance", @test1)
-	result = result ANDALSO it ("correctly iterates an array", @test2)
-	result = result ANDALSO it ("correctly iterates after it has been reset", @test3)
-	result = result ANDALSO it ("deletes the instance", @test4)
-
-	return result
-end function
-
-function test1 () as integer
-	iter = Iterator.construct(@testData(0), 8)
-
-	if iter = NULL then
-		return false
-	end if
-
-	return true
-end function
-
-function test2 () as integer
-	dim as integer value
-	dim as string result = ""
-
-	while (Iterator.getNext(iter, @value))
-		result = result & value
-	wend
-
-	if result <> "12345678" then
-		return false
-	end if
-
-	return true
-end function
-
-function test3 () as integer
-	dim as integer value
-	dim as string result = ""
-
-	Iterator.reset(iter)
-
-	while (Iterator.getNext(iter, @value))
-		result = result & value
-	wend
-
-	if result <> "12345678" then
-		return false
-	end if
-
-	return true
-end function
-
-function test4 () as integer
-	Iterator.destruct(iter)
-	iter = NULL
-
-	return true
-end function
+sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
+	expect(true, true, "Invalid result from test1")
+	done()
+end sub
 
 end namespace
+
