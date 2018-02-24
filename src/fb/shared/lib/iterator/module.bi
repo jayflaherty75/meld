@@ -17,6 +17,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.destruct = @Iterator.destruct
 	moduleState.methods.setHandler = @Iterator.setHandler
 	moduleState.methods.setData = @Iterator.setData
+	moduleState.methods.length = @Iterator.length
 	moduleState.methods.getNext = @Iterator.getNext
 	moduleState.methods.reset = @Iterator.reset
 

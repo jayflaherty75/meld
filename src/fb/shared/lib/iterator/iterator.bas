@@ -72,28 +72,21 @@ end function
 
 /''
  ' @function construct
- ' @param {any ptr} [dataSet=NULL]
- ' @param {long} [length=-1]
  ' @returns {Iterator.Instance ptr}
  ' @throws {ResourceAllocationError}
  '/
-function construct cdecl (dataSet as any ptr = NULL, length as long = -1) as Iterator.Instance ptr
-	dim as Iterator.Instance ptr iter = allocate (sizeof(Iterator.Instance))
+function construct cdecl () as Instance ptr
+	dim as Instance ptr iter = allocate (sizeof(Instance))
 
 	if iter = NULL then
 		_throwIteratorAllocationError(__FILE__, __LINE__)
 	end if
 
 	iter->index = 0
-	iter->length = length
+	iter->dataSet = NULL
+	iter->length = 0
 	iter->current = NULL
 	iter->handler = @_defaultHandler
-
-	if dataSet <> NULL then
-		setData (iter, dataSet, length)
-	else
-		iter->dataSet = NULL
-	end if
 
 	return iter
 end function
@@ -103,7 +96,7 @@ end function
  ' @param {Iterator.Instance ptr} iter
  ' @throws {NullReferenceError}
  '/
-sub destruct cdecl (iter as Iterator.Instance ptr)
+sub destruct cdecl (iter as Instance ptr)
 	if iter = NULL then
 		_throwIteratorDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -120,7 +113,7 @@ end sub
  ' @throws {NullReferenceError}
  ' @throws {InvalidArgumentError}
  '/
-sub setHandler cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
+sub setHandler cdecl (iter as Instance ptr, cb as IteratorHandler)
 	if iter = NULL then
 		_throwIteratorSetHandlerNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -139,20 +132,36 @@ end sub
  ' @function setData
  ' @param {Iterator.Instance ptr} iter
  ' @param {any ptr} dataSet
- ' @param {long} [length=-1]
+ ' @param {long} [setLength=-1]
  ' @throws {NullReferenceError}
  '/
-sub setData cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, length as long = -1)
+sub setData cdecl (iter as Instance ptr, dataSet as any ptr, setLength as long = -1)
 	if iter = NULL then
 		_throwIteratorSetDataNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
 	iter->dataSet = dataSet
-	iter->length = length
+	iter->length = setLength
 
 	reset(iter)
 end sub
+
+/''
+ ' 
+ ' @function length
+ ' @param {Iterator.Instance ptr} iter
+ ' @returns {long}
+ ' @throws {NullReferenceError}
+ '/
+function length cdecl (iter as Instance ptr) as long
+	if iter = NULL then
+		_throwIteratorGetNextNullReferenceError(__FILE__, __LINE__)
+		return NULL
+	end if
+
+	return iter->length
+end function
 
 /''
  ' 
@@ -163,7 +172,7 @@ end sub
  ' @throws {NullReferenceError}
  ' @throws {InvalidArgumentError}
  '/
-function getNext cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
+function getNext cdecl (iter as Instance ptr, target as any ptr) as short
 	dim as IteratorHandler handler
 
 	if iter = NULL then
@@ -187,7 +196,7 @@ end function
  ' @param {Iterator.Instance ptr} iter
  ' @throws {NullReferenceError}
  '/
-sub reset cdecl (iter as Iterator.Instance ptr)
+sub reset cdecl (iter as Instance ptr)
 	dim as IteratorHandler handler
 	dim as integer result
 
@@ -209,7 +218,7 @@ end sub
  ' @returns {short}
  ' @private
  '/
-function _defaultHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
+function _defaultHandler cdecl (iter as Instance ptr, target as any ptr) as short
 	if target = NULL then
 		iter->current = iter->dataSet
 		iter->index = 0

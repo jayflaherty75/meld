@@ -27,10 +27,11 @@ type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
 	test as function cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
-	construct as function cdecl (dataSet as any ptr = NULL, length as long = -1) as Iterator.Instance ptr
+	construct as function cdecl () as Iterator.Instance ptr
 	destruct as sub cdecl (iter as Iterator.Instance ptr)
 	setHandler as sub cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
-	setData as sub cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, length as long = -1)
+	setData as sub cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, setLength as long = -1)
+	length as function cdecl (iter as Iterator.Instance ptr) as long
 	getNext as function cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
 	reset as sub cdecl (iter as Iterator.Instance ptr)
 end type

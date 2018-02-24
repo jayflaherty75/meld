@@ -8,6 +8,7 @@ declare sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
 declare sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
 declare sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
 declare sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
+declare sub test5 (expect as Tester.expectFn, done as Tester.doneFn)
 
 dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
 dim shared as Instance ptr iter
@@ -16,15 +17,16 @@ function testCreate (it as Tester.itCallback) as short
 	dim as short result = true
 
 	result = result ANDALSO it ("creates an iterator instance", @test1)
-	result = result ANDALSO it ("correctly iterates an array", @test2)
-	result = result ANDALSO it ("correctly iterates after it has been reset", @test3)
-	result = result ANDALSO it ("deletes the instance", @test4)
+	result = result ANDALSO it ("initializes iterator data", @test2)
+	result = result ANDALSO it ("correctly iterates an array", @test3)
+	result = result ANDALSO it ("correctly iterates after it has been reset", @test4)
+	result = result ANDALSO it ("deletes the instance", @test5)
 
 	return result
 end function
 
 sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
-	iter = construct(@testData(0), 8)
+	iter = construct()
 
 	expect(iter = NULL, false, "Failed to instantiate Iterator")
 
@@ -32,6 +34,14 @@ sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
 end sub
 
 sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
+	setData(iter, @testData(0), 8)
+
+	expect(length(iter), 8, "Iterator returned incorrect length")
+
+	done()
+end sub
+
+sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
 	dim as integer value
 
 	expect(getNext(iter, @value), true, "Iteration ended prematurely at element 1")
@@ -61,7 +71,7 @@ sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
 	done()
 end sub
 
-sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
+sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
 	dim as integer value
 
 	reset(iter)
@@ -93,7 +103,7 @@ sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
 	done()
 end sub
 
-sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
+sub test5 (expect as Tester.expectFn, done as Tester.doneFn)
 	destruct(iter)
 	iter = NULL
 
