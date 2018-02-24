@@ -54,7 +54,7 @@ end function
 function test cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describe ("The <xsl:value-of select="namespace" /> module", @<xsl:value-of select="namespace" />.testCreate)
+	result = result andalso describe ("The <xsl:value-of select="namespace" /> module", @testCreate)
 
 	return result
 end function

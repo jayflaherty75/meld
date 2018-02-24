@@ -4,6 +4,12 @@
 	<xsl:template match="module">
 
 	<xsl:text>&#xa;</xsl:text>
+
+	<xsl:text>#include once "</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>.bi"</xsl:text>
+	<xsl:text>&#xa;&#xa;</xsl:text>
+
 	<xsl:text>namespace </xsl:text>
 	<xsl:value-of select="namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>

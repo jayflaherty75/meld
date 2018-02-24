@@ -65,7 +65,7 @@ end function
 function test cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describe ("The Iterator module", @Iterator.testCreate)
+	result = result andalso describe ("The Iterator module", @testCreate)
 
 	return result
 end function
