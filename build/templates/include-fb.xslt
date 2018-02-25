@@ -14,7 +14,11 @@
  	<xsl:text>'/&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
-	<xsl:text>#include once "../../../../../modules/headers/default/default-v1.bi"&#xa;</xsl:text>
+	<xsl:text>#include once "../../../../../modules/headers/</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>/</xsl:text>
+	<xsl:value-of select="@name" />
+	<xsl:text>-v1.bi"&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:for-each select="requires">
