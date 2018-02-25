@@ -58,11 +58,10 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {any ptr} interfacePtr
  ' @param {Tester.describeCallback} describe
  ' @returns {short}
  '/
-function test cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
+function test cdecl (describe as Tester.describeCallback) as short
 	dim as short result = true
 
 	result = result andalso describe ("The Iterator module", @testCreate)

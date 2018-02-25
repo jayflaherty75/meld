@@ -57,7 +57,6 @@ namespace Tester
 
 /''
  ' @typedef {function} testModule
- ' @param {any ptr} interfacePtr
  ' @param {describeCallback} describe
  ' @returns {short}
  '/
@@ -94,11 +93,10 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {any ptr} interfacePtr
  ' @param {Tester.describeCallback} describeFn
  ' @returns {short}
  '/
-function test cdecl (interfacePtr as any ptr, describeFn as Tester.describeCallback) as short
+function test cdecl (describeFn as Tester.describeCallback) as short
 	dim as short result = true
 
 	result = result andalso describeFn ("The Tester module", @testCreate)
@@ -112,17 +110,16 @@ end function
  ' fails.
  ' @function run
  ' @param {testModule ptr} tests 
- ' @param {any ptr} interfacePtr 
  ' @param {short} count 
  ' @returns {short}
  '/
-function run (tests as testModule ptr, interfacePtr as any ptr, count as short) as short
+function run (tests as testModule ptr, count as short) as short
 	dim as short i = 0
 	dim as short result = true
 
 	while (i < count AND result = true)
 		if tests[i] <> NULL then
-			result = tests[i] (interfacePtr, @describe)
+			result = tests[i] (@describe)
 			i += 1
 		else
 			_console->logMessage("Tester.run: WARNING! Null test function found.")
@@ -172,7 +169,7 @@ function suite (byref description as zstring, testFn as testFunc) as short
 
 	state.isDone = false
 
-	testFn(@_expect, @_done)
+	testFn(@expect, @_done)
 
 	while waitTime < TESTER_TIMEOUT_DEFAULT andalso state.isDone = false
 		sleep(50, 1)
@@ -188,13 +185,12 @@ function suite (byref description as zstring, testFn as testFunc) as short
 end function
 
 /''
- ' @function _expect
+ ' @function expect
  ' @param {long} result
  ' @param {long} expected
  ' @param {byref zstring} message
- ' @private
  '/
-sub _expect (result as long, expected as long, byref message as zstring)
+sub expect (result as long, expected as long, byref message as zstring)
 	if result <> expected then
 		_console->logMessage("    - " & message)
 		_console->logMessage("      Expected: " & expected)

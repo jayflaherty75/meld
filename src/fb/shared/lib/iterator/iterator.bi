@@ -4,8 +4,9 @@
 ' during the next build.
 '/
 
-#include once "../../../../../modules/headers/default/default-v1.bi"
+#include once "../../../../../modules/headers/iterator/iterator-v1.bi"
 
+dim shared _iterator as Iterator.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
@@ -31,7 +32,7 @@ namespace Iterator
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
+declare function test cdecl (describe as Tester.describeCallback) as short
 declare function construct cdecl () as Iterator.Instance ptr
 declare sub destruct cdecl (iter as Iterator.Instance ptr)
 declare sub setHandler cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
