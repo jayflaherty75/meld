@@ -24,7 +24,8 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
-		
+		_default = exports()
+
 		_console = modulePtr->require("console")
 		If _console = NULL then
 			print("**** Default.load: Failed to load console dependency")

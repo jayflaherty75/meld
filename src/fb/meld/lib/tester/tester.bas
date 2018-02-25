@@ -1,11 +1,17 @@
 
+
 /''
- ' @requires constants
- ' @requires module
  ' @requires console
+ ' @requires fault
+ ' @requires error-handling
  '/
 
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
+#include once "errors.bi"
+#include once "test.bi"
+
+#define TESTER_TIMEOUT_DEFAULT		2000
 
 /''
  ' @namespace Tester
@@ -69,6 +75,8 @@ dim shared as StateType state
  ' @returns {short}
  '/
 function startup cdecl () as short
+	_console->logMessage("Starting tester module")
+
 	return true
 end function
 
@@ -78,7 +86,24 @@ end function
  ' @returns {short}
  '/
 function shutdown cdecl () as short
+	_console->logMessage("Shutting down tester module")
+
 	return true
+end function
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {any ptr} interfacePtr
+ ' @param {Tester.describeCallback} describeFn
+ ' @returns {short}
+ '/
+function test cdecl (interfacePtr as any ptr, describeFn as Tester.describeCallback) as short
+	dim as short result = true
+
+	result = result andalso describeFn ("The Tester module", @testCreate)
+
+	return result
 end function
 
 /''
@@ -132,22 +157,22 @@ end function
  ' Passed to the test so the test can describe and run each individual testunit.
  ' @function suite
  ' @param {zstring} description
- ' @param {testFunc} test
+ ' @param {testFunc} testFn
  ' @returns {short}
  '/
-function suite (byref description as zstring, test as testFunc) as short
+function suite (byref description as zstring, testFn as testFunc) as short
 	dim as integer waitTime = 0
 
 	_console->logMessage("  ..." & description)
 
-	if test = NULL then
+	if testFn = NULL then
 		_console->logMessage("Tester.suite: WARNING! Null test function found.")
 		return false
 	end if
 
 	state.isDone = false
 
-	test(@_expect, @_done)
+	testFn(@_expect, @_done)
 
 	while waitTime < TESTER_TIMEOUT_DEFAULT andalso state.isDone = false
 		sleep(50, 1)
@@ -188,3 +213,4 @@ sub _done ()
 end sub
 
 end namespace
+

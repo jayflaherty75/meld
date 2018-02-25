@@ -6,6 +6,7 @@
 
 #include once "../../../../../modules/headers/default/default-v1.bi"
 
+dim shared _default as Default.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
