@@ -16,7 +16,7 @@ namespace Default
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	test as function cdecl (interfacePtr as any ptr, describe as Tester.describeCallback) as short
+	test as function cdecl (describe as Tester.describeCallback) as short
 end type
 
 end namespace

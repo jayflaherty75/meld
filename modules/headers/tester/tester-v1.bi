@@ -24,13 +24,13 @@ type suiteFunc as function cdecl (it as itCallback) as short
 
 type describeCallback as function cdecl (byref description as zstring, callback as suiteFunc) as short
 
-type testModule as function cdecl (interfacePtr as any ptr, describe as describeCallback) as short
+type testModule as function cdecl (describe as describeCallback) as short
 
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	test as function cdecl (interfacePtr as any ptr, describeFn as Tester.describeCallback) as short
-	run as function cdecl (tests as testModule ptr, interfacePtr as any ptr, count as short) as short
+	test as function cdecl (describeFn as Tester.describeCallback) as short
+	run as function cdecl (tests as testModule ptr, count as short) as short
 	describe as function cdecl (description as zstring, callback as suiteFunc) as short
 	suite as function cdecl (description as zstring, testFn as testFunc) as short
 end type

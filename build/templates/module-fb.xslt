@@ -125,7 +125,7 @@ Function test () As short export
 
 	tests(0) = interfacePtr-&gt;test
 
-	If not _tester-&gt;run(@tests(0), interfacePtr, 1) Then
+	If not _tester-&gt;run(@tests(0), 1) Then
 		return false
 	End If
 
