@@ -24,11 +24,11 @@ namespace Tester
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function test cdecl (describeFn as describeCallback) as short
 declare function run cdecl (tests as testModule ptr, count as short) as short
 declare function describe cdecl (description as zstring, callback as suiteFunc) as short
 declare function suite cdecl (description as zstring, testFn as testFunc) as short
-declare sub _expect cdecl (result as long, expected as long, byref message as zstring)
+declare sub expect cdecl (result as long, expected as long, byref message as zstring)
 declare sub _done cdecl ()
 
 end namespace

@@ -4,7 +4,7 @@
 namespace Tester
 
 declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
+declare sub test1 (done as Tester.doneFn)
 
 function testCreate (it as Tester.itCallback) as short
 	dim as short result = true
@@ -15,8 +15,9 @@ function testCreate (it as Tester.itCallback) as short
 	return result
 end function
 
-sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
-	expect(true, true, "Invalid result from test1")
+sub test1 (done as Tester.doneFn)
+	_tester->expect(true, true, "Invalid result from test1")
+
 	done()
 end sub
 
