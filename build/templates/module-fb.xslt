@@ -47,7 +47,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	If not moduleState.isLoaded Then
 		<xsl:text>_</xsl:text>
 		<xsl:call-template name="convertCase">
-			<xsl:with-param name="text" select="namespace" />
+			<xsl:with-param name="text" select="@name" />
 		</xsl:call-template>
 		<xsl:text> = exports()&#xa;</xsl:text>
 		<xsl:text>&#xa;</xsl:text>

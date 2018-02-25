@@ -16,6 +16,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.run = @Tester.run
 	moduleState.methods.describe = @Tester.describe
 	moduleState.methods.suite = @Tester.suite
+	moduleState.methods.expect = @Tester.expect
 
 	return @moduleState.methods
 End Function

@@ -19,19 +19,11 @@
 namespace Tester
 
 /''
- ' @typedef {function} expectFn
- ' @param {long} result
- ' @param {long} expected
- ' @param {byref zstring} message
- '/
-
-/''
  ' @typedef {function} doneFn
  '/
 
 /''
  ' @typedef {function} testFunc
- ' @param {expectFn} expect
  ' @param {doneFn} done
  '/
 
@@ -57,7 +49,7 @@ namespace Tester
 
 /''
  ' @typedef {function} testModule
- ' @param {describeCallback} describe
+ ' @param {describeCallback} describeFn
  ' @returns {short}
  '/
 
@@ -93,10 +85,10 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {Tester.describeCallback} describeFn
+ ' @param {describeCallback} describeFn
  ' @returns {short}
  '/
-function test cdecl (describeFn as Tester.describeCallback) as short
+function test cdecl (describeFn as describeCallback) as short
 	dim as short result = true
 
 	result = result andalso describeFn ("The Tester module", @testCreate)
@@ -169,7 +161,7 @@ function suite (byref description as zstring, testFn as testFunc) as short
 
 	state.isDone = false
 
-	testFn(@expect, @_done)
+	testFn(@_done)
 
 	while waitTime < TESTER_TIMEOUT_DEFAULT andalso state.isDone = false
 		sleep(50, 1)
