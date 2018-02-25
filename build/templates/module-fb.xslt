@@ -39,7 +39,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Default.load: Invalid Module interface pointer")
+		print("**** <xsl:value-of select="namespace" />.load: Invalid Module interface pointer")
 		return false
 	End If
 
@@ -63,7 +63,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			<xsl:value-of select="$var-name" />
 			<xsl:text> = NULL then&#xa;</xsl:text>
 			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-			<xsl:text>print("**** Default.load: Failed to load </xsl:text>
+			<xsl:text>print("**** </xsl:text>
+			<xsl:value-of select="/module/namespace" />
+			<xsl:text>.load: Failed to load </xsl:text>
 			<xsl:value-of select="@module" />
 			<xsl:text> dependency")&#xa;</xsl:text>
 			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
@@ -97,7 +99,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 					<xsl:value-of select="$err-name" />
 					<xsl:text> = NULL then&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-					<xsl:text>print("**** Default.load: Missing error definition for </xsl:text>
+					<xsl:text>print("**** </xsl:text>
+					<xsl:value-of select="/module/namespace" />
+					<xsl:text>.load: Missing error definition for </xsl:text>
 					<xsl:value-of select="@type" />
 					<xsl:text>")&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
@@ -130,7 +134,7 @@ Function unload cdecl Alias "unload" () As short export
 End Function
 
 Function test () As short export
-	dim As Default.Interface ptr interfacePtr = exports()
+	dim As <xsl:value-of select="namespace" />.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
 
 	If interfacePtr-&gt;test = NULL Then return true
@@ -148,12 +152,12 @@ Function startup cdecl Alias "startup" () As short export
 	If moduleState.startups = 0 Then
 		If moduleState.methods.startup &lt;&gt; NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Default.startup: Module startup handler failed")
+				print("**** <xsl:value-of select="namespace" />.startup: Module startup handler failed")
 				return false
 			ElseIf not test() Then
 				' TODO: Remove test from startup and move startup function to
 				' end of boilerplate
-				print("**** Default.start: Unit test failed")
+				print("**** <xsl:value-of select="namespace" />.start: Unit test failed")
 				return false
 			End If
 		End If
@@ -172,7 +176,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 
 		If moduleState.methods.shutdown &lt;&gt; NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Default.startup: Module shutdown handler failed")
+				print("**** <xsl:value-of select="namespace" />.startup: Module shutdown handler failed")
 			End If
 		End If
 	End If
