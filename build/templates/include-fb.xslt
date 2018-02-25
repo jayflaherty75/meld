@@ -5,6 +5,7 @@
 
 <xsl:include href="lib/convert-case.xslt" />
 <xsl:include href="lib/capitalize.xslt" />
+<xsl:include href="lib/declare-interface.xslt" />
 
 <xsl:template match="module">
 	<xsl:text>&#xa;</xsl:text>
@@ -21,26 +22,14 @@
 	<xsl:text>-v1.bi"&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
+	<xsl:call-template name="declareInterface">
+		<xsl:with-param name="module" select="namespace" />
+	</xsl:call-template>
+
 	<xsl:for-each select="requires">
-		<xsl:variable name="module-namespace">
-			<xsl:call-template name="convertCase">
-				<xsl:with-param name="text" select="@module"/>
-			</xsl:call-template>
-		</xsl:variable>
-
-		<xsl:variable name="module-field">
-			<xsl:call-template name="convertCase">
-				<xsl:with-param name="text" select="@module"/>
-				<xsl:with-param name="pascal" select="1"/>
-			</xsl:call-template>
-		</xsl:variable>
-
-		<xsl:text>dim shared _</xsl:text>
-		<xsl:value-of select="$module-namespace" />
-		<xsl:text> as </xsl:text>
-		<xsl:value-of select="$module-field" />
-		<xsl:text>.Interface ptr</xsl:text>
-		<xsl:text>&#xa;</xsl:text>
+		<xsl:call-template name="declareInterface">
+			<xsl:with-param name="module" select="@module" />
+		</xsl:call-template>
 	</xsl:for-each>
 	<xsl:text>&#xa;</xsl:text>
 

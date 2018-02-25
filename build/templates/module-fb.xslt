@@ -5,6 +5,7 @@
 
 <xsl:include href="lib/convert-case.xslt" />
 <xsl:include href="lib/capitalize.xslt" />
+<xsl:include href="lib/acquire-interface.xslt" />
 
 <xsl:template match="module">
 	<xsl:variable name="module" select="@name" />
@@ -44,34 +45,17 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
+		<xsl:text>_</xsl:text>
+		<xsl:call-template name="convertCase">
+			<xsl:with-param name="text" select="namespace" />
+		</xsl:call-template>
+		<xsl:text> = exports()&#xa;</xsl:text>
 		<xsl:text>&#xa;</xsl:text>
-		<xsl:for-each select="requires">
-			<xsl:variable name="var-name">
-				<xsl:call-template name="convertCase">
-					<xsl:with-param name="text" select="@module"/>
-				</xsl:call-template>
-			</xsl:variable>
 
-			<xsl:text>&#x9;&#x9;</xsl:text>
-			<xsl:text>_</xsl:text>
-			<xsl:value-of select="$var-name" />
-			<xsl:text> = modulePtr->require("</xsl:text>
-			<xsl:value-of select="@module" />
-			<xsl:text>")&#xa;</xsl:text>
-			<xsl:text>&#x9;&#x9;</xsl:text>
-			<xsl:text>If _</xsl:text>
-			<xsl:value-of select="$var-name" />
-			<xsl:text> = NULL then&#xa;</xsl:text>
-			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-			<xsl:text>print("**** </xsl:text>
-			<xsl:value-of select="/module/namespace" />
-			<xsl:text>.load: Failed to load </xsl:text>
-			<xsl:value-of select="@module" />
-			<xsl:text> dependency")&#xa;</xsl:text>
-			<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-			<xsl:text>Return false&#xa;</xsl:text>
-			<xsl:text>&#x9;&#x9;</xsl:text>
-			<xsl:text>End If&#xa;&#xa;</xsl:text>
+		<xsl:for-each select="requires">
+			<xsl:call-template name="acquireInterface">
+				<xsl:with-param name="module" select="@module" />
+			</xsl:call-template>
 		</xsl:for-each>
 		<xsl:text>&#xa;</xsl:text>
 
