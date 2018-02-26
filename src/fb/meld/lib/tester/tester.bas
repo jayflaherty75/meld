@@ -193,6 +193,86 @@ sub expect (result as long, expected as long, byref message as zstring)
 end sub
 
 /''
+ ' @function expectNot
+ ' @param {long} result
+ ' @param {long} expected
+ ' @param {byref zstring} message
+ '/
+sub expectNot (result as long, expected as long, byref message as zstring)
+	if result = expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected Not: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
+ ' @function expectStr 
+ ' @param {byref zstring} result
+ ' @param {byref zstring} expected
+ ' @param {byref zstring} message
+ '/
+sub expectStr (byref result as zstring, byref expected as zstring, byref message as zstring)
+	if result <> expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
+ ' @function expectStrNot
+ ' @param {byref zstring} result
+ ' @param {byref zstring} expected
+ ' @param {byref zstring} message
+ '/
+sub expectStrNot (byref result as zstring, byref expected as zstring, byref message as zstring)
+	if result = expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected Not: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
+ ' @function expectPtr
+ ' @param {any ptr} result
+ ' @param {any ptr} expected
+ ' @param {byref zstring} message
+ '/
+sub expectPtr (result as any ptr, expected as any ptr, byref message as zstring)
+	if result <> expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
+ ' @function expectPtrNot
+ ' @param {any ptr} result
+ ' @param {any ptr} expected
+ ' @param {byref zstring} message
+ '/
+sub expectPtrNot (result as any ptr, expected as any ptr, byref message as zstring)
+	if result = expected then
+		_console->logMessage("    - " & message)
+		_console->logMessage("      Expected Not: " & expected)
+		_console->logMessage("      Actual:   " & result)
+
+		state.result = false
+	end if
+end sub
+
+/''
  ' @function _done
  ' @private
  '/

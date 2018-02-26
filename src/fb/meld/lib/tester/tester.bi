@@ -29,6 +29,11 @@ declare function run cdecl (tests as testModule ptr, count as short) as short
 declare function describe cdecl (description as zstring, callback as suiteFunc) as short
 declare function suite cdecl (description as zstring, testFn as testFunc) as short
 declare sub expect cdecl (result as long, expected as long, byref message as zstring)
+declare sub expectNot cdecl (result as long, expected as long, byref message as zstring)
+declare sub expectStr cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
+declare sub expectStrNot cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
+declare sub expectPtr cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+declare sub expectPtrNot cdecl (result as any ptr, expected as any ptr, byref message as zstring)
 declare sub _done cdecl ()
 
 end namespace
