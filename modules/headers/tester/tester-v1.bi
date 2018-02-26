@@ -32,6 +32,11 @@ type Interface
 	describe as function cdecl (description as zstring, callback as suiteFunc) as short
 	suite as function cdecl (description as zstring, testFn as testFunc) as short
 	expect as sub cdecl (result as long, expected as long, byref message as zstring)
+	expectNot as sub cdecl (result as long, expected as long, byref message as zstring)
+	expectStr as sub cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
+	expectStrNot as sub cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
+	expectPtr as sub cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+	expectPtrNot as sub cdecl (result as any ptr, expected as any ptr, byref message as zstring)
 end type
 
 end namespace

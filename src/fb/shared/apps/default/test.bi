@@ -2,10 +2,10 @@
 namespace Default
 
 declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
-declare sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
+declare sub test1 (done as Tester.doneFn)
+declare sub test2 (done as Tester.doneFn)
+declare sub test3 (done as Tester.doneFn)
+declare sub test4 (done as Tester.doneFn)
 
 function testCreate (it as Tester.itCallback) as short
 	dim as short result = true
@@ -18,23 +18,23 @@ function testCreate (it as Tester.itCallback) as short
 	return result
 end function
 
-sub test1 (expect as Tester.expectFn, done as Tester.doneFn)
-	expect(true, true, "Invalid result from test1")
+sub test1 (done as Tester.doneFn)
+	_tester->expect(true, true, "Invalid result from test1")
 	done()
 end sub
 
-sub test2 (expect as Tester.expectFn, done as Tester.doneFn)
-	expect(false, false, "Invalid result from test2")
+sub test2 (done as Tester.doneFn)
+	_tester->expectNot(0, 1234, "Invalid result from test2")
 	done()
 end sub
 
-sub test3 (expect as Tester.expectFn, done as Tester.doneFn)
-	expect(0, 0, "Invalid result from test3")
+sub test3 (done as Tester.doneFn)
+	_tester->expectStr("Alice", "Alice", "Invalid result from test3")
 	done()
 end sub
 
-sub test4 (expect as Tester.expectFn, done as Tester.doneFn)
-	expect(1234, 1234, "Invalid result from test4")
+sub test4 (done as Tester.doneFn)
+	_tester->expectStrNot("Alice", "Bob", "Invalid result from test4")
 	done()
 end sub
 
