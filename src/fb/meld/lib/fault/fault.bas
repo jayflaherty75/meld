@@ -1,11 +1,12 @@
 
+
 /''
- ' @requires constants
- ' @requires module
  ' @requires console
  '/
 
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
+#include once "errors.bi"
 
 #define ERROR_MAX_TYPES                     256
 
@@ -47,11 +48,13 @@ static shared as zstring*24 internalSystemError = "InternalSystemError"
 dim shared as State errState
 
 /''
- ' Error system setup.
+ ' Application main routine.
  ' @function startup
  ' @returns {short}
  '/
 function startup cdecl () as short
+	_console->logMessage("Starting fault module")
+
 	errState.typeLimitErrorMsg = "Can not create new error types.  The system has reached the limit it can handle."
 	errState.errorCount = 0
 
@@ -69,12 +72,14 @@ function startup cdecl () as short
 end function
 
 /''
- ' Error system shutdown.
+ ' Application main routine.
  ' @function shutdown
  ' @returns {short}
  '/
 function shutdown cdecl () as short
 	dim as integer i
+
+	_console->logMessage("Shutting down fault module")
 
 	for i = 0 to errState.errorCount - 1
 		errState.errors(i).code = 0
@@ -217,3 +222,4 @@ sub defaultWarningHandler cdecl (byref errName as zstring, byref message as zstr
 end sub
 
 end namespace
+

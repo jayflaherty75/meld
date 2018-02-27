@@ -1,17 +1,40 @@
 
+
 /''
- ' @requires constants
- ' @requires module
+ ' @requires fault
+ ' @requires error-handling
  '/
 
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
-' #include once "errors.bi"
+#include once "errors.bi"
 
 /''
- ' Console interface
  ' @namespace Console
  '/
 namespace Console
+
+/''
+ ' Application main routine.
+ ' @function startup
+ ' @returns {short}
+ '/
+function startup cdecl () as short
+	_console->logMessage("Starting console module")
+
+	return true
+end function
+
+/''
+ ' Application main routine.
+ ' @function shutdown
+ ' @returns {short}
+ '/
+function shutdown cdecl () as short
+	_console->logMessage("Shutting down console module")
+
+	return true
+end function
 
 /''
  ' Log a message to the console.
@@ -83,6 +106,7 @@ end sub
 function _format (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
 	dim as zstring*3 newline
 
+	' TODO: Pull newline from meld module
 	'if _core->getNewline <> NULL then
 		newline = !"\n" ' *_core->getNewline()
 	'else
@@ -94,3 +118,4 @@ function _format (byref id as zstring, byref message as zstring, byref source as
 end function
 
 end namespace
+
