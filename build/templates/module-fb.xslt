@@ -45,6 +45,10 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
+		moduleState.references = 0
+		moduleState.startups = 0
+		moduleState.isLoaded = true
+
 		<xsl:text>_</xsl:text>
 		<xsl:call-template name="convertCase">
 			<xsl:with-param name="text" select="@name" />
@@ -95,9 +99,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 				</xsl:if>
 			</xsl:for-each>
 		</xsl:if>
-		moduleState.references = 0
-		moduleState.startups = 0
-		moduleState.isLoaded = true
 	End If
 
 	moduleState.references += 1
@@ -117,6 +118,7 @@ Function unload cdecl Alias "unload" () As short export
 	return moduleState.isLoaded
 End Function
 
+<xsl:if test="count(requires[@module='tester']) &gt; 0 or namespace='Tester'">
 Function test () As short export
 	dim As <xsl:value-of select="namespace" />.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
@@ -131,6 +133,7 @@ Function test () As short export
 
 	return true
 End Function
+</xsl:if>
 
 Function startup cdecl Alias "startup" () As short export
 	If moduleState.startups = 0 Then
@@ -138,11 +141,13 @@ Function startup cdecl Alias "startup" () As short export
 			If not moduleState.methods.startup() Then
 				print("**** <xsl:value-of select="namespace" />.startup: Module startup handler failed")
 				return false
+			<xsl:if test="count(requires[@module='tester']) &gt; 0 or namespace='Tester'">
 			ElseIf not test() Then
 				' TODO: Remove test from startup and move startup function to
 				' end of boilerplate
 				print("**** <xsl:value-of select="namespace" />.start: Unit test failed")
 				return false
+			</xsl:if>
 			End If
 		End If
 	End If

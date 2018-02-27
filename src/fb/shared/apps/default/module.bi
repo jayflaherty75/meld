@@ -24,6 +24,10 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
+		moduleState.references = 0
+		moduleState.startups = 0
+		moduleState.isLoaded = true
+
 		_default = exports()
 
 		_console = modulePtr->require("console")
@@ -58,9 +62,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		End If
 
 
-		moduleState.references = 0
-		moduleState.startups = 0
-		moduleState.isLoaded = true
 	End If
 
 	moduleState.references += 1
@@ -80,6 +81,7 @@ Function unload cdecl Alias "unload" () As short export
 	return moduleState.isLoaded
 End Function
 
+
 Function test () As short export
 	dim As Default.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
@@ -95,17 +97,20 @@ Function test () As short export
 	return true
 End Function
 
+
 Function startup cdecl Alias "startup" () As short export
 	If moduleState.startups = 0 Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
 				print("**** Default.startup: Module startup handler failed")
 				return false
+			
 			ElseIf not test() Then
 				' TODO: Remove test from startup and move startup function to
 				' end of boilerplate
 				print("**** Default.start: Unit test failed")
 				return false
+			
 			End If
 		End If
 	End If

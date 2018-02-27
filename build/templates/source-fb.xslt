@@ -47,13 +47,13 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {Tester.describeCallback} describe
+ ' @param {Tester.describeCallback} describeFn
  ' @returns {short}
  '/
-function test cdecl (describe as Tester.describeCallback) as short
+function test cdecl (describeFn as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describe ("The <xsl:value-of select="namespace" /> module", @testCreate)
+	result = result andalso describeFn ("The <xsl:value-of select="namespace" /> module", @testCreate)
 
 	return result
 end function

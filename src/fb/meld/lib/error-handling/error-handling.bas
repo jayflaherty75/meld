@@ -1,24 +1,49 @@
 
+
 /''
- ' @requires constants
- ' @requires module
  ' @requires console
  ' @requires fault
  '/
 
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
+#include once "errors.bi"
 
 /''
  ' @namespace ErrorHandling
  '/
 namespace ErrorHandling
 
+type Codes
+	uncaughtError as integer
+	internalSystemError as integer
+	fatalOperationalError as integer
+	moduleLoadingError as integer
+	resourceAllocationError as integer
+	releaseResourceError as integer
+	nullReferenceError as integer
+	resourceMissingError as integer
+	invalidArgumentError as integer
+	outOfBoundsError as integer
+	resourceLimitSurpassed as integer
+	generalError as integer
+end type
+
+type StateType
+	methods as Interface
+	errs as Codes
+end type
+
+dim shared as StateType state
+
 /''
- ' Loading lifecycle function called by Meld framework.
+ ' Application main routine.
  ' @function startup
  ' @returns {short}
  '/
 function startup cdecl () as short
+	_console->logMessage("Starting error-handling module")
+
 	state.errs.uncaughtError = _fault->getCode("UncaughtError")
 	state.errs.internalSystemError = _fault->getCode("InternalSystemError")
 
@@ -37,11 +62,13 @@ function startup cdecl () as short
 end function
 
 /''
- ' Unload lifecycle function called by Meld framework.
+ ' Application main routine.
  ' @function shutdown
  ' @returns {short}
  '/
 function shutdown cdecl () as short
+	_console->logMessage("Shutting down error-handling module")
+
 	return true
 end function
 
@@ -53,7 +80,6 @@ end function
  ' @param {byref zstring} errName
  ' @param {Fault.handler} handler
  ' @private
- ' @throws {UncaughtError}
  '/
 sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, byref errName as zstring, handler as Fault.handler)
 	dim as integer errCode = _fault->registerType(errName)
@@ -66,3 +92,4 @@ sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, byr
 end sub
 
 end namespace
+
