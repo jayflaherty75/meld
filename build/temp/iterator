@@ -5,19 +5,27 @@ echo "#!/bin/bash" > ./build/d/console/iterator
 echo "" >> ./build/d/console/iterator
 echo "./build/m/iterator" >> ./build/d/console/iterator
 
+chmod +x ./build/d/console/iterator
+
 mkdir -p ./build/d/fault
 echo "#!/bin/bash" > ./build/d/fault/iterator
 echo "" >> ./build/d/fault/iterator
 echo "./build/m/iterator" >> ./build/d/fault/iterator
+
+chmod +x ./build/d/fault/iterator
 
 mkdir -p ./build/d/error-handling
 echo "#!/bin/bash" > ./build/d/error-handling/iterator
 echo "" >> ./build/d/error-handling/iterator
 echo "./build/m/iterator" >> ./build/d/error-handling/iterator
 
+chmod +x ./build/d/error-handling/iterator
+
 mkdir -p ./build/d/tester
 echo "#!/bin/bash" > ./build/d/tester/iterator
 echo "" >> ./build/d/tester/iterator
 echo "./build/m/iterator" >> ./build/d/tester/iterator
+
+chmod +x ./build/d/tester/iterator
 
 

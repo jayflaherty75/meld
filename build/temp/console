@@ -1,0 +1,17 @@
+#!/bin/bash
+
+mkdir -p ./build/d/fault
+echo "#!/bin/bash" > ./build/d/fault/console
+echo "" >> ./build/d/fault/console
+echo "./build/m/console" >> ./build/d/fault/console
+
+chmod +x ./build/d/fault/console
+
+mkdir -p ./build/d/error-handling
+echo "#!/bin/bash" > ./build/d/error-handling/console
+echo "" >> ./build/d/error-handling/console
+echo "./build/m/console" >> ./build/d/error-handling/console
+
+chmod +x ./build/d/error-handling/console
+
+

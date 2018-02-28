@@ -1,0 +1,6 @@
+#!/bin/bash
+
+for filename in ./build/d/$1/*; do
+	echo "Building $filename"
+	$filename
+done
