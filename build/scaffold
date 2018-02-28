@@ -1,25 +1,28 @@
 #!/bin/bash
 
+# Create module directory if it doesn't already exist
+mkdir -p "./src/fb/${3:-shared}/${2:-lib}/$1"
+
+# Generate shorthand build script (requires only module name, not path)
+echo "#!/bin/bash" > ./build/m/$1
+echo "" >> ./build/m/$1
+echo "./build/module $1 ${2:-lib} ${3:-shared}" >> ./build/m/$1
+chmod +x ./build/m/$1
+
+# Initialize XML file so templates have data to work off of
 if [ ! -f ./modules/definitions/$1.xml ]; then
     echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$1\"><namespace>" >> ./modules/definitions/$1.xml
 	./build/kebab-to-pascal $1 | tr '\n' '<' >> ./modules/definitions/$1.xml
 	echo "/namespace></module>" >> ./modules/definitions/$1.xml
 fi
 
-mkdir -p "./src/fb/${3:-shared}/${2:-lib}/$1"
-
-xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/module-fb.xslt ./modules/definitions/$1.xml
-
-xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bi ./build/templates/include-fb.xslt ./modules/definitions/$1.xml
-
+# Generate one-time, user modifiable boilerplate
 if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas ./build/templates/source-fb.xslt ./modules/definitions/$1.xml
-fi
-
-if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/test.bi ./build/templates/test-fb.xslt ./modules/definitions/$1.xml
-fi
-
-if [ ! -f ./src/fb/${3:-shared}/${2:-lib}/$1/errors.bi ]; then
 	xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/errors.bi ./build/templates/errors-fb.xslt ./modules/definitions/$1.xml
 fi
+
+# Generate dynamic source files, not modifiable by the user
+xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/module.bi ./build/templates/module-fb.xslt ./modules/definitions/$1.xml
+xsltproc -o ./src/fb/${3:-shared}/${2:-lib}/$1/$1.bi ./build/templates/include-fb.xslt ./modules/definitions/$1.xml
