@@ -40,6 +40,12 @@
 		<xsl:text>/</xsl:text>
 		<xsl:value-of select="$dep" />
 		<xsl:text>&#xa;&#xa;</xsl:text>
+
+		<xsl:text>chmod +x </xsl:text>
+		<xsl:value-of select="$path" />
+		<xsl:text>/</xsl:text>
+		<xsl:value-of select="$dep" />
+		<xsl:text>&#xa;&#xa;</xsl:text>
 	</xsl:for-each>
 	<xsl:text>&#xa;</xsl:text>
 </xsl:template>

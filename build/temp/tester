@@ -1,0 +1,24 @@
+#!/bin/bash
+
+mkdir -p ./build/d/console
+echo "#!/bin/bash" > ./build/d/console/tester
+echo "" >> ./build/d/console/tester
+echo "./build/m/tester" >> ./build/d/console/tester
+
+chmod +x ./build/d/console/tester
+
+mkdir -p ./build/d/fault
+echo "#!/bin/bash" > ./build/d/fault/tester
+echo "" >> ./build/d/fault/tester
+echo "./build/m/tester" >> ./build/d/fault/tester
+
+chmod +x ./build/d/fault/tester
+
+mkdir -p ./build/d/error-handling
+echo "#!/bin/bash" > ./build/d/error-handling/tester
+echo "" >> ./build/d/error-handling/tester
+echo "./build/m/tester" >> ./build/d/error-handling/tester
+
+chmod +x ./build/d/error-handling/tester
+
+
