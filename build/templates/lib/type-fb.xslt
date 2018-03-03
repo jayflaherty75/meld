@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
-<xsl:template name="property">
+<xsl:template name="type">
 	<xsl:param name="name" />
 	<xsl:param name="type" />
 	<xsl:param name="modifier" />
