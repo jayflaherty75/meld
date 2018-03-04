@@ -3,6 +3,7 @@
 /''
  ' @requires fault
  ' @requires error-handling
+ ' @requires sys
  '/
 
 #include once "../../../../../modules/headers/constants/constants-v1.bi"
@@ -104,17 +105,7 @@ end sub
  ' @private
  '/
 function _format (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
-	dim as zstring*3 newline
-
-	' TODO: Pull newline from meld module
-	'if _core->getNewline <> NULL then
-		newline = !"\n" ' *_core->getNewline()
-	'else
-	'	logMessage ("**** Console logger not properly initialized")
-	'	newline = " "
-	'end if
-
-	return Time () & " - " & source & "(" & lineNum & ") " & newline & id & ": " & message
+	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message
 end function
 
 end namespace

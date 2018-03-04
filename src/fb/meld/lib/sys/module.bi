@@ -12,7 +12,6 @@ Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Sys.startup
 	moduleState.methods.shutdown = @Sys.shutdown
-	moduleState.methods.test = @Sys.test
 	moduleState.methods.getNewline = @Sys.getNewline
 	moduleState.methods.getDirsep = @Sys.getDirsep
 	moduleState.methods.getModuleExt = @Sys.getModuleExt
@@ -32,30 +31,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		moduleState.isLoaded = true
 
 		_sys = exports()
-
-		_console = modulePtr->require("console")
-		If _console = NULL then
-			print("**** Sys.load: Failed to load console dependency")
-			Return false
-		End If
-
-		_fault = modulePtr->require("fault")
-		If _fault = NULL then
-			print("**** Sys.load: Failed to load fault dependency")
-			Return false
-		End If
-
-		_errorHandling = modulePtr->require("error-handling")
-		If _errorHandling = NULL then
-			print("**** Sys.load: Failed to load error-handling dependency")
-			Return false
-		End If
-
-		_tester = modulePtr->require("tester")
-		If _tester = NULL then
-			print("**** Sys.load: Failed to load tester dependency")
-			Return false
-		End If
 
 
 
@@ -79,33 +54,12 @@ Function unload cdecl Alias "unload" () As short export
 End Function
 
 
-Function test () As short export
-	dim As Sys.Interface ptr interfacePtr = exports()
-	dim As Tester.testModule tests(1)
-
-	If interfacePtr->test = NULL Then return true
-
-	tests(0) = interfacePtr->test
-
-	If not _tester->run(@tests(0), 1) Then
-		return false
-	End If
-
-	return true
-End Function
-
 
 Function startup cdecl Alias "startup" () As short export
 	If moduleState.startups = 0 Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
 				print("**** Sys.startup: Module startup handler failed")
-				return false
-			
-			ElseIf not test() Then
-				' TODO: Remove test from startup and move startup function to
-				' end of boilerplate
-				print("**** Sys.start: Unit test failed")
 				return false
 			
 			End If

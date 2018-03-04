@@ -7,10 +7,6 @@
 #include once "../../../../../modules/headers/sys/sys-v1.bi"
 
 dim shared _sys as Sys.Interface ptr
-dim shared _console as Console.Interface ptr
-dim shared _fault as Fault.Interface ptr
-dim shared _errorHandling as ErrorHandling.Interface ptr
-dim shared _tester as Tester.Interface ptr
 
 type ModuleStateType
 	methods as Sys.Interface
@@ -25,7 +21,6 @@ namespace Sys
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
 declare function getNewline cdecl () as zstring ptr
 declare function getDirsep cdecl () as zstring ptr
 declare function getModuleExt cdecl () as zstring ptr
