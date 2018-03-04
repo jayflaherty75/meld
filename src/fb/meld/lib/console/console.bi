@@ -7,8 +7,8 @@
 #include once "../../../../../modules/headers/console/console-v1.bi"
 
 dim shared _moduleLocal as Module.Interface
-dim shared _console as Console.Interface ptr
 dim shared _module as Module.Interface ptr
+dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
 dim shared _sys as Sys.Interface ptr

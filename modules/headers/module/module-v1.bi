@@ -11,10 +11,11 @@
 namespace Module
 
 type Interface
-	initialize as function cdecl () as short
+	initialize as function cdecl (argc as integer, argv as any ptr) as short
 	uninitialize as function cdecl () as short
 	require as function cdecl (byref moduleName as zstring) as any ptr
-	command as function cdecl (index as long = -1) as string
+	argv as function cdecl (index as ulong) as zstring ptr
+	argc as function cdecl () as long
 end type
 
 end namespace
