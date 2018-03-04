@@ -19,10 +19,14 @@
 	<xsl:text>-v1.bi"&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
+	<xsl:text>dim shared _moduleLocal as Module.Interface&#xa;</xsl:text>
+
+	<xsl:call-template name="declareInterface">
+		<xsl:with-param name="module" select="'module'" />
+	</xsl:call-template>
 	<xsl:call-template name="declareInterface">
 		<xsl:with-param name="module" select="namespace" />
 	</xsl:call-template>
-
 	<xsl:for-each select="requires">
 		<xsl:call-template name="declareInterface">
 			<xsl:with-param name="module" select="@module" />

@@ -29,6 +29,7 @@ function initialize cdecl() as short
 	api.initialize = @initialize
 	api.uninitialize = @uninitialize
 	api.require = @require
+	api.command = @command
 
 	return true
 end function
@@ -136,5 +137,12 @@ function require cdecl (byref moduleName as zstring) as any ptr
 
 	return interfacePtr
 end function
+
+/''
+ ' Returns a pointer to the required interface.
+ ' @function command
+ ' @param {long} [index=-1]
+ ' @returns {string}
+ '/
 
 end namespace

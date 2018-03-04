@@ -30,6 +30,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		moduleState.startups = 0
 		moduleState.isLoaded = true
 
+		_moduleLocal = *modulePtr
+		_module = @_moduleLocal
+
 		_sys = exports()
 
 

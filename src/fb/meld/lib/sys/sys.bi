@@ -6,6 +6,8 @@
 
 #include once "../../../../../modules/headers/sys/sys-v1.bi"
 
+dim shared _moduleLocal as Module.Interface
+dim shared _module as Module.Interface ptr
 dim shared _sys as Sys.Interface ptr
 
 type ModuleStateType
