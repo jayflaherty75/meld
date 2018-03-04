@@ -6,6 +6,8 @@
 
 #include once "../../../../../modules/headers/fault/fault-v1.bi"
 
+dim shared _moduleLocal as Module.Interface
+dim shared _module as Module.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _console as Console.Interface ptr
 

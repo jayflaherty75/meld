@@ -46,6 +46,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		moduleState.startups = 0
 		moduleState.isLoaded = true
 
+		_moduleLocal = *modulePtr
+		_module = @_moduleLocal
+
 		<xsl:text>_</xsl:text>
 		<xsl:call-template name="convertCase">
 			<xsl:with-param name="text" select="@name" />
