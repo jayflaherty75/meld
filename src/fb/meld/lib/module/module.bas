@@ -13,6 +13,8 @@ namespace Module
 type StateType
 	libraries(MODULE_MAX_ENTRIES) as any ptr
 	libraryCount as short
+	argc as integer
+	argv as zstring ptr ptr
 end type
 
 dim shared as StateType state
@@ -21,15 +23,19 @@ dim shared as Interface api
 /''
  ' Initializes (or reinitializes) base module system.
  ' @function initialize
+ ' @param {integer} _argc
+ ' @param {any ptr} _argv
  ' @returns {short}
  '/
-function initialize cdecl() as short
+function initialize cdecl(_argc as integer, _argv as any ptr) as short
 	state.libraryCount = 0
+	state.argc = _argc
+	state.argv = _argv
 
 	api.initialize = @initialize
 	api.uninitialize = @uninitialize
 	api.require = @require
-	api.command = @command
+	api.argv = @argv
 
 	return true
 end function
@@ -139,10 +145,25 @@ function require cdecl (byref moduleName as zstring) as any ptr
 end function
 
 /''
- ' Returns a pointer to the required interface.
- ' @function command
- ' @param {long} [index=-1]
- ' @returns {string}
+ ' @function argv
+ ' @param {ulong} index
+ ' @returns {zstring ptr}
  '/
+function argv cdecl (index as ulong) as zstring ptr
+	if index >= state.argc then
+		print("**** Module.argv: Invalid argument index: " & index)
+		return NULL
+	end if
+
+	return state.argv[index]
+end function
+
+/''
+ ' @function argc
+ ' @returns {long}
+ '/
+function argc cdecl () as long
+	return state.argc
+end function
 
 end namespace

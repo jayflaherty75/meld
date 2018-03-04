@@ -1,15 +1,15 @@
 
 #include once "meld/lib/module/module.bi"
 
-function main() As Integer
-	dim as zstring*64 app = command(1)
+function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
+	dim as String app = *argv[1]
 	dim as Meld.Interface ptr appPtr
 
 	if app = "" then
 		app = "default"
 	end if
 
-	if not Module.initialize() then
+	if not Module.initialize(argc, argv) then
 		print("**** main: Failed to initialize Module")
 		return 1
 	end if
@@ -29,4 +29,4 @@ function main() As Integer
 	return 0
 end function
 
-end main()
+end main(__FB_ARGC__, __FB_ARGV__)
