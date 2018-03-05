@@ -13,6 +13,9 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.startup = @Identity.startup
 	moduleState.methods.shutdown = @Identity.shutdown
 	moduleState.methods.test = @Identity.test
+	moduleState.methods.construct = @Identity.construct
+	moduleState.methods.destruct = @Identity.destruct
+	moduleState.methods.getAutoInc = @Identity.getAutoInc
 
 	return @moduleState.methods
 End Function
@@ -57,6 +60,18 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+
+		errors.nullReferenceError = _fault->getCode("NullReferenceError")
+		If errors.nullReferenceError = NULL then
+			print("**** Identity.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
+
+		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+		If errors.resourceAllocationError = NULL then
+			print("**** Identity.load: Missing error definition for ResourceAllocationError")
+			Return false
+		End If
 
 
 	End If

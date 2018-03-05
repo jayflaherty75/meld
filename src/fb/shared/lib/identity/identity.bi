@@ -21,13 +21,23 @@ type ModuleStateType
 	startups as integer
 end type
 
+type ErrorCodes
+	nullReferenceError as integer
+	resourceAllocationError as integer
+end type
+
 dim shared as ModuleStateType moduleState
+dim shared as ErrorCodes errors
 
 namespace Identity
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function construct cdecl () as Identity.Instance ptr
+declare sub destruct cdecl (idPtr as Identity.Instance ptr)
+declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
+declare function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 
 end namespace
 

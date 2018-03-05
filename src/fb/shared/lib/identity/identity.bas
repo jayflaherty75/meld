@@ -18,6 +18,11 @@
 namespace Identity
 
 /''
+ ' @class Instance
+ ' @member {ulong} autoinc
+ '/
+
+/''
  ' Application main routine.
  ' @function startup
  ' @returns {short}
@@ -51,6 +56,61 @@ function test cdecl (describeFn as Tester.describeCallback) as short
 	result = result andalso describeFn ("The Identity module", @testCreate)
 
 	return result
+end function
+
+/''
+ ' @function construct
+ ' @returns {Identity.Instance ptr}
+ ' @throws {ResourceAllocationError}
+ '/
+function construct cdecl () as Instance ptr
+	dim as Instance ptr idPtr = allocate (sizeof(Instance))
+
+	if idPtr = NULL then
+		_throwIdentityAllocationError(__FILE__, __LINE__)
+		return NULL
+	end if
+
+	idPtr->autoinc = 0
+
+	return idPtr
+end function
+
+/''
+ ' @function destruct
+ ' @param {Identity.Instance ptr} idPtr
+ ' @throws {NullReferenceError}
+ '/
+sub destruct cdecl (idPtr as Instance ptr)
+	if idPtr = NULL then
+		_throwIdentityDestructNullReferenceError(__FILE__, __LINE__)
+		exit sub
+	end if
+
+	deallocate (idPtr)
+end sub
+
+/''
+ ' Standard test runner for modules.
+ ' @function getAutoInc
+ ' @param {Identity.Instance ptr} idPtr
+ ' @returns {ulong}
+ '/
+function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
+	return _nextId(idPtr)
+end function
+
+/''
+ ' Standard test runner for modules.
+ ' @function _nextId
+ ' @param {Identity.Instance ptr} idPtr
+ ' @returns {ulong}
+ ' @private
+ '/
+function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
+	idPtr->autoinc += 1
+
+	return idPtr->autoinc
 end function
 
 end namespace

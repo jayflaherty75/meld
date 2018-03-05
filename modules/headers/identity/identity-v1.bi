@@ -13,10 +13,17 @@
 
 namespace Identity
 
+type Instance
+	autoinc as ulong
+end type
+
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
 	test as function cdecl (describeFn as Tester.describeCallback) as short
+	construct as function cdecl () as Identity.Instance ptr
+	destruct as sub cdecl (idPtr as Identity.Instance ptr)
+	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
 end type
 
 end namespace

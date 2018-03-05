@@ -79,6 +79,7 @@ function construct cdecl () as Instance ptr
 
 	if iter = NULL then
 		_throwIteratorAllocationError(__FILE__, __LINE__)
+		return NULL
 	end if
 
 	iter->index = 0
