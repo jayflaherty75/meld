@@ -24,7 +24,6 @@ namespace Default
  '/
 function startup cdecl () as short
 	_console->logMessage("TEST")
-	print(*_module->argv(1))
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
 
 	return true

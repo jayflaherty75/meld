@@ -1,20 +1,57 @@
 
-#include once "identity.bi"
-#include once "module.bi"
 
+/''
+ ' @requires console
+ ' @requires fault
+ ' @requires error-handling
+ ' @requires tester
+ '/
+
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
+#include once "module.bi"
+#include once "errors.bi"
+#include once "test.bi"
+
+/''
+ ' @namespace Identity
+ '/
 namespace Identity
 
-function construct() as IdentityObj ptr
-	dim as IdentityObj ptr identityPtr = allocate(sizeof(IdentityObj))
+/''
+ ' Application main routine.
+ ' @function startup
+ ' @returns {short}
+ '/
+function startup cdecl () as short
+	_console->logMessage("Starting identity module")
 
-	return identityPtr
+	return true
 end function
 
-sub destruct(idPtr as IdentityObj ptr)
-end sub
+/''
+ ' Application main routine.
+ ' @function shutdown
+ ' @returns {short}
+ '/
+function shutdown cdecl () as short
+	_console->logMessage("Shutting down identity module")
 
-function request (idPtr as IdentityObj ptr, byref identifier as zstring) as integer
-	return 0
+	return true
+end function
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {Tester.describeCallback} describeFn
+ ' @returns {short}
+ '/
+function test cdecl (describeFn as Tester.describeCallback) as short
+	dim as short result = true
+
+	result = result andalso describeFn ("The Identity module", @testCreate)
+
+	return result
 end function
 
 end namespace
+

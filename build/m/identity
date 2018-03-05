@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./build/module identity lib shared
