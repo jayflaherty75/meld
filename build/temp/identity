@@ -1,0 +1,31 @@
+#!/bin/bash
+
+mkdir -p ./build/d/console
+echo "#!/bin/bash" > ./build/d/console/identity
+echo "" >> ./build/d/console/identity
+echo "./build/m/identity" >> ./build/d/console/identity
+
+chmod +x ./build/d/console/identity
+
+mkdir -p ./build/d/fault
+echo "#!/bin/bash" > ./build/d/fault/identity
+echo "" >> ./build/d/fault/identity
+echo "./build/m/identity" >> ./build/d/fault/identity
+
+chmod +x ./build/d/fault/identity
+
+mkdir -p ./build/d/error-handling
+echo "#!/bin/bash" > ./build/d/error-handling/identity
+echo "" >> ./build/d/error-handling/identity
+echo "./build/m/identity" >> ./build/d/error-handling/identity
+
+chmod +x ./build/d/error-handling/identity
+
+mkdir -p ./build/d/tester
+echo "#!/bin/bash" > ./build/d/tester/identity
+echo "" >> ./build/d/tester/identity
+echo "./build/m/identity" >> ./build/d/tester/identity
+
+chmod +x ./build/d/tester/identity
+
+
