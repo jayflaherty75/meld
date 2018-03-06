@@ -22,6 +22,13 @@ namespace Identity
  ' @member {ulong} autoinc
  '/
 
+type StateType
+	distMap(255) as ubyte
+	revDistMap(255) as ubyte
+end type
+
+dim shared as StateType state
+
 /''
  ' Application main routine.
  ' @function startup
@@ -29,6 +36,8 @@ namespace Identity
  '/
 function startup cdecl () as short
 	_console->logMessage("Starting identity module")
+
+	_generateBinDistMapping()
 
 	return true
 end function
@@ -91,7 +100,6 @@ sub destruct cdecl (idPtr as Instance ptr)
 end sub
 
 /''
- ' Standard test runner for modules.
  ' @function getAutoInc
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {ulong}
@@ -101,7 +109,6 @@ function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
- ' Standard test runner for modules.
  ' @function _nextId
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {ulong}
@@ -112,6 +119,40 @@ function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 
 	return idPtr->autoinc
 end function
+
+/''
+ ' Distributes generated values to be search-friendly.
+ ' @function _generateBinDistMapping
+ ' @private
+ '/
+sub _generateBinDistMapping cdecl ()
+	dim as short start = 128
+	dim as short length = 1
+	dim as short index = 0
+	dim as short increment
+	dim as ubyte value
+	dim as short x
+	dim as short y
+
+	for y = 0 to 7
+		increment = start * 2
+		value = start - 1
+
+		for x = 0 to length - 1
+			state.distMap(index) = value
+			state.revDistMap(value) = index
+
+			value += increment
+			index += 1
+		next
+
+		start /= 2
+		length *= 2
+	next
+
+	state.distMap(255) = 255
+	state.revDistMap(255) = 255
+end sub
 
 end namespace
 

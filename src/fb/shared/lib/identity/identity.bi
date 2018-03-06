@@ -38,6 +38,7 @@ declare function construct cdecl () as Identity.Instance ptr
 declare sub destruct cdecl (idPtr as Identity.Instance ptr)
 declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 declare function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
+declare sub _generateBinDistMapping cdecl ()
 
 end namespace
 

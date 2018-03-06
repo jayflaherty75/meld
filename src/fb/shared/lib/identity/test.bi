@@ -27,8 +27,8 @@ sub test1 (done as Tester.doneFn)
 end sub
 
 sub test2 (done as Tester.doneFn)
-	_tester->expect(getAutoInc(idPtr), 10, "Incorrect identifier returned")
-	_tester->expect(getAutoInc(idPtr), 20, "Incorrect identifier returned")
+	_tester->expect(getAutoInc(idPtr), 1, "Incorrect identifier returned")
+	_tester->expect(getAutoInc(idPtr), 2, "Incorrect identifier returned")
 	_tester->expect(getAutoInc(idPtr), 3, "Incorrect identifier returned")
 
 	done()
