@@ -39,6 +39,7 @@ declare sub destruct cdecl (idPtr as Identity.Instance ptr)
 declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 declare function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 declare sub _generateBinDistMapping cdecl ()
+declare sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
 
 end namespace
 
