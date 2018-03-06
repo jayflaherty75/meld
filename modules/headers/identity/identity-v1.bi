@@ -17,6 +17,12 @@ type Instance
 	autoinc as ulong
 end type
 
+type Unique
+	v(15-1) as ubyte
+end type
+
+type Encoded as zstring*21
+
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
@@ -24,7 +30,8 @@ type Interface
 	construct as function cdecl () as Identity.Instance ptr
 	destruct as sub cdecl (idPtr as Identity.Instance ptr)
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
-	_mapCharacter as sub cdecl (index as ubyte, ascii as ubyte)
+	encode as sub cdecl (id as Unique ptr, dest as Encoded ptr)
+	decode as sub cdecl (source as Encoded ptr, id as Unique ptr)
 end type
 
 end namespace

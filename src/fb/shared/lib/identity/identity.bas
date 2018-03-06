@@ -21,6 +21,15 @@ namespace Identity
  ' @member {ulong} autoinc
  '/
 
+/''
+ ' @class Unique
+ ' @member {ubyte} v(15-1)
+ '/
+
+/''
+ ' @typedef {zstring*21} Encoded
+ '/
+
 type StateType
 	encodeMap(63) as ubyte
 	decodeMap(127) as ubyte
@@ -111,6 +120,49 @@ function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
+ ' @function encode
+ ' @param {Unique ptr} id
+ ' @param {Encoded ptr} dest
+ '/
+sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
+	dim as short i
+	dim as short indexTo
+
+	for i = 0 to 12 step 3
+		dest[indexTo] = state.encodeMap((id->v(i) and &b11111100) shr 2)
+		dest[indexTo + 1] = state.encodeMap(((id->v(i) and &b00000011) shl 4) or ((id->v(i + 1) and &b11110000) shr 4))
+		dest[indexTo + 2] = state.encodeMap(((id->v(i + 1) and &b00001111) shl 2) or ((id->v(i + 2) and &b11000000) shr 6))
+		dest[indexTo + 3] = state.encodeMap((id->v(i + 2) and &b00111111))
+
+		indexTo += 4
+	next
+end sub
+
+/''
+ ' @function decode
+ ' @param {Encoded ptr} source
+ ' @param {Unique ptr} id
+ '/
+sub decode cdecl (source as Encoded ptr, id as Unique ptr)
+	dim as short i
+	dim as short indexTo
+	dim as ubyte s1, s2, s3, s4
+
+	for i = 0 to 16 step 4
+		s1 = state.decodeMap(source[i])
+		s2 = state.decodeMap(source[i + 1])
+		s3 = state.decodeMap(source[i + 2])
+		s4 = state.decodeMap(source[i + 3])
+
+		id->v(indexTo) = (s1 shl 2) or ((s2 and &b00110000) shr 4)
+		id->v(indexTo + 1) = ((s2 and &b00001111) shl 4) or ((s3 and &b00111100) shr 2)
+		id->v(indexTo + 2) = ((s3 and &b00000011) shl 6) or s4
+
+		indexTo += 3
+	next
+end sub
+
+/''
  ' @function _nextId
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {ulong}
@@ -143,6 +195,7 @@ end sub
  ' @function _mapEncoding
  ' @param {ubyte} index
  ' @param {ubyte} ascii
+ ' @private
  '/
 sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
 	state.encodeMap(index) = ascii 
@@ -158,7 +211,7 @@ sub _generateEncodeMapping cdecl ()
 	dim as short index = 2
 	dim as ubyte ascii
 
-	_mapEncoding(0, asc("."))
+	_mapEncoding(0, asc("_"))
 	_mapEncoding(1, asc("-"))
 
 	for ascii = asc("0") to asc("9")

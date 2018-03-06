@@ -37,10 +37,12 @@ declare function test cdecl (describeFn as Tester.describeCallback) as short
 declare function construct cdecl () as Identity.Instance ptr
 declare sub destruct cdecl (idPtr as Identity.Instance ptr)
 declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
+declare sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
+declare sub decode cdecl (source as Encoded ptr, id as Unique ptr)
 declare function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 declare sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
-declare sub _generateCharacterMapping cdecl ()
-declare sub _mapCharacter cdecl (index as ubyte, ascii as ubyte)
+declare sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
+declare sub _generateEncodeMapping cdecl ()
 declare sub _generateBinDistMapping cdecl ()
 
 end namespace
