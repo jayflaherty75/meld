@@ -22,6 +22,8 @@ namespace Identity
  '/
 
 type StateType
+	encodeMap(63) as ubyte
+	decodeMap(127) as ubyte
 	distMap(255) as ubyte
 	revDistMap(255) as ubyte
 end type
@@ -36,6 +38,7 @@ dim shared as StateType state
 function startup cdecl () as short
 	_console->logMessage("Starting identity module")
 
+	_generateEncodeMapping()
 	_generateBinDistMapping()
 
 	return true
@@ -120,6 +123,61 @@ function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
+ ' @function _reverseByteOrder
+ ' @param {ubyte ptr} dest
+ ' @param {ubyte ptr} source
+ ' @param {long} length
+ ' @private
+ '/
+sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
+	dim as long index = 0
+
+	do
+		dest[index] = source[length]
+		index += 1
+		length -= 1
+	loop while length >= 0
+end sub
+
+/''
+ ' @function _mapEncoding
+ ' @param {ubyte} index
+ ' @param {ubyte} ascii
+ '/
+sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
+	state.encodeMap(index) = ascii 
+	state.decodeMap(ascii) = index
+end sub
+
+/''
+ ' Distributes generated values to be search-friendly.
+ ' @function _generateEncodeMapping
+ ' @private
+ '/
+sub _generateEncodeMapping cdecl ()
+	dim as short index = 2
+	dim as ubyte ascii
+
+	_mapEncoding(0, asc("."))
+	_mapEncoding(1, asc("-"))
+
+	for ascii = asc("0") to asc("9")
+		_mapEncoding(index, ascii)
+		index += 1
+	next
+
+	for ascii = asc("A") to asc("Z")
+		_mapEncoding(index, ascii)
+		index += 1
+	next
+
+	for ascii = asc("a") to asc("z")
+		_mapEncoding(index, ascii)
+		index += 1
+	next
+end sub
+
+/''
  ' Distributes generated values to be search-friendly.
  ' @function _generateBinDistMapping
  ' @private
@@ -151,23 +209,6 @@ sub _generateBinDistMapping cdecl ()
 
 	state.distMap(255) = 255
 	state.revDistMap(255) = 255
-end sub
-
-/''
- ' @function _reverseByteOrder
- ' @param {ubyte ptr} dest
- ' @param {ubyte ptr} source
- ' @param {long} length
- ' @private
- '/
-sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
-	dim as long index = 0
-
-	do
-		dest[index] = source[length]
-		index += 1
-		length -= 1
-	loop while length >= 0
 end sub
 
 end namespace

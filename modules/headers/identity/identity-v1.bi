@@ -24,6 +24,7 @@ type Interface
 	construct as function cdecl () as Identity.Instance ptr
 	destruct as sub cdecl (idPtr as Identity.Instance ptr)
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
+	_mapCharacter as sub cdecl (index as ubyte, ascii as ubyte)
 end type
 
 end namespace
