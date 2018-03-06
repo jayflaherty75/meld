@@ -1,5 +1,4 @@
 
-
 /''
  ' @requires console
  ' @requires fault
@@ -152,6 +151,23 @@ sub _generateBinDistMapping cdecl ()
 
 	state.distMap(255) = 255
 	state.revDistMap(255) = 255
+end sub
+
+/''
+ ' @function _reverseByteOrder
+ ' @param {ubyte ptr} dest
+ ' @param {ubyte ptr} source
+ ' @param {long} length
+ ' @private
+ '/
+sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
+	dim as long index = 0
+
+	do
+		dest[index] = source[length]
+		index += 1
+		length -= 1
+	loop while length >= 0
 end sub
 
 end namespace
