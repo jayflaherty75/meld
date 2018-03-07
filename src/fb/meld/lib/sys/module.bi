@@ -15,6 +15,8 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.getNewline = @Sys.getNewline
 	moduleState.methods.getDirsep = @Sys.getDirsep
 	moduleState.methods.getModuleExt = @Sys.getModuleExt
+	moduleState.methods.getTimestamp = @Sys.getTimestamp
+	moduleState.methods.getMacAddress = @Sys.getMacAddress
 
 	return @moduleState.methods
 End Function

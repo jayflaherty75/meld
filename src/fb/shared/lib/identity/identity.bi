@@ -13,6 +13,7 @@ dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
 dim shared _tester as Tester.Interface ptr
+dim shared _sys as Sys.Interface ptr
 
 type ModuleStateType
 	methods as Identity.Interface

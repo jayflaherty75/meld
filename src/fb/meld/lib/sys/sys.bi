@@ -26,6 +26,11 @@ declare function shutdown cdecl () as short
 declare function getNewline cdecl () as zstring ptr
 declare function getDirsep cdecl () as zstring ptr
 declare function getModuleExt cdecl () as zstring ptr
+declare function getTimestamp cdecl () as ulongint
+declare sub getMacAddress cdecl (byref addr as zstring)
+declare sub _loadMacAddress cdecl ()
+declare sub _readFileLine cdecl (byref directory as zstring, byref filename as zstring, byref result as string)
+declare function _isMacAddress cdecl (byref addr as zstring) as short
 
 end namespace
 
