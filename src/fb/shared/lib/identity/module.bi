@@ -62,6 +62,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_sys = modulePtr->require("sys")
+		If _sys = NULL then
+			print("**** Identity.load: Failed to load sys dependency")
+			Return false
+		End If
+
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then

@@ -15,6 +15,8 @@ type Interface
 	getNewline as function cdecl () as zstring ptr
 	getDirsep as function cdecl () as zstring ptr
 	getModuleExt as function cdecl () as zstring ptr
+	getTimestamp as function cdecl () as ulongint
+	getMacAddress as sub cdecl (byref addr as zstring)
 end type
 
 end namespace

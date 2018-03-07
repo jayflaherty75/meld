@@ -8,6 +8,7 @@ declare sub test1 (done as Tester.doneFn)
 declare sub test2 (done as Tester.doneFn)
 declare sub test3 (done as Tester.doneFn)
 declare sub test4 (done as Tester.doneFn)
+declare sub test5 (done as Tester.doneFn)
 
 dim shared as Identity.Instance ptr idPtr
 
@@ -20,6 +21,7 @@ function testCreate (it as Tester.itCallback) as short
 	result = result andalso it("generates auto-increment identifiers", @test2)
 	result = result andalso it("correctly reverses a string of bytes", @test3)
 	result = result andalso it("encodes and decodes binary identifiers to base64-like string", @test4)
+	result = result andalso it("generates a timestamp", @test5)
 
 	destruct(idPtr)
 
@@ -82,6 +84,17 @@ sub test4 (done as Tester.doneFn)
 	_tester->expect(result.v(12), binaryId.v(12), "Incorrect decoded value")
 	_tester->expect(result.v(13), binaryId.v(13), "Incorrect decoded value")
 	_tester->expect(result.v(14), binaryId.v(14), "Incorrect decoded value")
+
+	done()
+end sub
+
+sub test5 (done as Tester.doneFn)
+	dim as zstring*18 addr
+
+	_sys->getMacAddress(addr)
+
+	print(_sys->getTimestamp())
+	print(addr)
 
 	done()
 end sub

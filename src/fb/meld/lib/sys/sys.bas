@@ -1,6 +1,12 @@
 
 #include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
+#include once "vbcompat.bi"
+#include once "file.bi"
+
+#define MILLISECONDS_PER_DAY		86400000
+#define MILLISECONDS_PER_MONTH		2678400000
+#define MILLISECONDS_PER_YEAR		32140800000
 
 /''
  ' @namespace Sys
@@ -11,6 +17,7 @@ type StateType
 	newline as zstring*3
 	dirsep as zstring*3
 	moduleExt as zstring*4
+	macAddress as zstring*18
 end type
 
 dim shared as StateType state
@@ -31,6 +38,8 @@ function startup cdecl () as short
 		state.moduleExt = "so"
 	#ENDIF
 
+	_loadMacAddress()
+
 	return true
 end function
 
@@ -47,7 +56,7 @@ end function
  ' @function getNewline
  ' @returns {zstring ptr}
  '/
-function getNewline() as zstring ptr
+function getNewline cdecl () as zstring ptr
 	return @state.newline
 end function
 
@@ -55,7 +64,7 @@ end function
  ' @function getDirsep
  ' @returns {zstring ptr}
  '/
-function getDirsep() as zstring ptr
+function getDirsep cdecl () as zstring ptr
 	return @state.dirsep
 end function
 
@@ -63,8 +72,90 @@ end function
  ' @function getModuleExt
  ' @returns {zstring ptr}
  '/
-function getModuleExt() as zstring ptr
+function getModuleExt cdecl () as zstring ptr
 	return @state.moduleExt
+end function
+
+/''
+ ' @function getTimestamp
+ ' @returns {ulongint}
+ '/
+function getTimestamp cdecl () as ulongint
+	dim as double rnow = now()
+	dim as ulongint rsec = culngint(timer() * 1000) mod MILLISECONDS_PER_DAY
+	dim as ulongint rday = culngint(day(rnow) - 1) * MILLISECONDS_PER_DAY
+	dim as ulongint rmon = culngint(month(rnow) - 1) * MILLISECONDS_PER_MONTH
+	dim as ulongint ryear = culngint(year(rnow) - 2018) * MILLISECONDS_PER_YEAR
+
+	return rsec + rday + rmon + ryear
+end function
+
+/''
+ ' @function getMacAddress
+ ' @param {byref zstring} addr
+ '/
+sub getMacAddress cdecl (byref addr as zstring)
+	addr = state.macAddress
+end sub
+
+/''
+ ' @function _loadMacAddress
+ ' @private
+ '/
+sub _loadMacAddress cdecl ()
+	dim as string currentDir = curdir()
+	dim as string directory
+	dim as string addr
+
+	chdir("/sys/class/net")
+	directory = dir("*", fbNormal or fbDirectory or fbHidden or fbSystem)
+
+	do while len(directory) > 0 andalso state.macAddress = ""
+		if left(directory, 1) <> "." then
+			_readFileLine("/sys/class/net/" & directory, "address", addr)
+
+			if _isMacAddress(addr) then
+				state.macAddress = addr
+			end if
+		end if
+
+		directory = Dir()
+	loop
+
+	chdir(currentDir)
+end sub
+
+/''
+ ' @function _readFileLine
+ ' @param {byref zstring} directory
+ ' @param {byref zstring} filename
+ ' @param {byref string} result
+ ' @private
+ '/
+sub _readFileLine cdecl (byref directory as zstring, byref filename as zstring, byref result as string)
+	dim as string currentDir = curdir()
+
+	chdir(directory)
+
+	Open filename For Input As #1
+	Line Input #1, result
+	Close #1
+
+	chdir(currentDir)
+end sub
+
+/''
+ ' @function _isMacAddress
+ ' @param {byref zstring} addr
+ ' @returns {short}
+ ' @private
+ '/
+function _isMacAddress cdecl (byref addr as zstring) as short
+	if len(addr) = 17 andalso addr <> "00:00:00:00:00:00" then
+		return true
+	end if
+
+	return false
 end function
 
 end namespace
