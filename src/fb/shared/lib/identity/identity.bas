@@ -13,21 +13,25 @@
 #include once "test.bi"
 
 /''
+ ' Library for generating simple auto-incement IDs or unique identifiers.
  ' @namespace Identity
  '/
 namespace Identity
 
 /''
+ ' Standard library instance.
  ' @class Instance
  ' @member {ulong} autoinc
  '/
 
 /''
+ ' Represents a binary, non-serialized unique identifier.
  ' @class Unique
  ' @member {ubyte} v(15-1)
  '/
 
 /''
+ ' Represents a serialized unique identifier.
  ' @typedef {zstring*21} Encoded
  '/
 
@@ -41,7 +45,7 @@ end type
 dim shared as StateType state
 
 /''
- ' Application main routine.
+ ' Module startup routine.
  ' @function startup
  ' @returns {short}
  '/
@@ -55,7 +59,7 @@ function startup cdecl () as short
 end function
 
 /''
- ' Application main routine.
+ ' Module shutdown routine.
  ' @function shutdown
  ' @returns {short}
  '/
@@ -112,6 +116,7 @@ sub destruct cdecl (idPtr as Instance ptr)
 end sub
 
 /''
+ ' Simple auto-increment ID generator for local resources.
  ' @function getAutoInc
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {ulong}
@@ -121,6 +126,8 @@ function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
+ ' Unique ID generator providing binary representation of application resources
+ ' designed to be efficiently searched using binary search trees.
  ' @function generate
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {Unique}
@@ -149,6 +156,7 @@ function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 end function
 
 /''
+ ' Serializes a binary unique identifier into a 20-character ID.
  ' @function encode
  ' @param {Unique ptr} id
  ' @param {Encoded ptr} dest
@@ -168,6 +176,7 @@ sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
 end sub
 
 /''
+ ' Deserializes a 20-character identifier into a binary unique ID.
  ' @function decode
  ' @param {Encoded ptr} source
  ' @param {Unique ptr} id
@@ -192,6 +201,7 @@ sub decode cdecl (source as Encoded ptr, id as Unique ptr)
 end sub
 
 /''
+ ' Shared internal function to produce auto-increment IDs.
  ' @function _nextId
  ' @param {Identity.Instance ptr} idPtr
  ' @returns {ulong}
@@ -204,6 +214,8 @@ function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
+ ' Intended for use on big-endian systems to ensure that the first bytes of an
+ ' identifier are the most frequently changing.
  ' @function _reverseByteOrder
  ' @param {ubyte ptr} dest
  ' @param {ubyte ptr} source
@@ -221,6 +233,7 @@ sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as l
 end sub
 
 /''
+ ' Saves mapping values for base64 encoding.
  ' @function _mapEncoding
  ' @param {ubyte} index
  ' @param {ubyte} ascii
@@ -232,7 +245,7 @@ sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
 end sub
 
 /''
- ' Distributes generated values to be search-friendly.
+ ' Generate mappings for encoding and decoding base64.
  ' @function _generateEncodeMapping
  ' @private
  '/
@@ -294,6 +307,8 @@ sub _generateBinDistMapping cdecl ()
 end sub
 
 /''
+ ' Converts a network MAC address into a number value.  Used for determining
+ ' the "space" portion of the unique identifier.
  ' @function _convertMacAddress
  ' @param {byref zstring} source
  ' @returns {ulongint}
@@ -318,6 +333,7 @@ function _convertMacAddress cdecl (byref source as zstring) as ulongint
 end function
 
 /''
+ ' Returns a 0-15 value for a single hexidecimal character.
  ' @function _convertHex
  ' @param {byref zstring} char
  ' @returns {ubyte}
@@ -338,6 +354,7 @@ function _convertHex cdecl (byref char as zstring) as ubyte
 end function
 
 /''
+ ' Simple copy function to move generated values into resulting identifiers.
  ' @function _copy
  ' @param {ubyte ptr} source
  ' @param {ubyte ptr} dest
