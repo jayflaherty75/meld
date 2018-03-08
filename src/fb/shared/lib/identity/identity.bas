@@ -122,6 +122,11 @@ end sub
  ' @returns {ulong}
  '/
 function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
+	if idPtr = NULL then
+		_throwIdentityGetAutoIncNullReferenceError(__FILE__, __LINE__)
+		return 0
+	end if
+
 	return _nextId(idPtr)
 end function
 
@@ -140,6 +145,14 @@ function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 	dim as ubyte ptr dataPtr
 	dim as short index
 	dim as Unique result
+
+	if idPtr = NULL then
+		_throwIdentityGenerateNullReferenceError(__FILE__, __LINE__)
+		return result
+	end if
+
+	idAutoinc = _nextId(idPtr)
+	idTime = _sys->getTimeStamp()
 
 	_sys->getMacAddress(strMacAddress)
 	idMacAddress = _convertMacAddress(strMacAddress)

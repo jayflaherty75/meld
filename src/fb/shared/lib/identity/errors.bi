@@ -1,20 +1,10 @@
 
 namespace Identity
 
-/'
-declare sub _throwDefaultGeneralError (byref id as zstring, byref filename as zstring, lineNum as integer)
-
-sub _throwDefaultGeneralError (byref id as zstring, byref filename as zstring, lineNum as integer)
-	_fault->throw(_
-		errors.generalError, _
-		"DefaultGeneralError", "Testing errors: " & id, _
-		filename, lineNum _
-	)
-end sub
-'/
-
 declare sub _throwIdentityAllocationError (byref filename as zstring, lineNum as integer)
 declare sub _throwIdentityDestructNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwIdentityGetAutoIncNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwIdentityGenerateNullReferenceError (byref filename as zstring, lineNum as integer)
 
 sub _throwIdentityAllocationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
@@ -28,6 +18,22 @@ sub _throwIdentityDestructNullReferenceError (byref filename as zstring, lineNum
 	_fault->throw(_
 		errors.nullReferenceError, _
 		"IdentityDestructNullReferenceError", "No pointer provided to destructor", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwIdentityGetAutoIncNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"IdentityGetAutoIncNullReferenceError", "No pointer provided to getAutoInc()", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwIdentityGenerateNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"IdentityGenerateNullReferenceError", "No pointer provided to generate()", _
 		filename, lineNum _
 	)
 end sub
