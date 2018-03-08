@@ -121,6 +121,34 @@ function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 end function
 
 /''
+ ' @function generate
+ ' @param {Identity.Instance ptr} idPtr
+ ' @returns {Unique}
+ '/
+function generate cdecl (idPtr as Identity.Instance ptr) as Unique
+	dim as zstring*18 strMacAddress
+	dim as ulongint idMacAddress
+	dim as ulongint idTime = _sys->getTimeStamp()
+	dim as ulong idAutoinc = _nextId(idPtr)
+	dim as ubyte ptr dataPtr
+	dim as short index
+	dim as Unique result
+
+	_sys->getMacAddress(strMacAddress)
+	idMacAddress = _convertMacAddress(strMacAddress)
+
+	_copy(cptr(ubyte ptr, @idAutoinc), @result.v(0), 4)
+	_copy(cptr(ubyte ptr, @idTime), @result.v(4), 5)
+	_copy(cptr(ubyte ptr, @idMacAddress), @result.v(9), 6)
+
+	for index = 0 to 15
+		result.v(index) = state.distMap(result.v(index))
+	next
+
+	return result
+end function
+
+/''
  ' @function encode
  ' @param {Unique ptr} id
  ' @param {Encoded ptr} dest
@@ -265,5 +293,64 @@ sub _generateBinDistMapping cdecl ()
 	state.revDistMap(255) = 255
 end sub
 
-end namespace
+/''
+ ' @function _convertMacAddress
+ ' @param {byref zstring} source
+ ' @returns {ulongint}
+ ' @private
+ '/
+function _convertMacAddress cdecl (byref source as zstring) as ulongint
+	dim as ulongint result = 0
+	dim as ulongint multiplier = 1
+	dim as short index
+	dim as ubyte char
 
+	for index = 0 to 16
+		char = _convertHex(mid(source, index + 1, 1))
+
+		if char > 0 then
+			result += multiplier * char
+			multiplier *= 16
+		end if
+	next
+
+	return result
+end function
+
+/''
+ ' @function _convertHex
+ ' @param {byref zstring} char
+ ' @returns {ubyte}
+ ' @private
+ '/
+function _convertHex cdecl (byref char as zstring) as ubyte
+	dim as ubyte ascii = asc(left(char, 1))
+
+	if ascii >= 97 andalso ascii < 103 then
+		return ascii - 87
+	elseif ascii >= 65 andalso ascii < 71 then
+		return ascii - 55
+	elseif ascii >= 48 andalso ascii < 58 then
+		return ascii - 48
+	end if
+
+	return 0
+end function
+
+/''
+ ' @function _copy
+ ' @param {ubyte ptr} source
+ ' @param {ubyte ptr} dest
+ ' @param {long} length
+ ' @private
+ '/
+sub _copy cdecl (source as ubyte ptr, dest as ubyte ptr, length as long)
+	dim as long index
+
+	for index = 0 to length - 1
+		print(source[index])
+		dest[index] = source[index]
+	next
+end sub
+
+end namespace
