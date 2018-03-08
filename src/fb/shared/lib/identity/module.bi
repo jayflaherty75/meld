@@ -16,6 +16,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.construct = @Identity.construct
 	moduleState.methods.destruct = @Identity.destruct
 	moduleState.methods.getAutoInc = @Identity.getAutoInc
+	moduleState.methods.generate = @Identity.generate
 	moduleState.methods.encode = @Identity.encode
 	moduleState.methods.decode = @Identity.decode
 
