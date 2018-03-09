@@ -31,7 +31,7 @@ type Interface
 	construct as function cdecl () as Identity.Instance ptr
 	destruct as sub cdecl (idPtr as Identity.Instance ptr)
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
-	generate as function cdecl (idPtr as Identity.Instance ptr) as Unique
+	generate as function cdecl () as Unique
 	encode as sub cdecl (id as Unique ptr, dest as Encoded ptr)
 	decode as sub cdecl (source as Encoded ptr, id as Unique ptr)
 end type
