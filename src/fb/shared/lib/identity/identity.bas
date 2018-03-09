@@ -36,6 +36,7 @@ namespace Identity
  '/
 
 type StateType
+	globalAutoInc as ulong
 	encodeMap(63) as ubyte
 	decodeMap(127) as ubyte
 	distMap(255) as ubyte
@@ -51,6 +52,8 @@ dim shared as StateType state
  '/
 function startup cdecl () as short
 	_console->logMessage("Starting identity module")
+
+	state.globalAutoInc = 0
 
 	_generateEncodeMapping()
 	_generateBinDistMapping()
@@ -127,7 +130,9 @@ function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 		return 0
 	end if
 
-	return _nextId(idPtr)
+	idPtr->autoinc += 1
+
+	return idPtr->autoinc
 end function
 
 /''
@@ -140,10 +145,9 @@ end function
 function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 	dim as zstring*18 strMacAddress
 	dim as ulongint idMacAddress
-	dim as ulongint idTime = _sys->getTimeStamp()
-	dim as ulong idAutoinc = _nextId(idPtr)
+	dim as ulongint idTime
+	dim as ulong idAutoinc
 	dim as ubyte ptr dataPtr
-	dim as short index
 	dim as Unique result
 
 	if idPtr = NULL then
@@ -151,7 +155,9 @@ function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 		return result
 	end if
 
-	idAutoinc = _nextId(idPtr)
+	state.globalAutoInc += 1
+
+	idAutoinc = state.globalAutoInc
 	idTime = _sys->getTimeStamp()
 
 	_sys->getMacAddress(strMacAddress)
@@ -160,10 +166,6 @@ function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 	_copy(cptr(ubyte ptr, @idAutoinc), @result.v(0), 4)
 	_copy(cptr(ubyte ptr, @idTime), @result.v(4), 5)
 	_copy(cptr(ubyte ptr, @idMacAddress), @result.v(9), 6)
-
-	for index = 0 to 15
-		result.v(index) = state.distMap(result.v(index))
-	next
 
 	return result
 end function
@@ -212,19 +214,6 @@ sub decode cdecl (source as Encoded ptr, id as Unique ptr)
 		indexTo += 3
 	next
 end sub
-
-/''
- ' Shared internal function to produce auto-increment IDs.
- ' @function _nextId
- ' @param {Identity.Instance ptr} idPtr
- ' @returns {ulong}
- ' @private
- '/
-function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
-	idPtr->autoinc += 1
-
-	return idPtr->autoinc
-end function
 
 /''
  ' Intended for use on big-endian systems to ensure that the first bytes of an
@@ -368,6 +357,7 @@ end function
 
 /''
  ' Simple copy function to move generated values into resulting identifiers.
+ ' Converts each byte to binary distribution during the copy.
  ' @function _copy
  ' @param {ubyte ptr} source
  ' @param {ubyte ptr} dest
@@ -378,8 +368,7 @@ sub _copy cdecl (source as ubyte ptr, dest as ubyte ptr, length as long)
 	dim as long index
 
 	for index = 0 to length - 1
-		print(source[index])
-		dest[index] = source[index]
+		dest[index] = state.distMap(source[index])
 	next
 end sub
 

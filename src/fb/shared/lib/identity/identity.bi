@@ -41,7 +41,6 @@ declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong
 declare function generate cdecl (idPtr as Identity.Instance ptr) as Unique
 declare sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
 declare sub decode cdecl (source as Encoded ptr, id as Unique ptr)
-declare function _nextId cdecl (idPtr as Identity.Instance ptr) as ulong
 declare sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, length as long)
 declare sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
 declare sub _generateEncodeMapping cdecl ()
