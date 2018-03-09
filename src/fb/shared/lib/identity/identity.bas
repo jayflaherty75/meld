@@ -139,26 +139,18 @@ end function
  ' Unique ID generator providing binary representation of application resources
  ' designed to be efficiently searched using binary search trees.
  ' @function generate
- ' @param {Identity.Instance ptr} idPtr
  ' @returns {Unique}
  '/
-function generate cdecl (idPtr as Identity.Instance ptr) as Unique
+function generate cdecl () as Unique
 	dim as zstring*18 strMacAddress
 	dim as ulongint idMacAddress
-	dim as ulongint idTime
+	dim as ulongint idTime = _sys->getTimeStamp()
 	dim as ulong idAutoinc
 	dim as ubyte ptr dataPtr
 	dim as Unique result
 
-	if idPtr = NULL then
-		_throwIdentityGenerateNullReferenceError(__FILE__, __LINE__)
-		return result
-	end if
-
 	state.globalAutoInc += 1
-
 	idAutoinc = state.globalAutoInc
-	idTime = _sys->getTimeStamp()
 
 	_sys->getMacAddress(strMacAddress)
 	idMacAddress = _convertMacAddress(strMacAddress)
