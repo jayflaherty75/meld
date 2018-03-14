@@ -15,10 +15,12 @@
 		<xsl:with-param name="module" select="'constants'" />
 		<xsl:with-param name="version" select="'1'" />
 	</xsl:call-template>
-	<xsl:call-template name="include">
-		<xsl:with-param name="module" select="'module'" />
-		<xsl:with-param name="version" select="'1'" />
-	</xsl:call-template>
+	<xsl:if test="@name != 'module'">
+		<xsl:call-template name="include">
+			<xsl:with-param name="module" select="'module'" />
+			<xsl:with-param name="version" select="'1'" />
+		</xsl:call-template>
+	</xsl:if>
 	<xsl:for-each select="requires">
 		<xsl:call-template name="include">
 			<xsl:with-param name="module" select="@module" />
