@@ -92,7 +92,7 @@ function uninitialize cdecl() as short
 		library = state.libraries(index).library
 
 		unloadFn = dylibsymbol(library, "unload")
-		if unloadFn = NULL orelse not unloadFn() then
+		if unloadFn = NULL orelse unloadFn() then
 			dylibfree(library)
 
 			if not state.unloadHandler(@state.libraries(index)) then
@@ -213,7 +213,6 @@ end function
  ' @returns {short}
  '/
 function unload cdecl (byref moduleName as zstring) as short
-	dim as function cdecl () as short shutdownFn
 	dim as function cdecl () as short unloadFn
 
 	dim as LibraryEntry ptr entryPtr
@@ -234,14 +233,8 @@ function unload cdecl (byref moduleName as zstring) as short
 		return false
 	end if
 
-	shutdownFn = dylibsymbol(entryPtr->library, "shutdown")
-	if shutdownFn <> NULL andalso not shutdownFn() then
-		print("**** Module.unload: Module shutdown failed")
-		return false
-	end if
-
 	unloadFn = dylibsymbol(entryPtr->library, "unload")
-	if unloadFn = NULL orelse not unloadFn() then
+	if unloadFn = NULL orelse unloadFn() then
 		dylibfree(entryPtr->library)
 
 		if not state.unloadHandler(entryPtr) then

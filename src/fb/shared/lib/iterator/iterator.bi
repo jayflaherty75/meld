@@ -17,8 +17,7 @@ dim shared _tester as Tester.Interface ptr
 type ModuleStateType
 	methods as Iterator.Interface
 	isLoaded as short
-	references as integer
-	startups as integer
+	startups as long
 end type
 
 type ErrorCodes
