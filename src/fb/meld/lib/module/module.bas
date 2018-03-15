@@ -79,6 +79,7 @@ function uninitialize cdecl() as short
 
 	for index = 0 to state.libraryCount - 1
 		library = state.libraries(index).library
+
 		shutdownFn = dylibsymbol(library, "shutdown")
 
 		if shutdownFn <> NULL andalso not shutdownFn() then
@@ -93,7 +94,7 @@ function uninitialize cdecl() as short
 		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn = NULL orelse not unloadFn() then
 			dylibfree(library)
-			
+
 			if not state.unloadHandler(@state.libraries(index)) then
 				print("**** Module.uninitialize: Warning: unload handler failed for " & state.libraries(index).moduleName)
 			end if
@@ -144,7 +145,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as function cdecl () as any ptr exportsFn
 	dim as function cdecl () as short startupFn
 
-	dim as LibraryEntry ptr entryPtr = @state.libraries(state.libraryCount)
+	dim as LibraryEntry ptr entryPtr
 	dim as Interface safeApi = api
 
 	if moduleName = "" then
@@ -152,6 +153,12 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return NULL
 	end if
 
+	entryPtr = _findEntry(moduleName)
+	if entryPtr <> NULL then
+		return entryPtr->interfacePtr
+	end if
+
+	entryPtr = @state.libraries(state.libraryCount)
 	entryPtr->moduleName = moduleName
 
 	if not state.preloadHandler(entryPtr) then
@@ -219,6 +226,27 @@ end function
  '/
 function argc cdecl () as long
 	return state.argc
+end function
+
+/''
+ ' @function _findEntry
+ ' @param {byref zstring} moduleName
+ ' @returns {LibraryEntry ptr}
+ ' @private
+ '/
+function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
+	dim as LibraryEntry ptr entryPtr = NULL
+	dim as long index = 0
+
+	do while entryPtr = NULL andalso index < state.libraryCount
+		if state.libraries(index).moduleName = moduleName then
+			entryPtr = @state.libraries(index)
+		end if
+
+		index += 1
+	loop
+
+	return entryPtr
 end function
 
 /''
