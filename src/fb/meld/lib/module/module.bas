@@ -1,8 +1,4 @@
 
-/''
- ' @requires constants
- '/
-
 #include once "module.bi"
 
 /''
@@ -10,11 +6,26 @@
  '/
 namespace Module
 
+/''
+ ' @class LibraryEntry
+ ' @member {any ptr} library
+ ' @member {any ptr} interfacePtr
+ ' @member {String} moduleName
+ ' @member {String} fileName
+ '/
+
+/''
+ ' @typedef {function} ModuleWillLoadFn
+ ' @param {any ptr} entryPtr
+ ' @returns {short}
+ '/
+
 type StateType
-	libraries(MODULE_MAX_ENTRIES) as any ptr
+	libraries(MODULE_MAX_ENTRIES) as LibraryEntry
 	libraryCount as short
 	argc as integer
 	argv as zstring ptr ptr
+	preloadHandler as ModuleWillLoadFn
 end type
 
 dim shared as StateType state
@@ -34,8 +45,12 @@ function initialize cdecl(_argc as integer, _argv as any ptr) as short
 
 	api.initialize = @initialize
 	api.uninitialize = @uninitialize
+	api.setModuleWillLoad = @setModuleWillLoad
 	api.require = @require
 	api.argv = @argv
+	api.argc = @argc
+
+	setModuleWillLoad(NULL)
 
 	return true
 end function
@@ -54,9 +69,9 @@ function uninitialize cdecl() as short
 	dim as short result = true
 
 	for index = 0 to state.libraryCount - 1
-		library = state.libraries(index)
-
+		library = state.libraries(index).library
 		shutdownFn = dylibsymbol(library, "shutdown")
+
 		if shutdownFn <> NULL andalso not shutdownFn() then
 			print("**** Module.uninitialize: Module shutdown failed")
 			result = false
@@ -64,17 +79,31 @@ function uninitialize cdecl() as short
 	next
 
 	for index = 0 to state.libraryCount - 1
-		library = state.libraries(index)
+		library = state.libraries(index).library
 
 		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn = NULL orelse not unloadFn() then
 			dylibfree(library)
-			state.libraries(index) = NULL
+			state.libraries(index).library = NULL
 		end if
 	next
 
 	return result
 end function
+
+/''
+ ' Set a handler callback to set the filenames for external libraries.  If
+ ' passed NULL, the default handler will be set.
+ ' @function setModuleWillLoad
+ ' @param {ModuleWillLoadFn} handler
+ '/
+sub setModuleWillLoad cdecl (handler as ModuleWillLoadFn)
+	if handler = NULL then
+		state.preloadHandler = @_defaultPreloadHandler
+	else
+		state.preloadHandler = handler
+	end if
+end sub
 
 /''
  ' Returns a pointer to the required interface.
@@ -87,61 +116,53 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as function cdecl () as any ptr exportsFn
 	dim as function cdecl () as short startupFn
 
+	dim as LibraryEntry ptr entryPtr = @state.libraries(state.libraryCount)
 	dim as Interface safeApi = api
-	dim as string filename
-	dim as any ptr library
-	dim as any ptr interfacePtr
 
 	if moduleName = "" then
 		print("**** Module.require: Missing moduleName argument")
 		return NULL
 	end if
 
-	filename = "modules" & DIR_SEP & moduleName & "." & EXTERNAL_MODULE_EXTENSION
-	if not fileexists(filename) then
-		print("**** Module.require: Missing module: " & filename)
+	entryPtr->moduleName = moduleName
+
+	if not state.preloadHandler(entryPtr) then
+		print("**** Module.require: Failed to load module: " & entryPtr->filename)
 		return NULL
 	end if
 
-	library = dylibload(filename)
-	if library = NULL then
-		print("**** Module.require: Failed to load module: " & filename)
-		return NULL
-	end if
-
-	state.libraries(state.libraryCount) = library
 	state.libraryCount += 1
 
-	exportsFn = dylibsymbol(library, "exports")
+	exportsFn = dylibsymbol(entryPtr->library, "exports")
 	if exportsFn = NULL then
-		print("**** Module.require: Missing exports function: " & filename)
+		print("**** Module.require: Missing exports function: " & entryPtr->filename)
 		return NULL
 	end if
 
-	interfacePtr = exportsFn()
-	if interfacePtr = NULL then
-		print("**** Module.require: Missing interface: " & filename)
+	entryPtr->interfacePtr = exportsFn()
+	if entryPtr->interfacePtr = NULL then
+		print("**** Module.require: Missing interface: " & entryPtr->filename)
 		return NULL
 	end if
 
-	loadFn = dylibsymbol(library, "load")
+	loadFn = dylibsymbol(entryPtr->library, "load")
 	if loadFn = NULL then
-		print("**** Module.require: Missing load function: " & filename)
+		print("**** Module.require: Missing load function: " & entryPtr->filename)
 		return false
 	end if
 
 	if not loadFn(@safeApi) then
-		print("**** Module.require: Call to load() method failed: " & filename)
+		print("**** Module.require: Call to load() method failed: " & entryPtr->filename)
 		return false
 	end if
 
-	startupFn = dylibsymbol(library, "startup")
+	startupFn = dylibsymbol(entryPtr->library, "startup")
 	if startupFn <> NULL andalso not startupFn() then
-		print("**** Module.require: Call to startup() method failed: " & filename)
+		print("**** Module.require: Call to startup() method failed: " & entryPtr->filename)
 		return false
 	end if
 
-	return interfacePtr
+	return entryPtr->interfacePtr
 end function
 
 /''
@@ -164,6 +185,30 @@ end function
  '/
 function argc cdecl () as long
 	return state.argc
+end function
+
+/''
+ ' @function _defaultPreloadHandler
+ ' @param {any ptr} entryPtr
+ ' @returns {short}
+ ' @private
+ '/
+function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
+	dim as LibraryEntry ptr _entry = entryPtr
+
+	_entry->filename = "modules" & DIR_SEP & _entry->moduleName & "." & EXTERNAL_MODULE_EXTENSION
+
+	if not fileexists(_entry->filename) then
+		return false
+	end if
+
+	_entry->library = dylibload(_entry->filename)
+
+	if _entry->library = NULL then
+		return false
+	end if
+
+	return true
 end function
 
 end namespace
