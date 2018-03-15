@@ -21,6 +21,7 @@ declare function uninitialize cdecl() as short
 declare sub setModuleWillLoad cdecl (handler as ModuleWillLoadFn)
 declare sub setModuleHasUnloaded cdecl (handler as ModuleHasUnloadedFn)
 declare function require cdecl (byref moduleName as zstring) as any ptr
+declare function unload cdecl (byref moduleName as zstring) as short
 declare function argv cdecl (index as ulong) as zstring ptr
 declare function argc cdecl () as long
 declare function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
