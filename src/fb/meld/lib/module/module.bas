@@ -20,12 +20,19 @@ namespace Module
  ' @returns {short}
  '/
 
+/''
+ ' @typedef {function} ModuleHasUnloadedFn
+ ' @param {any ptr} entryPtr
+ ' @returns {short}
+ '/
+
 type StateType
 	libraries(MODULE_MAX_ENTRIES) as LibraryEntry
 	libraryCount as short
 	argc as integer
 	argv as zstring ptr ptr
 	preloadHandler as ModuleWillLoadFn
+	unloadHandler as ModuleHasUnloadedFn
 end type
 
 dim shared as StateType state
@@ -46,11 +53,13 @@ function initialize cdecl(_argc as integer, _argv as any ptr) as short
 	api.initialize = @initialize
 	api.uninitialize = @uninitialize
 	api.setModuleWillLoad = @setModuleWillLoad
+	api.setModuleHasUnloaded = @setModuleHasUnloaded
 	api.require = @require
 	api.argv = @argv
 	api.argc = @argc
 
 	setModuleWillLoad(NULL)
+	setModuleHasUnloaded(NULL)
 
 	return true
 end function
@@ -84,6 +93,11 @@ function uninitialize cdecl() as short
 		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn = NULL orelse not unloadFn() then
 			dylibfree(library)
+			
+			if not state.unloadHandler(@state.libraries(index)) then
+				print("**** Module.uninitialize: Warning: unload handler failed for " & state.libraries(index).moduleName)
+			end if
+
 			state.libraries(index).library = NULL
 		end if
 	next
@@ -102,6 +116,20 @@ sub setModuleWillLoad cdecl (handler as ModuleWillLoadFn)
 		state.preloadHandler = @_defaultPreloadHandler
 	else
 		state.preloadHandler = handler
+	end if
+end sub
+
+/''
+ ' Set a handler callback to set the filenames for external libraries.  If
+ ' passed NULL, the default handler will be set.
+ ' @function setModuleHasUnloaded
+ ' @param {ModuleHasUnloadedFn} handler
+ '/
+sub setModuleHasUnloaded cdecl (handler as ModuleHasUnloadedFn)
+	if handler = NULL then
+		state.unloadHandler = @_defaultUnloadHandler
+	else
+		state.unloadHandler = handler
 	end if
 end sub
 
@@ -127,7 +155,13 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	entryPtr->moduleName = moduleName
 
 	if not state.preloadHandler(entryPtr) then
-		print("**** Module.require: Failed to load module: " & entryPtr->filename)
+		print("**** Module.require: Missing module: " & moduleName)
+		return NULL
+	end if
+
+	entryPtr->library = dylibload(entryPtr->filename)
+	if entryPtr->library = NULL then
+		print("**** Module.require: Failed to load module: " & moduleName)
 		return NULL
 	end if
 
@@ -135,30 +169,30 @@ function require cdecl (byref moduleName as zstring) as any ptr
 
 	exportsFn = dylibsymbol(entryPtr->library, "exports")
 	if exportsFn = NULL then
-		print("**** Module.require: Missing exports function: " & entryPtr->filename)
+		print("**** Module.require: Missing exports function: " & moduleName)
 		return NULL
 	end if
 
 	entryPtr->interfacePtr = exportsFn()
 	if entryPtr->interfacePtr = NULL then
-		print("**** Module.require: Missing interface: " & entryPtr->filename)
+		print("**** Module.require: Missing interface: " & moduleName)
 		return NULL
 	end if
 
 	loadFn = dylibsymbol(entryPtr->library, "load")
 	if loadFn = NULL then
-		print("**** Module.require: Missing load function: " & entryPtr->filename)
+		print("**** Module.require: Missing load function: " & moduleName)
 		return false
 	end if
 
 	if not loadFn(@safeApi) then
-		print("**** Module.require: Call to load() method failed: " & entryPtr->filename)
+		print("**** Module.require: Call to load() method failed: " & moduleName)
 		return false
 	end if
 
 	startupFn = dylibsymbol(entryPtr->library, "startup")
 	if startupFn <> NULL andalso not startupFn() then
-		print("**** Module.require: Call to startup() method failed: " & entryPtr->filename)
+		print("**** Module.require: Call to startup() method failed: " & moduleName)
 		return false
 	end if
 
@@ -202,12 +236,16 @@ function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
 		return false
 	end if
 
-	_entry->library = dylibload(_entry->filename)
+	return true
+end function
 
-	if _entry->library = NULL then
-		return false
-	end if
-
+/''
+ ' @function _defaultUnloadHandler
+ ' @param {any ptr} entryPtr
+ ' @returns {short}
+ ' @private
+ '/
+function _defaultUnloadHandler cdecl (entryPtr as any ptr) as short
 	return true
 end function
 
