@@ -30,7 +30,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
-		moduleState.references = 0
 		moduleState.startups = 0
 		moduleState.isLoaded = true
 
@@ -85,21 +84,25 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 	End If
 
-	moduleState.references += 1
-
 	return true
 End Function
 
 Function unload cdecl Alias "unload" () As short export
-	moduleState.references -= 1
 
-	If moduleState.references <= 0 Then
-		moduleState.references = 0
+	If moduleState.startups > 0 Then
+		If moduleState.methods.shutdown <> NULL Then
+			If not moduleState.methods.shutdown() Then
+				print("**** Identity.unload: Module shutdown handler failed")
+				return false
+			End If
+		End If
+
 		moduleState.startups = 0
-		moduleState.isLoaded = false
 	End If
 
-	return moduleState.isLoaded
+	moduleState.isLoaded = false
+
+	return true
 End Function
 
 
@@ -149,7 +152,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Identity.startup: Module shutdown handler failed")
+				print("**** Identity.shutdown: Module shutdown handler failed")
 			End If
 		End If
 	End If
