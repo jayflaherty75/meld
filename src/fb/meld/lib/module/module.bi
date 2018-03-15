@@ -23,6 +23,7 @@ declare sub setModuleHasUnloaded cdecl (handler as ModuleHasUnloadedFn)
 declare function require cdecl (byref moduleName as zstring) as any ptr
 declare function argv cdecl (index as ulong) as zstring ptr
 declare function argc cdecl () as long
+declare function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
 declare function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
 declare function _defaultUnloadHandler cdecl (entryPtr as any ptr) as short
 
