@@ -207,6 +207,55 @@ function require cdecl (byref moduleName as zstring) as any ptr
 end function
 
 /''
+ ' Manually shut down and unload a module
+ ' @function unload
+ ' @param {byref zstring} moduleName
+ ' @returns {short}
+ '/
+function unload cdecl (byref moduleName as zstring) as short
+	dim as function cdecl () as short shutdownFn
+	dim as function cdecl () as short unloadFn
+
+	dim as LibraryEntry ptr entryPtr
+
+	if moduleName = "" then
+		print("**** Module.unload: Missing moduleName argument")
+		return false
+	end if
+
+	entryPtr = _findEntry(moduleName)
+	if entryPtr = NULL then
+		print("**** Module.unload: Not a loaded module: " & moduleName)
+		return false
+	end if
+
+	if entryPtr->library = NULL then
+		print("**** Module.unload: Module already unloaded: " & moduleName)
+		return false
+	end if
+
+	shutdownFn = dylibsymbol(entryPtr->library, "shutdown")
+	if shutdownFn <> NULL andalso not shutdownFn() then
+		print("**** Module.unload: Module shutdown failed")
+		return false
+	end if
+
+	unloadFn = dylibsymbol(entryPtr->library, "unload")
+	if unloadFn = NULL orelse not unloadFn() then
+		dylibfree(entryPtr->library)
+
+		if not state.unloadHandler(entryPtr) then
+			print("**** Module.unload: Warning: unload handler failed for " & entryPtr->moduleName)
+		end if
+	end if
+
+	entryPtr->library = NULL
+	entryPtr->moduleName = ""
+
+	return true
+end function
+
+/''
  ' @function argv
  ' @param {ulong} index
  ' @returns {zstring ptr}
