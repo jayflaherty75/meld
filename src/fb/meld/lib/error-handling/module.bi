@@ -76,7 +76,6 @@ Function startup cdecl Alias "startup" () As short export
 			If not moduleState.methods.startup() Then
 				print("**** ErrorHandling.startup: Module startup handler failed")
 				return false
-			
 			End If
 		End If
 

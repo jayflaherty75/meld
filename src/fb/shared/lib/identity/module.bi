@@ -106,7 +106,7 @@ Function unload cdecl Alias "unload" () As short export
 End Function
 
 
-Function test () As short export
+Function test cdecl Alias "test" () As short export
 	dim As Identity.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
 
@@ -128,13 +128,6 @@ Function startup cdecl Alias "startup" () As short export
 			If not moduleState.methods.startup() Then
 				print("**** Identity.startup: Module startup handler failed")
 				return false
-			
-			ElseIf not test() Then
-				' TODO: Remove test from startup and move startup function to
-				' end of boilerplate
-				print("**** Identity.start: Unit test failed")
-				return false
-			
 			End If
 		End If
 

@@ -21,6 +21,13 @@ function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
 		return 1
 	end if
 
+	if not Module.testModule(app) then
+		print("**** Module.test: " & app & " unit test failed")
+		return 1
+	end if
+
+	' TODO: Call main lifecycle, likely update()
+
 	if not Module.uninitialize() then
 		print("**** main: An error occurred while attempting to uninitialize Meld")
 		return 1

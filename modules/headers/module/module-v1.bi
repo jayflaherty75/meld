@@ -31,6 +31,7 @@ type Interface
 	setModuleHasUnloaded as sub cdecl (handler as ModuleHasUnloadedFn)
 	require as function cdecl (byref moduleName as zstring) as any ptr
 	unload as function cdecl (byref moduleName as zstring) as short
+	testModule as function cdecl (byref moduleName as zstring) as short
 	argv as function cdecl (index as ulong) as zstring ptr
 	argc as function cdecl () as long
 end type
