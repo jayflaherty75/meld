@@ -16,7 +16,7 @@ dim shared _sys as Sys.Interface ptr
 type ModuleStateType
 	methods as Console.Interface
 	isLoaded as short
-	startups as long
+	isStarted as short
 end type
 
 dim shared as ModuleStateType moduleState
