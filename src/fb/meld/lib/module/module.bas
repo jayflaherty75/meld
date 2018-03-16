@@ -249,6 +249,37 @@ function unload cdecl (byref moduleName as zstring) as short
 end function
 
 /''
+ ' Manually shut down and unload a module
+ ' @function testModule
+ ' @param {byref zstring} moduleName
+ ' @returns {short}
+ '/
+function testModule cdecl (byref moduleName as zstring) as short
+	dim as function cdecl () as short testFn
+	dim as LibraryEntry ptr entryPtr
+
+	if moduleName = "" then
+		return false
+	end if
+
+	entryPtr = _findEntry(moduleName)
+	if entryPtr = NULL then
+		return false
+	end if
+
+	if entryPtr->library = NULL then
+		return false
+	end if
+
+	testFn = dylibsymbol(entryPtr->library, "test")
+	if testFn <> NULL andalso not testFn() then
+		return false
+	end if
+
+	return true
+end function
+
+/''
  ' @function argv
  ' @param {ulong} index
  ' @returns {zstring ptr}

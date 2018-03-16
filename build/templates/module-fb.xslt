@@ -122,7 +122,7 @@ Function unload cdecl Alias "unload" () As short export
 End Function
 
 <xsl:if test="count(requires[@module='tester']) &gt; 0 or namespace='Tester'">
-Function test () As short export
+Function test cdecl Alias "test" () As short export
 	dim As <xsl:value-of select="namespace" />.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
 
@@ -144,13 +144,6 @@ Function startup cdecl Alias "startup" () As short export
 			If not moduleState.methods.startup() Then
 				print("**** <xsl:value-of select="namespace" />.startup: Module startup handler failed")
 				return false
-			<xsl:if test="count(requires[@module='tester']) &gt; 0 or namespace='Tester'">
-			ElseIf not test() Then
-				' TODO: Remove test from startup and move startup function to
-				' end of boilerplate
-				print("**** <xsl:value-of select="namespace" />.start: Unit test failed")
-				return false
-			</xsl:if>
 			End If
 		End If
 
