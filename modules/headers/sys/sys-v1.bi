@@ -12,6 +12,9 @@ namespace Sys
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
+	construct as any ptr
+	destruct as any ptr
+	test as any ptr
 	getNewline as function cdecl () as zstring ptr
 	getDirsep as function cdecl () as zstring ptr
 	getModuleExt as function cdecl () as zstring ptr

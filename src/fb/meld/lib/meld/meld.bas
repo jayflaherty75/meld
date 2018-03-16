@@ -1,6 +1,5 @@
 
 /''
- ' @requires module
  ' @requires tester
  '/
  
@@ -9,24 +8,10 @@
  '/
  
 /''
- ' Called by Meld during when required by another module.
- ' @function exports
- ' @returns {any ptr}
+ ' @class Instance
+ ' @member {ulong} references
  '/
- 
-/''
- ' Called by Meld during when required by another module.
- ' @function load
- ' @param {Module.Interface ptr} modulePtr
- ' @returns {short}
- '/
- 
-/''
- ' Used by Meld to disassociates a module from the rest of the system.
- ' @function unload
- ' @returns {short}
- '/
- 
+
 /''
  ' Startup lifecycle function called by Meld framework after the module has
  ' been loaded.
@@ -43,9 +28,20 @@
  '/
 
 /''
+ ' Constructor
+ ' @function construct
+ ' @returns {Instance ptr}
+ '/
+
+/''
+ ' Destructor
+ ' @function destruct
+ ' @param {Instance ptr} instancePtr
+ '/
+
+/''
  ' Standard test runner for modules.
  ' @function test
- ' @param {any ptr} interfacePtr
  ' @param {Tester.describeCallback} describe
  ' @returns {short}
  '/

@@ -26,9 +26,9 @@ type IteratorHandler as function cdecl (result as Iterator.Instance ptr, expecte
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
+	construct as function cdecl () as Instance ptr
+	destruct as sub cdecl (instancePtr as Instance ptr)
 	test as function cdecl (describe as Tester.describeCallback) as short
-	construct as function cdecl () as Iterator.Instance ptr
-	destruct as sub cdecl (iter as Iterator.Instance ptr)
 	setHandler as sub cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
 	setData as sub cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, setLength as long = -1)
 	length as function cdecl (iter as Iterator.Instance ptr) as long
