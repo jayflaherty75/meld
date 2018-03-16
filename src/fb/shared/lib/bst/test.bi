@@ -1,55 +1,26 @@
 
-#include once "../../../../../modules/headers/tester/tester-v1.bi"
-#include once "../../../../../modules/headers/bst/bst-v1.bi"
-#include once "../../../../../modules/headers/iterator/iterator-v1.bi"
+#include once "bst.bi"
 
-namespace BstTest
+namespace Bst
 
-declare function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
-declare function create (it as Tester.itCallback) as integer
-declare function test1 () as integer
-declare function test2 () as integer
-declare function test3 () as integer
-declare function test4 () as integer
-declare function test5 () as integer
-declare function test6 () as integer
-declare function test7 () as integer
-
-declare function test30 () as integer
-
-dim shared _core as Core.Interface ptr
-dim shared _bst as Bst.Interface ptr
-dim shared _iterator as Iterator.Interface ptr
+declare function testCreate (it as Tester.itCallback) as short
+declare sub test1 (done as Tester.doneFn)
+declare sub test2 (done as Tester.doneFn)
+declare sub test3 (done as Tester.doneFn)
+declare sub test4 (done as Tester.doneFn)
+declare sub test5 (done as Tester.doneFn)
+declare sub test6 (done as Tester.doneFn)
+declare sub test7 (done as Tester.doneFn)
+declare sub test30 (done as Tester.doneFn)
 
 const as integer dataLen = 15
+
 dim shared as integer testData(dataLen-1) = { 8, 4, 12, 2, 1, 3, 6, 5, 7, 10, 9, 11, 14, 13, 15 }
-dim shared as BstObj ptr btreePtr
+dim shared as Bst.Instance ptr btreePtr
 dim shared as Bst.Node ptr nodePtr
 
-function testModule (corePtr as Core.Interface ptr, describe as Tester.describeCallback) as integer
-	dim as integer result = true
-
-	_core = corePtr
-	_bst = _core->require("bst")
-	_iterator = _core->require("iterator")
-
-	result = result ANDALSO describe ("The BST module", @create)
-
-	return result
-end function
-
-function create (it as Tester.itCallback) as integer
-	dim as integer result = true
-
-	if _bst = NULL then
-		print ("FAILED TO LOAD MODULE")
-		return false
-	end if
-
-	if _iterator = NULL then
-		print ("FAILED TO LOAD DEPENDENCY: iterator")
-		return false
-	end if
+function testCreate (it as Tester.itCallback) as short
+	dim as short result = true
 
 	result = result ANDALSO it ("creates a BST instance", @test1)
 	result = result ANDALSO it ("inserts a set of nodes", @test2)
@@ -64,101 +35,119 @@ function create (it as Tester.itCallback) as integer
 	return result
 end function
 
-function test1 () as integer
-	btreePtr = _bst->construct("TestBst")
+sub test1 (done as Tester.doneFn)
+	btreePtr = _bst->construct()
 
-	if btreePtr = NULL then
-		return false
-	end if
+	_tester->expectPtrNot(btreePtr, NULL, "Constructor returned NULL")
 
-	return true
-end function
+	done()
+end sub
 
-function test2 () as integer
+sub test2 (done as Tester.doneFn)
 	dim as integer i
 	dim as integer result = true
 
 	for i = 0 to dataLen-1
 		nodePtr = _bst->insert(btreePtr, @testData(i))
 
-		if nodePtr = NULL then
-			result = false
-			exit for
-		end if
+		_tester->expectPtrNot(nodePtr, NULL, "Insert returned NULL")
+		_tester->expect(_bst->getLength(btreePtr), i + 1, "Length of tree incorrect")
 	next
 
-	return result
-end function
+	done()
+end sub
 
-function test3 () as integer
-	if _bst->getLength(btreePtr) <> dataLen then
-		return false
-	end if
+sub test3 (done as Tester.doneFn)
+	_tester->expect(_bst->getLength(btreePtr), dataLen, "Length of tree incorrect")
 
-	return true
-end function
+	done()
+end sub
 
-function test4() as integer
+sub test4(done as Tester.doneFn)
 	nodePtr = _bst->search(btreePtr, @testData(3))
 
-	if nodePtr = NULL orelse *cptr(integer ptr, nodePtr->element) <> testData(3) then
-		return false
-	end if
+	_tester->expectPtrNot(nodePtr, NULL, "Search returned NULL")
+	_tester->expect(*cptr(integer ptr, nodePtr->element), testData(3), "Search returned the wrong value")
 
-	return true
-end function
+	done()
+end sub
 
-function test5 () as integer
+sub test5 (done as Tester.doneFn)
 	_bst->remove(btreePtr, nodePtr)
 	nodePtr = NULL
 
-	if _bst->getLength(btreePtr) <> dataLen-1 then
-		return false
-	end if
+	_tester->expect(_bst->getLength(btreePtr), dataLen-1, "Removing a node yields the wrong length")
 
-	return true
-end function
+	done()
+end sub
 
-function test6 () as integer
-	_bst->remove(btreePtr, _bst->search(btreePtr, @testData(0)))
+sub test6 (done as Tester.doneFn)
+	_bst->remove(btreePtr, btreePtr->root)
 
-	if _bst->getLength(btreePtr) <> dataLen-2 then
-		return false
-	end if
+	_tester->expect(_bst->getLength(btreePtr), dataLen-2, "Removing the root node yields the wrong length")
 
-	return true
-end function
+	done()
+end sub
 
-function test7 () as integer
-	dim as IteratorObj ptr iter = _bst->getIterator(btreePtr)
+sub test7 (done as Tester.doneFn)
+	dim as Iterator.Instance ptr iter = _bst->getIterator(btreePtr)
 	dim as integer ptr valPtr
-	dim as string result = "_"
 
-	if iter = NULL then
-		return false
-	end if
+	_tester->expectPtrNot(iter, NULL, "Call to getIterator() returned NULL")
 
-	while (_iterator->getNext(iter, @valPtr))
-		result = result & (*valPtr) & "_"
-	wend
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 1, "Call to getNext() returned the incorrect value")
 
-	if result <> "_1_3_4_5_6_7_9_10_11_12_13_14_15_" then
-		return false
-	end if
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 3, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 4, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 5, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 6, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 7, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 9, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 10, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 11, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 12, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 13, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 14, "Call to getNext() returned the incorrect value")
+
+	_iterator->getNext(iter, @valPtr)
+	_tester->expect(*valPtr, 15, "Call to getNext() returned the incorrect value")
 
 	_iterator->destruct(iter)
 	iter = NULL
 
-	return true
-end function
+	done()
+end sub
 
-function test30 () as integer
+sub test30 (done as Tester.doneFn)
 	dim as integer length
 
 	_bst->destruct (btreePtr)
 	btreePtr = NULL
 
-	return true
-end function
+	done()
+end sub
 
 end namespace
+
