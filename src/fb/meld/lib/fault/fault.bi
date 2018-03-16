@@ -14,7 +14,7 @@ dim shared _console as Console.Interface ptr
 type ModuleStateType
 	methods as Fault.Interface
 	isLoaded as short
-	startups as long
+	isStarted as short
 end type
 
 type ErrorCodes

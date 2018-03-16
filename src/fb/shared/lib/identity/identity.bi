@@ -18,7 +18,7 @@ dim shared _sys as Sys.Interface ptr
 type ModuleStateType
 	methods as Identity.Interface
 	isLoaded as short
-	startups as long
+	isStarted as short
 end type
 
 type ErrorCodes

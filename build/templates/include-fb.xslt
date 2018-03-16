@@ -39,7 +39,7 @@
 	<xsl:value-of select="namespace" />
 	<xsl:text>.Interface&#xa;</xsl:text>
 	<xsl:text>&#x9;isLoaded as short&#xa;</xsl:text>
-	<xsl:text>&#x9;startups as long&#xa;</xsl:text>
+	<xsl:text>&#x9;isStarted as short&#xa;</xsl:text>
 	<xsl:text>end type&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 

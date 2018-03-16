@@ -15,7 +15,7 @@ dim shared _fault as Fault.Interface ptr
 type ModuleStateType
 	methods as ErrorHandling.Interface
 	isLoaded as short
-	startups as long
+	isStarted as short
 end type
 
 dim shared as ModuleStateType moduleState

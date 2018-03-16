@@ -17,7 +17,7 @@ dim shared _tester as Tester.Interface ptr
 type ModuleStateType
 	methods as Default.Interface
 	isLoaded as short
-	startups as long
+	isStarted as short
 end type
 
 type ErrorCodes

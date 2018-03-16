@@ -31,7 +31,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 	End If
 
 	If not moduleState.isLoaded Then
-		moduleState.startups = 0
+		moduleState.isStarted = false
 		moduleState.isLoaded = true
 
 		_moduleLocal = *modulePtr
@@ -90,7 +90,7 @@ End Function
 
 Function unload cdecl Alias "unload" () As short export
 
-	If moduleState.startups > 0 Then
+	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
 				print("**** Iterator.unload: Module shutdown handler failed")
@@ -98,7 +98,7 @@ Function unload cdecl Alias "unload" () As short export
 			End If
 		End If
 
-		moduleState.startups = 0
+		moduleState.isStarted = false
 	End If
 
 	moduleState.isLoaded = false
@@ -124,7 +124,7 @@ End Function
 
 
 Function startup cdecl Alias "startup" () As short export
-	If moduleState.startups = 0 Then
+	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
 				print("**** Iterator.startup: Module startup handler failed")
@@ -138,24 +138,22 @@ Function startup cdecl Alias "startup" () As short export
 			
 			End If
 		End If
-	End If
 
-	moduleState.startups += 1
+		moduleState.isStarted = true
+	End If
 
 	return true
 End Function
 
 Function shutdown cdecl Alias "shutdown" () As short export
-	moduleState.startups -= 1
-
-	If moduleState.startups <= 0 Then
-		moduleState.startups = 0
-
+	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
 				print("**** Iterator.shutdown: Module shutdown handler failed")
 			End If
 		End If
+
+		moduleState.isStarted = false
 	End If
 
 	return true
