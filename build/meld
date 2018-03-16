@@ -15,6 +15,10 @@ compile () {
 
 echo Starting Meld Core build...
 echo
+
+cat "./src/fb/meld/lib/meld/meld.bas" | ./build/parse-fb meld > ./modules/definitions/meld.xml
+./build/header meld
+
 #echo Compiling modules...
 #echo
 

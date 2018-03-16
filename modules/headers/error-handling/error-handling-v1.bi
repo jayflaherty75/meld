@@ -14,6 +14,9 @@ namespace ErrorHandling
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
+	construct as any ptr
+	destruct as any ptr
+	test as any ptr
 end type
 
 end namespace

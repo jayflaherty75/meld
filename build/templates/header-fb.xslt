@@ -8,6 +8,8 @@
 <xsl:include href="lib/type-fb.xslt" />
 <xsl:include href="lib/function-fb.xslt" />
 
+<xsl:variable name="lifecycle" select="' startup shutdown construct destruct test '" />
+
 <xsl:template match="module">
 	<xsl:call-template name="warningMessage" />
 
@@ -69,16 +71,42 @@
 	</xsl:for-each>
 
 	<xsl:text>type Interface&#xa;</xsl:text>
-	<xsl:for-each select="function">
+		<xsl:text>&#x9;startup as function cdecl () as short&#xa;</xsl:text>
+		<xsl:text>&#x9;shutdown as function cdecl () as short&#xa;</xsl:text>
 		<xsl:choose>
-			<xsl:when test="not(private)">
-				<xsl:text>&#x9;</xsl:text>
-				<xsl:call-template name="function">
-					<xsl:with-param name="function" select="." />
-				</xsl:call-template>
+			<xsl:when test="count(function[@name='construct']) &gt; 0">
+				<xsl:text>&#x9;construct as function cdecl () as Instance ptr&#xa;</xsl:text>
 			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>&#x9;construct as any ptr&#xa;</xsl:text>
+			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:for-each>
+		<xsl:choose>
+			<xsl:when test="count(function[@name='destruct']) &gt; 0">
+				<xsl:text>&#x9;destruct as sub cdecl (instancePtr as Instance ptr)&#xa;</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>&#x9;destruct as any ptr&#xa;</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:choose>
+			<xsl:when test="count(function[@name='test']) &gt; 0">
+				<xsl:text>&#x9;test as function cdecl (describe as Tester.describeCallback) as short&#xa;</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>&#x9;test as any ptr&#xa;</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:for-each select="function">
+			<xsl:choose>
+				<xsl:when test="not(private) and not(contains($lifecycle, concat(' ', @name, ' ')))">
+					<xsl:text>&#x9;</xsl:text>
+					<xsl:call-template name="function">
+						<xsl:with-param name="function" select="." />
+					</xsl:call-template>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
 	<xsl:text>end type</xsl:text>
 	<xsl:text>&#xa;&#xa;</xsl:text>
 

@@ -20,6 +20,9 @@ type Handler as sub cdecl (byref errName as zstring, byref message as zstring, b
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
+	construct as any ptr
+	destruct as any ptr
+	test as any ptr
 	registerType as function cdecl (byref errName as zstring) as short
 	assignHandler as function cdecl (errCode as short, handler as Handler) as short
 	getCode as function cdecl (errName as zstring) as short

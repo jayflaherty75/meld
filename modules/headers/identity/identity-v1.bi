@@ -27,9 +27,9 @@ type Encoded as zstring*21
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	test as function cdecl (describeFn as Tester.describeCallback) as short
-	construct as function cdecl () as Identity.Instance ptr
-	destruct as sub cdecl (idPtr as Identity.Instance ptr)
+	construct as function cdecl () as Instance ptr
+	destruct as sub cdecl (instancePtr as Instance ptr)
+	test as function cdecl (describe as Tester.describeCallback) as short
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
 	generate as function cdecl () as Unique
 	encode as sub cdecl (id as Unique ptr, dest as Encoded ptr)
