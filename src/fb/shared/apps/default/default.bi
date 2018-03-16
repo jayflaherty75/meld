@@ -31,6 +31,7 @@ namespace Default
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
+declare function update cdecl (instancePtr as any ptr) as short
 declare function test cdecl (describe as Tester.describeCallback) as short
 
 end namespace

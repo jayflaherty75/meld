@@ -17,6 +17,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as any ptr
 	destruct as any ptr
+	update as any ptr
 	test as any ptr
 	logMessage as sub cdecl (byref message as zstring)
 	logWarning as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)

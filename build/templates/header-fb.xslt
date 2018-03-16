@@ -8,7 +8,7 @@
 <xsl:include href="lib/type-fb.xslt" />
 <xsl:include href="lib/function-fb.xslt" />
 
-<xsl:variable name="lifecycle" select="' startup shutdown construct destruct test '" />
+<xsl:variable name="lifecycle" select="' startup shutdown construct destruct update test '" />
 
 <xsl:template match="module">
 	<xsl:call-template name="warningMessage" />
@@ -87,6 +87,14 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>&#x9;destruct as any ptr&#xa;</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:choose>
+			<xsl:when test="count(function[@name='update']) &gt; 0">
+				<xsl:text>&#x9;update as function cdecl (instancePtr as any ptr) as short&#xa;</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>&#x9;update as any ptr&#xa;</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:choose>

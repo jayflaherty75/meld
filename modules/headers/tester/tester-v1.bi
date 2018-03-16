@@ -29,6 +29,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as any ptr
 	destruct as any ptr
+	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
 	run as function cdecl (tests as testModule ptr, count as short) as short
 	describe as function cdecl (description as zstring, callback as suiteFunc) as short

@@ -28,6 +28,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
+	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
 	setHandler as sub cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
 	setData as sub cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, setLength as long = -1)
