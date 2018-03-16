@@ -10,12 +10,12 @@
 
 namespace Fault
 
+type Handler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+
 type Header
 	name as zstring*64
 	code as ushort
 end type
-
-type Handler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
 
 type Interface
 	startup as function cdecl () as short

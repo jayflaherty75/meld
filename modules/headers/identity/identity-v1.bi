@@ -14,6 +14,8 @@
 
 namespace Identity
 
+type Encoded as zstring*21
+
 type Instance
 	autoinc as ulong
 end type
@@ -21,8 +23,6 @@ end type
 type Unique
 	v(15-1) as ubyte
 end type
-
-type Encoded as zstring*21
 
 type Interface
 	startup as function cdecl () as short
