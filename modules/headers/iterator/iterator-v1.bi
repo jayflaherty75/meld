@@ -13,6 +13,10 @@
 
 namespace Iterator
 
+type InstanceAlias as Instance
+
+type IteratorHandler as function cdecl (result as InstanceAlias ptr, expected as any ptr) as short
+
 type Instance
 	dataSet as any ptr
 	index as long
@@ -21,8 +25,6 @@ type Instance
 	handler as any ptr
 end type
 
-type IteratorHandler as function cdecl (result as Iterator.Instance ptr, expected as any ptr) as short
-
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
@@ -30,11 +32,11 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
-	setHandler as sub cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
-	setData as sub cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, setLength as long = -1)
-	length as function cdecl (iter as Iterator.Instance ptr) as long
-	getNext as function cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
-	reset as sub cdecl (iter as Iterator.Instance ptr)
+	setHandler as sub cdecl (iter as Instance ptr, cb as IteratorHandler)
+	setData as sub cdecl (iter as Instance ptr, dataSet as any ptr, setLength as long = -1)
+	length as function cdecl (iter as Instance ptr) as long
+	getNext as function cdecl (iter as Instance ptr, target as any ptr) as short
+	reset as sub cdecl (iter as Instance ptr)
 end type
 
 end namespace

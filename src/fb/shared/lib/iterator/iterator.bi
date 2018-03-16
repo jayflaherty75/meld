@@ -34,14 +34,14 @@ namespace Iterator
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function test cdecl (describe as Tester.describeCallback) as short
-declare function construct cdecl () as Iterator.Instance ptr
-declare sub destruct cdecl (iter as Iterator.Instance ptr)
-declare sub setHandler cdecl (iter as Iterator.Instance ptr, cb as IteratorHandler)
-declare sub setData cdecl (iter as Iterator.Instance ptr, dataSet as any ptr, setLength as long = -1)
-declare function length cdecl (iter as Iterator.Instance ptr) as long
-declare function getNext cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
-declare sub reset cdecl (iter as Iterator.Instance ptr)
-declare function _defaultHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
+declare function construct cdecl () as Instance ptr
+declare sub destruct cdecl (iter as Instance ptr)
+declare sub setHandler cdecl (iter as Instance ptr, cb as IteratorHandler)
+declare sub setData cdecl (iter as Instance ptr, dataSet as any ptr, setLength as long = -1)
+declare function length cdecl (iter as Instance ptr) as long
+declare function getNext cdecl (iter as Instance ptr, target as any ptr) as short
+declare sub reset cdecl (iter as Instance ptr)
+declare function _defaultHandler cdecl (iter as Instance ptr, target as any ptr) as short
 
 end namespace
 

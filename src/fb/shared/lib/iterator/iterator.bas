@@ -18,8 +18,12 @@
 namespace Iterator
 
 /''
+ ' @typedef {Instance} InstanceAlias
+ '/
+
+/''
  ' @typedef {function} IteratorHandler
- ' @param {Iterator.Instance ptr} result
+ ' @param {InstanceAlias ptr} result
  ' @param {any ptr} expected
  ' @returns {short}
  '/
@@ -71,7 +75,7 @@ end function
 
 /''
  ' @function construct
- ' @returns {Iterator.Instance ptr}
+ ' @returns {Instance ptr}
  ' @throws {ResourceAllocationError}
  '/
 function construct cdecl () as Instance ptr
@@ -93,7 +97,7 @@ end function
 
 /''
  ' @function destruct
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @throws {NullReferenceError}
  '/
 sub destruct cdecl (iter as Instance ptr)
@@ -108,7 +112,7 @@ end sub
 /''
  ' 
  ' @function setHandler
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @param {IteratorHandler} cb
  ' @throws {NullReferenceError}
  ' @throws {InvalidArgumentError}
@@ -130,7 +134,7 @@ end sub
 /''
  ' 
  ' @function setData
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @param {any ptr} dataSet
  ' @param {long} [setLength=-1]
  ' @throws {NullReferenceError}
@@ -150,7 +154,7 @@ end sub
 /''
  ' 
  ' @function length
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @returns {long}
  ' @throws {NullReferenceError}
  '/
@@ -166,7 +170,7 @@ end function
 /''
  ' 
  ' @function getNext
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @param {any ptr} target
  ' @returns {short}
  ' @throws {NullReferenceError}
@@ -193,7 +197,7 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function reset
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @throws {NullReferenceError}
  '/
 sub reset cdecl (iter as Instance ptr)
@@ -213,7 +217,7 @@ end sub
 /''
  ' 
  ' @function _defaultHandler
- ' @param {Iterator.Instance ptr} iter
+ ' @param {Instance ptr} iter
  ' @param {any ptr} target
  ' @returns {short}
  ' @private

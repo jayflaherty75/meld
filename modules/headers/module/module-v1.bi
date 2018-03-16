@@ -8,16 +8,16 @@
 
 namespace Module
 
+type ModuleWillLoadFn as function cdecl (entryPtr as any ptr) as short
+
+type ModuleHasUnloadedFn as function cdecl (entryPtr as any ptr) as short
+
 type LibraryEntry
 	library as any ptr
 	interfacePtr as any ptr
 	moduleName as String
 	fileName as String
 end type
-
-type ModuleWillLoadFn as function cdecl (entryPtr as any ptr) as short
-
-type ModuleHasUnloadedFn as function cdecl (entryPtr as any ptr) as short
 
 type Interface
 	startup as function cdecl () as short
