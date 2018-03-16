@@ -18,6 +18,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as any ptr
 	destruct as any ptr
+	update as function cdecl (instancePtr as any ptr) as short
 	test as function cdecl (describe as Tester.describeCallback) as short
 end type
 

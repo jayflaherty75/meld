@@ -12,6 +12,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Default.startup
 	moduleState.methods.shutdown = @Default.shutdown
+	moduleState.methods.update = @Default.update
 	moduleState.methods.test = @Default.test
 
 	return @moduleState.methods

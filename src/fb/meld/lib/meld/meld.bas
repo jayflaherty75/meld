@@ -40,6 +40,13 @@
  '/
 
 /''
+ ' Run or update an instance or pass NULL to run statically.
+ ' @function update
+ ' @param {any ptr} instancePtr
+ ' @returns {short}
+ '/
+
+/''
  ' Standard test runner for modules.
  ' @function test
  ' @param {Tester.describeCallback} describe

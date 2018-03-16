@@ -29,6 +29,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
+	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
 	generate as function cdecl () as Unique

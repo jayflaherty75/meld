@@ -22,6 +22,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as any ptr
 	destruct as any ptr
+	update as any ptr
 	test as any ptr
 	registerType as function cdecl (byref errName as zstring) as short
 	assignHandler as function cdecl (errCode as short, handler as Handler) as short

@@ -16,6 +16,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as any ptr
 	destruct as any ptr
+	update as any ptr
 	test as any ptr
 end type
 

@@ -23,8 +23,7 @@ namespace Default
  ' @throws {GeneralError}
  '/
 function startup cdecl () as short
-	_console->logMessage("TEST")
-	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
+	_console->logMessage("Starting default module")
 
 	return true
 end function
@@ -35,7 +34,20 @@ end function
  ' @returns {short}
  '/
 function shutdown cdecl () as short
-	_console->logMessage("Shutting down")
+	_console->logMessage("Shutting down default module")
+
+	return true
+end function
+
+/''
+ ' Run or update an instance or pass NULL to run statically.
+ ' @function update
+ ' @param {any ptr} instancePtr
+ ' @returns {short}
+ '/
+function update cdecl (instancePtr as any ptr) as short
+	_console->logMessage("Updating...")
+	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
 
 	return true
 end function

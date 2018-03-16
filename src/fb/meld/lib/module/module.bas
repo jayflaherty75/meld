@@ -55,6 +55,8 @@ function initialize cdecl(_argc as integer, _argv as any ptr) as short
 	api.setModuleWillLoad = @setModuleWillLoad
 	api.setModuleHasUnloaded = @setModuleHasUnloaded
 	api.require = @require
+	api.unload = @unload
+	api.testModule = @testModule
 	api.argv = @argv
 	api.argc = @argc
 
