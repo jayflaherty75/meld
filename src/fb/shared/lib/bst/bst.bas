@@ -1,14 +1,16 @@
 
 /''
- ' @requires constants
- ' @requires core
+ ' @requires console
  ' @requires fault
+ ' @requires error-handling
+ ' @requires tester
  ' @requires iterator
  '/
 
-#include once "bst.bi"
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
 #include once "errors.bi"
+#include once "test.bi"
 
 /''
  ' Binary Search Tree
@@ -17,39 +19,77 @@
 namespace Bst
 
 /''
- ' @typedef {any ptr} BstId
- '/
-
-/''
  ' @typedef {function} CompareFunction
  ' @param {any ptr} criteria
  ' @param {any ptr} element
  ' @returns {short}
  '/
 
-declare function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
-declare sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
-declare sub _deleteNodeRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
-declare function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
-declare function _recurseLeft (nodePtr as Bst.Node ptr) as Bst.Node ptr
-declare function _nextParentRecurse (btreePtr as BstObj ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
-declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+/''
+ ' @class Node
+ ' @member {Node ptr} rightPtr
+ ' @member {Node ptr} leftPtr
+ ' @member {Node ptr} parent
+ ' @member {any ptr} element
+ '/
+
+/''
+ ' @class Instance
+ ' @member {Node ptr} root
+ ' @member {integer} length
+ ' @member {CompareFunction} compare
+ '/
+
+/''
+ ' Application main routine.
+ ' @function startup
+ ' @returns {short}
+ '/
+function startup cdecl () as short
+	_console->logMessage("Starting bst module")
+
+	return true
+end function
+
+/''
+ ' Application main routine.
+ ' @function shutdown
+ ' @returns {short}
+ '/
+function shutdown cdecl () as short
+	_console->logMessage("Shutting down bst module")
+
+	return true
+end function
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {Tester.describeCallback} describeFn
+ ' @returns {short}
+ '/
+function test cdecl (describeFn as Tester.describeCallback) as short
+	dim as short result = true
+
+	result = result andalso describeFn ("The Bst module", @testCreate)
+
+	return result
+end function
 
 /''
  ' Creates a new binary search tree.
  ' @function construct
- ' @param {byref zstring} id - Used to tag BST for errors and messages
  ' @returns {Bst.Instance ptr}
+ ' @throws {ResourceAllocationError}
  '/
-function construct(byref id as zstring) as BstObj ptr
-	dim as BstObj ptr btreePtr = allocate(sizeof(BstObj))
+function construct() as Bst.Instance ptr
+	dim as Bst.Instance ptr btreePtr = allocate(sizeof(Bst.Instance))
 
 	if btreePtr = NULL then
-		_throwBstAllocationError(id, __FILE__, __LINE__)
+		_throwBstAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
-	btreePtr->id = left(id, 64)
 	btreePtr->root = NULL
 	btreePtr->length = 0
 	btreePtr->compare = @defaultCompare
@@ -62,8 +102,9 @@ end function
  ' any data the nodes point to.
  ' @function destruct
  ' @param {Bst.Instance ptr} btreePtr
+ ' @throws {NullReferenceError|ReleaseResourceError}
  '/
-sub destruct (btreePtr as BstObj ptr)
+sub destruct (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
 		_throwBstDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -89,7 +130,7 @@ end sub
  ' @returns {Bst.Node ptr}
  ' @throws {NullReferenceError|InvalidArgumentError|ResourceAllocationError}
  '/
-function insert (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
+function insert (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	dim as Bst.Node ptr nodePtr = NULL
 	dim as Bst.Node ptr searchPtr = NULL
 	dim as integer compareValue
@@ -139,6 +180,7 @@ end function
  ' @function remove
  ' @param {Bst.Instance ptr} btreePtr
  ' @param {Bst.Node ptr} nodePtr
+ ' @throws {NullReferenceError|InvalidArgumentError}
  '/
 sub remove (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	if btreePtr = NULL then
@@ -185,6 +227,7 @@ end sub
  ' Purges tree of all elements.
  ' @function purge
  ' @param {Bst.Instance ptr} btreePtr
+ ' @throws {NullReferenceError|ReleaseResourceError}
 '/
 sub purge (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
@@ -211,8 +254,9 @@ end sub
  ' @param {any ptr} element
  ' @param {Bst.Node ptr} [start=NULL] - Defaults to root node
  ' @returns {Bst.Node ptr}
+ ' @throws {NullReferenceError|InvalidArgumentError}
  '/
-function search (btreePtr as BstObj ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
+function search (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 	dim as Bst.Node ptr searchPtr = NULL
 
 	if btreePtr = NULL then
@@ -245,8 +289,9 @@ end function
  ' @function getLength
  ' @param {Bst.Instance ptr} btreePtr
  ' @returns {integer}
+ ' @throws {NullReferenceError}
  '/
-function getLength (btreePtr as BstObj ptr) as integer
+function getLength (btreePtr as Bst.Instance ptr) as integer
 	if btreePtr = NULL then
 		_throwBstGetLengthNullReferenceError(__FILE__, __LINE__)
 		return NULL
@@ -260,10 +305,11 @@ end function
  ' to destroy the iterator.
  ' @function getIterator
  ' @param {Bst.Instance ptr} btreePtr
- ' @returns {IteratorObj ptr}
+ ' @returns {Iterator.Instance ptr}
+ ' @throws {NullReferenceError|ResourceAllocationError}
  '/
-function getIterator (btreePtr as BstObj ptr) as IteratorObj ptr
-	dim as IteratorObj ptr iter
+function getIterator (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
+	dim as Iterator.Instance ptr iter
 
 	if btreePtr = NULL then
 		_throwBstGetIteratorNullReferenceError(__FILE__, __LINE__)
@@ -289,9 +335,9 @@ end function
  ' @function defaultCompare
  ' @param {any ptr} criteria
  ' @param {any ptr} element
- ' @returns {integer}
+ ' @returns {short}
  '/
-function defaultCompare(criteria as any ptr, element as any ptr) as integer
+function defaultCompare(criteria as any ptr, element as any ptr) as short
 	return sgn(*cptr(integer ptr, element) - *cptr(integer ptr, criteria))
 end function
 
@@ -303,7 +349,7 @@ end function
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _createNode (btreePtr as BstObj ptr, element as any ptr) as Bst.Node ptr
+function _createNode (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	dim as Bst.Node ptr nodePtr = allocate(sizeof(Bst.Node))
 
 	nodePtr->rightPtr = NULL
@@ -323,7 +369,7 @@ end function
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
-sub _deleteNode (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
+sub _deleteNode (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	nodePtr->rightPtr = NULL
 	nodePtr->leftPtr = NULL
 	nodePtr->parent = NULL
@@ -341,7 +387,7 @@ end sub
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
-sub _deleteNodeRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr)
+sub _deleteNodeRecurse (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	if nodePtr->leftPtr <> NULL then
 		_deleteNodeRecurse(btreePtr, nodePtr->leftPtr)
 	end if
@@ -362,7 +408,7 @@ end sub
  ' @returns {Bst.Node ptr} Last node in search, never returns NULL.
  ' @private
  '/
-function _searchRecurse (btreePtr as BstObj ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
+function _searchRecurse (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 	dim as integer compare = btreePtr->compare(nodePtr->element, element)
 
 	if compare = 1 then
@@ -389,8 +435,7 @@ end function
  ' in many processes dealing with BSTs, such as removing nodes, balancing the
  ' tree, iteration, etc.
  ' @function _recurseLeft
- ' @params {Bst.Instance ptr} btreePtr
- ' @params {Bst.Node ptr} nodePtr
+ ' @param {Bst.Node ptr} nodePtr
  ' @returns {Bst.Node ptr}
  ' @private
  '/
@@ -411,7 +456,7 @@ end function
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _nextParentRecurse (btreePtr as BstObj ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
+function _nextParentRecurse (btreePtr as Bst.Instance ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 	if current <> NULL andalso btreePtr->compare(current->element, element) = 1 then
 		return _nextParentRecurse(btreePtr, current->parent, element)
 	else
@@ -422,13 +467,13 @@ end function
 /''
  ' Handler for generic Iterator.
  ' @function _iterationHandler
- ' @param {IteratorObj ptr} iter
+ ' @param {Iterator.Instance ptr} iter
  ' @param {any ptr} target
  ' @returns {integer}
  ' @private
  '/
-function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
-	dim as BstObj ptr btreePtr = iter->dataSet
+function _iterationHandler (iter as Iterator.Instance ptr, target as any ptr) as integer
+	dim as Bst.Instance ptr btreePtr = iter->dataSet
 	dim as Bst.Node ptr current
 	dim as Bst.Node ptr parent
 
@@ -458,3 +503,4 @@ function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integ
 end function
 
 end namespace
+

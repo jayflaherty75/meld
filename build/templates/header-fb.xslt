@@ -35,22 +35,6 @@
 	<xsl:value-of select="namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
-	<xsl:for-each select="class">
-		<xsl:text>type </xsl:text>
-		<xsl:value-of select="@name" />
-		<xsl:text>&#xa;</xsl:text>
-		<xsl:for-each select="property">
-			<xsl:text>&#x9;</xsl:text>
-			<xsl:call-template name="type">
-				<xsl:with-param name="name" select="@name" />
-				<xsl:with-param name="type" select="@type" />
-				<xsl:with-param name="modifier" select="@modifier" />
-			</xsl:call-template>
-		</xsl:for-each>
-		<xsl:text>end type</xsl:text>
-		<xsl:text>&#xa;&#xa;</xsl:text>
-	</xsl:for-each>
-
 	<xsl:for-each select="typedef">
 		<xsl:text>type </xsl:text>
 		<xsl:choose>
@@ -68,6 +52,22 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:text>&#xa;</xsl:text>
+	</xsl:for-each>
+
+	<xsl:for-each select="class">
+		<xsl:text>type </xsl:text>
+		<xsl:value-of select="@name" />
+		<xsl:text>&#xa;</xsl:text>
+		<xsl:for-each select="property">
+			<xsl:text>&#x9;</xsl:text>
+			<xsl:call-template name="type">
+				<xsl:with-param name="name" select="@name" />
+				<xsl:with-param name="type" select="@type" />
+				<xsl:with-param name="modifier" select="@modifier" />
+			</xsl:call-template>
+		</xsl:for-each>
+		<xsl:text>end type</xsl:text>
+		<xsl:text>&#xa;&#xa;</xsl:text>
 	</xsl:for-each>
 
 	<xsl:text>type Interface&#xa;</xsl:text>
