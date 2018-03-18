@@ -82,7 +82,7 @@ end function
  ' @returns {Bst.Instance ptr}
  ' @throws {ResourceAllocationError}
  '/
-function construct() as Bst.Instance ptr
+function construct cdecl () as Bst.Instance ptr
 	dim as Bst.Instance ptr btreePtr = allocate(sizeof(Bst.Instance))
 
 	if btreePtr = NULL then
@@ -104,7 +104,7 @@ end function
  ' @param {Bst.Instance ptr} btreePtr
  ' @throws {NullReferenceError|ReleaseResourceError}
  '/
-sub destruct (btreePtr as Bst.Instance ptr)
+sub destruct cdecl (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
 		_throwBstDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -130,7 +130,7 @@ end sub
  ' @returns {Bst.Node ptr}
  ' @throws {NullReferenceError|InvalidArgumentError|ResourceAllocationError}
  '/
-function insert (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
+function insert cdecl (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	dim as Bst.Node ptr nodePtr = NULL
 	dim as Bst.Node ptr searchPtr = NULL
 	dim as integer compareValue
@@ -182,7 +182,7 @@ end function
  ' @param {Bst.Node ptr} nodePtr
  ' @throws {NullReferenceError|InvalidArgumentError}
  '/
-sub remove (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
+sub remove cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	if btreePtr = NULL then
 		_throwBstRemoveNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -229,7 +229,7 @@ end sub
  ' @param {Bst.Instance ptr} btreePtr
  ' @throws {NullReferenceError|ReleaseResourceError}
 '/
-sub purge (btreePtr as Bst.Instance ptr)
+sub purge cdecl (btreePtr as Bst.Instance ptr)
 	if btreePtr = NULL then
 		_throwBstPurgeNullReferenceError(__FILE__, __LINE__)
 		exit sub
@@ -256,7 +256,7 @@ end sub
  ' @returns {Bst.Node ptr}
  ' @throws {NullReferenceError|InvalidArgumentError}
  '/
-function search (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
+function search cdecl (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
 	dim as Bst.Node ptr searchPtr = NULL
 
 	if btreePtr = NULL then
@@ -291,7 +291,7 @@ end function
  ' @returns {integer}
  ' @throws {NullReferenceError}
  '/
-function getLength (btreePtr as Bst.Instance ptr) as integer
+function getLength cdecl (btreePtr as Bst.Instance ptr) as integer
 	if btreePtr = NULL then
 		_throwBstGetLengthNullReferenceError(__FILE__, __LINE__)
 		return NULL
@@ -308,7 +308,7 @@ end function
  ' @returns {Iterator.Instance ptr}
  ' @throws {NullReferenceError|ResourceAllocationError}
  '/
-function getIterator (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
+function getIterator cdecl (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
 	dim as Iterator.Instance ptr iter
 
 	if btreePtr = NULL then
@@ -337,7 +337,7 @@ end function
  ' @param {any ptr} element
  ' @returns {short}
  '/
-function defaultCompare(criteria as any ptr, element as any ptr) as short
+function defaultCompare cdecl (criteria as any ptr, element as any ptr) as short
 	return sgn(*cptr(integer ptr, element) - *cptr(integer ptr, criteria))
 end function
 
@@ -349,7 +349,7 @@ end function
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _createNode (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
+function _createNode cdecl (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	dim as Bst.Node ptr nodePtr = allocate(sizeof(Bst.Node))
 
 	nodePtr->rightPtr = NULL
@@ -369,7 +369,7 @@ end function
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
-sub _deleteNode (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
+sub _deleteNode cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	nodePtr->rightPtr = NULL
 	nodePtr->leftPtr = NULL
 	nodePtr->parent = NULL
@@ -387,7 +387,7 @@ end sub
  ' @param {Bst.Node ptr} nodePtr
  ' @private
  '/
-sub _deleteNodeRecurse (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
+sub _deleteNodeRecurse cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	if nodePtr->leftPtr <> NULL then
 		_deleteNodeRecurse(btreePtr, nodePtr->leftPtr)
 	end if
@@ -408,7 +408,7 @@ end sub
  ' @returns {Bst.Node ptr} Last node in search, never returns NULL.
  ' @private
  '/
-function _searchRecurse (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
+function _searchRecurse cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 	dim as integer compare = btreePtr->compare(nodePtr->element, element)
 
 	if compare = 1 then
@@ -439,7 +439,7 @@ end function
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _recurseLeft (nodePtr as Bst.Node ptr) as Bst.Node ptr
+function _recurseLeft cdecl (nodePtr as Bst.Node ptr) as Bst.Node ptr
 	if nodePtr->leftPtr <> NULL then
 		return _recurseLeft(nodePtr->leftPtr)
 	else
@@ -456,7 +456,7 @@ end function
  ' @returns {Bst.Node ptr}
  ' @private
  '/
-function _nextParentRecurse (btreePtr as Bst.Instance ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
+function _nextParentRecurse cdecl (btreePtr as Bst.Instance ptr, current as Bst.Node ptr, element as any ptr) as Bst.Node ptr
 	if current <> NULL andalso btreePtr->compare(current->element, element) = 1 then
 		return _nextParentRecurse(btreePtr, current->parent, element)
 	else
@@ -472,7 +472,7 @@ end function
  ' @returns {integer}
  ' @private
  '/
-function _iterationHandler (iter as Iterator.Instance ptr, target as any ptr) as integer
+function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as integer
 	dim as Bst.Instance ptr btreePtr = iter->dataSet
 	dim as Bst.Node ptr current
 	dim as Bst.Node ptr parent
