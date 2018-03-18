@@ -3,15 +3,15 @@
 
 namespace Bst
 
-declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (done as Tester.doneFn)
-declare sub test2 (done as Tester.doneFn)
-declare sub test3 (done as Tester.doneFn)
-declare sub test4 (done as Tester.doneFn)
-declare sub test5 (done as Tester.doneFn)
-declare sub test6 (done as Tester.doneFn)
-declare sub test7 (done as Tester.doneFn)
-declare sub test30 (done as Tester.doneFn)
+declare function testCreate cdecl (it as Tester.itCallback) as short
+declare sub test1 cdecl (done as Tester.doneFn)
+declare sub test2 cdecl (done as Tester.doneFn)
+declare sub test3 cdecl (done as Tester.doneFn)
+declare sub test4 cdecl (done as Tester.doneFn)
+declare sub test5 cdecl (done as Tester.doneFn)
+declare sub test6 cdecl (done as Tester.doneFn)
+declare sub test7 cdecl (done as Tester.doneFn)
+declare sub test30 cdecl (done as Tester.doneFn)
 
 const as integer dataLen = 15
 
@@ -19,7 +19,7 @@ dim shared as integer testData(dataLen-1) = { 8, 4, 12, 2, 1, 3, 6, 5, 7, 10, 9,
 dim shared as Bst.Instance ptr btreePtr
 dim shared as Bst.Node ptr nodePtr
 
-function testCreate (it as Tester.itCallback) as short
+function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
 
 	result = result ANDALSO it ("creates a BST instance", @test1)
@@ -35,7 +35,7 @@ function testCreate (it as Tester.itCallback) as short
 	return result
 end function
 
-sub test1 (done as Tester.doneFn)
+sub test1 cdecl (done as Tester.doneFn)
 	btreePtr = _bst->construct()
 
 	_tester->expectPtrNot(btreePtr, NULL, "Constructor returned NULL")
@@ -43,7 +43,7 @@ sub test1 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test2 (done as Tester.doneFn)
+sub test2 cdecl (done as Tester.doneFn)
 	dim as integer i
 	dim as integer result = true
 
@@ -57,13 +57,13 @@ sub test2 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test3 (done as Tester.doneFn)
+sub test3 cdecl (done as Tester.doneFn)
 	_tester->expect(_bst->getLength(btreePtr), dataLen, "Length of tree incorrect")
 
 	done()
 end sub
 
-sub test4(done as Tester.doneFn)
+sub test4 cdecl (done as Tester.doneFn)
 	nodePtr = _bst->search(btreePtr, @testData(3))
 
 	_tester->expectPtrNot(nodePtr, NULL, "Search returned NULL")
@@ -72,7 +72,7 @@ sub test4(done as Tester.doneFn)
 	done()
 end sub
 
-sub test5 (done as Tester.doneFn)
+sub test5 cdecl (done as Tester.doneFn)
 	_bst->remove(btreePtr, nodePtr)
 	nodePtr = NULL
 
@@ -81,7 +81,7 @@ sub test5 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test6 (done as Tester.doneFn)
+sub test6 cdecl (done as Tester.doneFn)
 	_bst->remove(btreePtr, btreePtr->root)
 
 	_tester->expect(_bst->getLength(btreePtr), dataLen-2, "Removing the root node yields the wrong length")
@@ -89,7 +89,7 @@ sub test6 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test7 (done as Tester.doneFn)
+sub test7 cdecl (done as Tester.doneFn)
 	dim as Iterator.Instance ptr iter = _bst->getIterator(btreePtr)
 	dim as integer ptr valPtr
 
@@ -140,7 +140,7 @@ sub test7 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test30 (done as Tester.doneFn)
+sub test30 cdecl (done as Tester.doneFn)
 	dim as integer length
 
 	_bst->destruct (btreePtr)

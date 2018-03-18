@@ -3,17 +3,17 @@
 
 namespace Identity
 
-declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (done as Tester.doneFn)
-declare sub test2 (done as Tester.doneFn)
-declare sub test3 (done as Tester.doneFn)
-declare sub test4 (done as Tester.doneFn)
-declare sub test5 (done as Tester.doneFn)
-declare sub test6 (done as Tester.doneFn)
+declare function testCreate cdecl (it as Tester.itCallback) as short
+declare sub test1 cdecl (done as Tester.doneFn)
+declare sub test2 cdecl (done as Tester.doneFn)
+declare sub test3 cdecl (done as Tester.doneFn)
+declare sub test4 cdecl (done as Tester.doneFn)
+declare sub test5 cdecl (done as Tester.doneFn)
+declare sub test6 cdecl (done as Tester.doneFn)
 
 dim shared as Identity.Instance ptr idPtr
 
-function testCreate (it as Tester.itCallback) as short
+function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
 
 	idPtr = construct()
@@ -30,13 +30,13 @@ function testCreate (it as Tester.itCallback) as short
 	return result
 end function
 
-sub test1 (done as Tester.doneFn)
+sub test1 cdecl (done as Tester.doneFn)
 	_tester->expectPtrNot(idPtr, NULL, "Constructor returned null")
 
 	done()
 end sub
 
-sub test2 (done as Tester.doneFn)
+sub test2 cdecl (done as Tester.doneFn)
 	dim as string message = "Incorrect identifier returned"
 	_tester->expect(getAutoInc(idPtr), 1, message)
 	_tester->expect(getAutoInc(idPtr), 2, message)
@@ -45,7 +45,7 @@ sub test2 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test3 (done as Tester.doneFn)
+sub test3 cdecl (done as Tester.doneFn)
 	dim as zstring*50 source = "metsys tsacdaorb ycnegreme eht fo tset a si sihT"
 	dim as zstring*50 result = "This is a test of the emergency broadcast system"
 	dim as zstring*50 dest = "                                                "
@@ -57,7 +57,7 @@ sub test3 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test4 (done as Tester.doneFn)
+sub test4 cdecl (done as Tester.doneFn)
 	dim as string message = "Incorrect decoded value"
 	dim as zstring*21 expected = "zSrRnPqhbMpxPJpBDGoR"
 	dim as Unique binaryId
@@ -92,7 +92,7 @@ sub test4 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test5 (done as Tester.doneFn)
+sub test5 cdecl (done as Tester.doneFn)
 	dim as zstring*18 addr = "64:80:99:72:89:44"
 	dim as ulongint result = 4713768130630
 
@@ -101,7 +101,7 @@ sub test5 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test6 (done as Tester.doneFn)
+sub test6 cdecl (done as Tester.doneFn)
 	_tester->expect(_convertHex("0"), 0, "Failed to convert '0' character")
 	_tester->expect(_convertHex("1"), 1, "Failed to convert '1' character")
 	_tester->expect(_convertHex("2"), 2, "Failed to convert '2' character")

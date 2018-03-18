@@ -1,14 +1,14 @@
-@echo off
+@ECHO OFF
 
-set moduleName=%1
-set moduleType=%2
-set moduleSystem=%3
+SET moduleName=%1
+SET moduleType=%2
+SET moduleSystem=%3
 
-if "%2"=="" (
+IF "%2"=="" (
     SET moduleType=lib
 )
 
-if "%3"=="" (
+IF "%3"=="" (
     SET moduleSystem=shared
 )
 
@@ -16,7 +16,7 @@ type "src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bas" | build\
 
 call build\header %moduleName%
 
-rem TODO: Generate dependency scripts
+REM TODO: Generate dependency scripts
 
 xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bi build\templates\module-fb.xslt modules\definitions\%moduleName%.xml
 
@@ -30,4 +30,4 @@ IF %ERRORLEVEL% NEQ 0 (
 	EXIT /B 1
 )
  
-rem TODO: Call dependency scripts
+REM TODO: Call dependency scripts

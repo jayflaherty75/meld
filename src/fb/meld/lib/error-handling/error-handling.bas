@@ -81,7 +81,7 @@ end function
  ' @param {Fault.handler} handler
  ' @private
  '/
-sub _assignHandler(_fault as Fault.Interface ptr, errCodePtr as integer ptr, byref errName as zstring, handler as Fault.handler)
+sub _assignHandler cdecl (_fault as Fault.Interface ptr, errCodePtr as integer ptr, byref errName as zstring, handler as Fault.handler)
 	dim as integer errCode = _fault->registerType(errName)
 
 	if not _fault->assignHandler(errCode, handler) then

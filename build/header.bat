@@ -1,9 +1,9 @@
-@echo off
+@ECHO OFF
 
-set moduleName=%1
-set moduleVersion=%2
+SET moduleName=%1
+SET moduleVersion=%2
 
-if "%2"=="" (
+IF "%2"=="" (
     SET moduleVersion=1
 )
 

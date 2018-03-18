@@ -3,17 +3,17 @@
 
 namespace Iterator
 
-declare function testCreate (it as Tester.itCallback) as short
-declare sub test1 (done as Tester.doneFn)
-declare sub test2 (done as Tester.doneFn)
-declare sub test3 (done as Tester.doneFn)
-declare sub test4 (done as Tester.doneFn)
-declare sub test5 (done as Tester.doneFn)
+declare function testCreate cdecl (it as Tester.itCallback) as short
+declare sub test1 cdecl (done as Tester.doneFn)
+declare sub test2 cdecl (done as Tester.doneFn)
+declare sub test3 cdecl (done as Tester.doneFn)
+declare sub test4 cdecl (done as Tester.doneFn)
+declare sub test5 cdecl (done as Tester.doneFn)
 
 dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
 dim shared as Instance ptr iter
 
-function testCreate (it as Tester.itCallback) as short
+function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
 
 	result = result ANDALSO it ("creates an iterator instance", @test1)
@@ -25,7 +25,7 @@ function testCreate (it as Tester.itCallback) as short
 	return result
 end function
 
-sub test1 (done as Tester.doneFn)
+sub test1 cdecl (done as Tester.doneFn)
 	iter = construct()
 
 	_tester->expectPtrNot(iter, NULL, "Failed to instantiate Iterator")
@@ -33,7 +33,7 @@ sub test1 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test2 (done as Tester.doneFn)
+sub test2 cdecl (done as Tester.doneFn)
 	setData(iter, @testData(0), 8)
 
 	_tester->expect(length(iter), 8, "Iterator returned incorrect length")
@@ -41,7 +41,7 @@ sub test2 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test3 (done as Tester.doneFn)
+sub test3 cdecl (done as Tester.doneFn)
 	dim as integer value
 
 	_tester->expect(getNext(iter, @value), true, "Iteration ended prematurely at element 1")
@@ -71,7 +71,7 @@ sub test3 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test4 (done as Tester.doneFn)
+sub test4 cdecl (done as Tester.doneFn)
 	dim as integer value
 
 	reset(iter)
@@ -103,7 +103,7 @@ sub test4 (done as Tester.doneFn)
 	done()
 end sub
 
-sub test5 (done as Tester.doneFn)
+sub test5 cdecl (done as Tester.doneFn)
 	destruct(iter)
 	iter = NULL
 
