@@ -41,6 +41,7 @@ luac.out
 
 /meld
 /tester
+/build/temp
 /build/parse-*
 /build/kebab-to-pascal
 /modules/definitions/*.xml
