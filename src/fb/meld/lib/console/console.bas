@@ -104,7 +104,7 @@ end sub
  ' @returns {string}
  ' @private
  '/
-function _format (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
+function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
 	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message
 end function
 
