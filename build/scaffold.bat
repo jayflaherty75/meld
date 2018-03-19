@@ -12,13 +12,10 @@ IF "%3"=="" (
     SET moduleSystem=shared
 )
 
-REM Create module directory if it doesn't already exist
-mkdir  src\fb\%moduleSystem%\%moduleType%\%moduleName%
-
 REM Generate shorthand build script (requires only module name, not path)
-ECHO @ECHO OFF> build\m\%moduleName%
-ECHO. >> build\m\%moduleName%
-ECHO build\module %moduleName% %moduleType% %moduleSystem%>> build\m\%moduleName%
+ECHO @ECHO OFF> build\m\%moduleName%.bat
+ECHO. >> build\m\%moduleName%.bat
+ECHO build\module %moduleName% %moduleType% %moduleSystem%>> build\m\%moduleName%.bat
 
 REM Initialize XML file so templates have data to work off of
 if not exist modules\definitions\%moduleName%.xml (

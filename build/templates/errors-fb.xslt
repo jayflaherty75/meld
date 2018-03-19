@@ -4,9 +4,11 @@
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
 <xsl:template match="module">
+	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+
 	<xsl:text>&#xa;</xsl:text>
 	<xsl:text>namespace </xsl:text>
-	<xsl:value-of select="namespace" />
+	<xsl:value-of select="$namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
 	<xsl:text>/'&#xa;</xsl:text>

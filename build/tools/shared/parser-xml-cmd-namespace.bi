@@ -15,6 +15,8 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 		end if
 
 		ParserLib.parseWord(definition, parserPtr->namespc)
+
+		parserPtr->namespc = ParserLib.stripNonAlphaNum(parserPtr->namespc)
 	end if
 
 	return true

@@ -10,6 +10,8 @@
 <xsl:include href="lib/function-fb.xslt" />
 
 <xsl:template match="module">
+	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+
 	<xsl:call-template name="warningMessage" />
 
 	<xsl:text>#include once "../../../../../modules/headers/</xsl:text>
@@ -25,7 +27,7 @@
 		<xsl:with-param name="module" select="'module'" />
 	</xsl:call-template>
 	<xsl:call-template name="declareInterface">
-		<xsl:with-param name="module" select="namespace" />
+		<xsl:with-param name="module" select="$namespace" />
 	</xsl:call-template>
 	<xsl:for-each select="requires">
 		<xsl:call-template name="declareInterface">
@@ -36,7 +38,7 @@
 
 	<xsl:text>type ModuleStateType&#xa;</xsl:text>
 	<xsl:text>&#x9;methods as </xsl:text>
-	<xsl:value-of select="namespace" />
+	<xsl:value-of select="$namespace" />
 	<xsl:text>.Interface&#xa;</xsl:text>
 	<xsl:text>&#x9;isLoaded as short&#xa;</xsl:text>
 	<xsl:text>&#x9;isStarted as short&#xa;</xsl:text>
@@ -74,7 +76,7 @@
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>namespace </xsl:text>
-	<xsl:value-of select="namespace" />
+	<xsl:value-of select="$namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
 	<xsl:for-each select="function">
