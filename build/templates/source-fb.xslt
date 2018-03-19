@@ -4,6 +4,7 @@
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
 <xsl:template match="module">
+	<xsl:variable name="namespace" select="normalize-space(namespace)" />
 
 /''
  ' @requires console
@@ -18,9 +19,9 @@
 #include once "test.bi"
 
 /''
- ' @namespace <xsl:value-of select="namespace" />
+ ' @namespace <xsl:value-of select="$namespace" />
  '/
-namespace <xsl:value-of select="namespace" />
+namespace <xsl:value-of select="$namespace" />
 
 /''
  ' Application main routine.
@@ -53,7 +54,7 @@ end function
 function test cdecl (describeFn as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describeFn ("The <xsl:value-of select="namespace" /> module", @testCreate)
+	result = result andalso describeFn ("The <xsl:value-of select="$namespace" /> module", @testCreate)
 
 	return result
 end function

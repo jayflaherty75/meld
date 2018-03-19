@@ -18,7 +18,7 @@ call build\header %moduleName%
 
 REM TODO: Generate dependency scripts
 
-xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bi build\templates\module-fb.xslt modules\definitions\%moduleName%.xml
+xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\module.bi build\templates\module-fb.xslt modules\definitions\%moduleName%.xml
 
 xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bi build\templates\include-fb.xslt modules\definitions\%moduleName%.xml
 

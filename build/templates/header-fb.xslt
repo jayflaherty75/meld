@@ -11,6 +11,8 @@
 <xsl:variable name="lifecycle" select="' startup shutdown construct destruct update test '" />
 
 <xsl:template match="module">
+	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+
 	<xsl:call-template name="warningMessage" />
 
 	<xsl:call-template name="include">
@@ -32,7 +34,7 @@
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>namespace </xsl:text>
-	<xsl:value-of select="namespace" />
+	<xsl:value-of select="$namespace" />
 	<xsl:text>&#xa;&#xa;</xsl:text>
 
 	<xsl:for-each select="typedef">

@@ -6,6 +6,7 @@ namespace ParserLib
 Dim Shared As Parser.ConfigType Ptr config
 
 Declare Sub initialize(configPtr As Parser.ConfigType Ptr)
+Declare Function stripNonAlphaNum(ByRef srcLine As String) As String
 Declare Function decommentify(ByRef srcLine As String) As String
 Declare Function parseDirective(ByRef srcLine As String, ByRef cmd As String, ByRef definition As String) As Short
 Declare Function parseType(ByRef source As String, ByRef result As String, start as short = 1) As Short
@@ -16,6 +17,25 @@ Declare Function parseMultiples(ByRef source As String, ByRef result As String, 
 Sub initialize(configPtr As Parser.ConfigType Ptr)
 	config = configPtr
 End Sub
+
+Function stripNonAlphaNum(ByRef srcLine As String) As String
+	Dim as String result = ""
+	Dim as Short srcIndex, dstIndex
+	Dim as UByte char
+
+	For srcIndex = 1 to Len(srcLine)
+		char = Asc(Mid(srcLine, srcIndex, 1))
+
+		If	(char >= 97 AndAlso char <= 122) OrElse _
+			(char >= 65 AndAlso char <= 90) OrElse _
+			(char >= 48 AndAlso char <= 57) _
+		Then
+			result = result & chr(char)
+		End If
+	Next
+
+	return result
+End Function
 
 Function decommentify(ByRef srcLine As String) As String
 	Dim As Short commentPos = InStr(srcLine, config->lineStart)

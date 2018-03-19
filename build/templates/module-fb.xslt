@@ -10,7 +10,7 @@
 
 <xsl:template match="module">
 	<xsl:variable name="module" select="@name" />
-	<xsl:variable name="namespace" select="namespace" />
+	<xsl:variable name="namespace" select="normalize-space(namespace)" />
 
 	<xsl:call-template name="warningMessage" />
 #include once "../../../../../modules/headers/<xsl:value-of select="$module" />/<xsl:value-of select="$module" />-v1.bi"
@@ -37,7 +37,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** <xsl:value-of select="namespace" />.load: Invalid Module interface pointer")
+		print("**** <xsl:value-of select="$namespace" />.load: Invalid Module interface pointer")
 		return false
 	End If
 
@@ -87,7 +87,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 					<xsl:text> = NULL then&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 					<xsl:text>print("**** </xsl:text>
-					<xsl:value-of select="/module/namespace" />
+					<xsl:value-of select="$namespace" />
 					<xsl:text>.load: Missing error definition for </xsl:text>
 					<xsl:value-of select="@type" />
 					<xsl:text>")&#xa;</xsl:text>
@@ -108,7 +108,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown &lt;&gt; NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** <xsl:value-of select="namespace" />.unload: Module shutdown handler failed")
+				print("**** <xsl:value-of select="$namespace" />.unload: Module shutdown handler failed")
 				return false
 			End If
 		End If
@@ -121,9 +121,9 @@ Function unload cdecl Alias "unload" () As short export
 	return true
 End Function
 
-<xsl:if test="count(requires[@module='tester']) &gt; 0 or namespace='Tester'">
+<xsl:if test="count(requires[@module='tester']) &gt; 0 or $namespace='Tester'">
 Function test cdecl Alias "test" () As short export
-	dim As <xsl:value-of select="namespace" />.Interface ptr interfacePtr = exports()
+	dim As <xsl:value-of select="$namespace" />.Interface ptr interfacePtr = exports()
 	dim As Tester.testModule tests(1)
 
 	If interfacePtr-&gt;test = NULL Then return true
@@ -142,7 +142,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup &lt;&gt; NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** <xsl:value-of select="namespace" />.startup: Module startup handler failed")
+				print("**** <xsl:value-of select="$namespace" />.startup: Module startup handler failed")
 				return false
 			End If
 		End If
@@ -157,7 +157,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown &lt;&gt; NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** <xsl:value-of select="namespace" />.shutdown: Module shutdown handler failed")
+				print("**** <xsl:value-of select="$namespace" />.shutdown: Module shutdown handler failed")
 			End If
 		End If
 
