@@ -1,25 +1,92 @@
 
-#include once "list.bi"
-#include once "module.bi"
 
+/''
+ ' @requires console
+ ' @requires fault
+ ' @requires error-handling
+ ' @requires tester
+ ' @requires iterator
+ '/
+
+#include once "../../../../../modules/headers/constants/constants-v1.bi"
+#include once "module.bi"
+#include once "errors.bi"
+#include once "test.bi"
+
+/''
+ ' @namespace List
+ '/
 namespace List
 
-declare function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
+/''
+ ' @typedef {function} CompareFn
+ ' @param {any ptr} criteria
+ ' @param {any ptr} current
+ ' @returns {short}
+ '/
+
+/''
+ ' @class Node
+ ' @member {Node ptr} nextPtr
+ ' @member {Node ptr} prevPtr
+ ' @member {any ptr} element
+ '/
+
+/''
+ ' @class Instance
+ ' @member {Node ptr} first
+ ' @member {Node ptr} last
+ ' @member {long} length
+ '/
+
+/''
+ ' Application main routine.
+ ' @function startup
+ ' @returns {short}
+ '/
+function startup cdecl () as short
+	_console->logMessage("Starting list module")
+
+	return true
+end function
+
+/''
+ ' Application main routine.
+ ' @function shutdown
+ ' @returns {short}
+ '/
+function shutdown cdecl () as short
+	_console->logMessage("Shutting down list module")
+
+	return true
+end function
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {Tester.describeCallback} describeFn
+ ' @returns {short}
+ '/
+function test cdecl (describeFn as Tester.describeCallback) as short
+	dim as short result = true
+
+	result = result andalso describeFn ("The List module", @testCreate)
+
+	return result
+end function
 
 /''
  ' Creates a new list instance.
- ' @returns {ListObj ptr}
- ' @throws {ListAllocationError}
+ ' @function construct
+ ' @returns {Instance ptr}
+ ' @throws {ResourceAllocationError}
  '/
-function construct() as ListObj ptr
-	dim as ListObj ptr listPtr = allocate(sizeof(ListObj))
+function construct cdecl () as Instance ptr
+	dim as Instance ptr listPtr = allocate(sizeof(Instance))
 
 	if listPtr = NULL then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"ListAllocationError", "Failed to allocate List instance", _
-			__FILE__, __LINE__ _
-		)
+		_throwListAllocationError(__FILE__, __LINE__)
+		return NULL
 	end if
 
 	listPtr->first = NULL
@@ -31,19 +98,16 @@ end function
 
 /''
  ' Deletes a previously created list instance.
- ' @param {ListObj ptr} listPtr
- ' @throws {ListDestructNullReferenceError|ReleaseListError}
+ ' @function destruct
+ ' @param {Instance ptr} listPtr
+ ' @throws {NullReferenceError|ReleaseResourceError}
  '/
-sub destruct (listPtr as ListObj ptr)
-	dim as List.Node ptr nodePtr
-	dim as List.Node ptr nextPtr
+sub destruct cdecl (listPtr as Instance ptr)
+	dim as Node ptr nodePtr
+	dim as Node ptr nextPtr
 
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListDestructNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -56,11 +120,7 @@ sub destruct (listPtr as ListObj ptr)
 	wend
 
 	if listPtr->length <> 0 then
-		_fault->throw(_
-			errors.releaseResourceError, _
-			"ReleaseListError", "Failed to correctly release all resources from List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListReleaseError(__FILE__, __LINE__)
 	end if
 
 	deallocate (listPtr)
@@ -69,40 +129,30 @@ end sub
 /''
  ' Inserts a node after the prevPtr node.  If prevPtr is not supplied or null,
  ' the new node is inserted as the first element.
- ' @param {ListObj ptr} listPtr
+ ' @function insert
+ ' @param {Instance ptr} listPtr
  ' @param {any ptr} element
- ' @param {List.Node ptr} prevPtr
- ' @throws {ListInsertNullReferenceError|ListInsertInvalidArgumentError|ListNodeAllocationError}
+ ' @param {Node ptr} prevPtr
+ ' @returns {Node ptr}
+ ' @throws {NullReferenceError|InvalidArgumentError|ResourceAllocationError}
  '/
-function insert (listPtr as ListObj ptr, element as any ptr, prevPtr as List.Node ptr = NULL) as List.Node ptr
-	dim as List.Node ptr nodePtr = NULL
+function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr = NULL) as Node ptr
+	dim as Node ptr nodePtr = NULL
 
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListInsertNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListInsertNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	if element = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"ListInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			__FILE__, __LINE__ _
-		)
+		_throwListInsertInvalidArgumentError(__FILE__, __LINE__)
 		return NULL
 	end if
 
-	nodePtr = allocate(sizeof(List.Node))
+	nodePtr = allocate(sizeof(Node))
 
 	if nodePtr = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"ListNodeAllocationError", "Failed to allocate List node", _
-			__FILE__, __LINE__ _
-		)
+		_throwListNodeAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -131,29 +181,22 @@ end function
 
 /''
  ' Removes a node from the list.
- ' @param {ListObj ptr} listPtr
- ' @param {List.Node ptr} node
- ' @throws {ListRemoveNullReferenceError|ListRemoveInvalidArgumentError}
+ ' @function remove
+ ' @param {Instance ptr} listPtr
+ ' @param {Node ptr} node
+ ' @throws {NullReferenceError|InvalidArgumentError}
  '/
-sub remove (listPtr as ListObj ptr, node as List.Node ptr)
-	dim as List.Node ptr nextPtr
-	dim as List.Node ptr prevPtr
+sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
+	dim as Node ptr nextPtr
+	dim as Node ptr prevPtr
 
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListRemoveNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListRemoveNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
 	if node = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"ListRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL", _
-			__FILE__, __LINE__ _
-		)
+		_throwListRemoveInvalidArgumentError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -173,22 +216,20 @@ sub remove (listPtr as ListObj ptr, node as List.Node ptr)
 	end if
 
 	listPtr->length -= 1
+
 	deallocate(node)
 end sub
 
 /''
  ' Returns the first node of a list.
- ' @param {ListObj ptr} listPtr
- ' @returns {List.Node ptr}
- ' @throws {ListGetFirstNullReferenceError}
+ ' @function getFirst
+ ' @param {Instance ptr} listPtr
+ ' @returns {Node ptr}
+ ' @throws {NullReferenceError}
  '/
-function getFirst (listPtr as ListObj ptr) as List.Node ptr
+function getFirst cdecl (listPtr as Instance ptr) as Node ptr
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListGetFirstNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListGetFirstNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -197,17 +238,14 @@ end function
 
 /''
  ' Returns the last node of a list.
- ' @param {ListObj ptr} listPtr
- ' @returns {List.Node ptr}
- ' @throws {ListGetLastNullReferenceError}
+ ' @function getLast
+ ' @param {Instance ptr} listPtr
+ ' @returns {Node ptr}
+ ' @throws {NullReferenceError}
  '/
-function getLast (listPtr as ListObj ptr) as List.Node ptr
+function getLast cdecl (listPtr as Instance ptr) as Node ptr
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListGetLastNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListGetLastNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -216,18 +254,15 @@ end function
 
 /''
  ' Returns the node after the given node.
- ' @param {ListObj ptr} listPtr
- ' @param {List.Node ptr} node
- ' @returns {List.Node ptr}
- ' @throws {ListGetNextNullReferenceError}
+ ' @function getNext
+ ' @param {Instance ptr} listPtr
+ ' @param {Node ptr} node
+ ' @returns {Node ptr}
+ ' @throws {NullReferenceError}
  '/
-function getNext (listPtr as ListObj ptr, node as List.Node ptr) as List.Node ptr
+function getNext cdecl (listPtr as Instance ptr, node as Node ptr) as Node ptr
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListGetNextNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListGetNextNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -240,17 +275,14 @@ end function
 
 /''
  ' Returns the length of the given list.
- ' @param {ListObj ptr} listPtr
- ' @returns {integer}
- ' @throws {ListGetLengthNullReferenceError}
+ ' @function getLength
+ ' @param {Instance ptr} listPtr
+ ' @returns {long}
+ ' @throws {NullReferenceError}
  '/
-function getLength (listPtr as ListObj ptr) as integer
+function getLength cdecl (listPtr as Instance ptr) as long
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListGetLengthNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListGetLengthNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -260,39 +292,25 @@ end function
 /''
  ' Search for an element in the list using the given compare function.  If
  ' searching for integer values, just pass defaultCompare.
- ' @param {ListObj ptr} listPtr
+ ' @function search
+ ' @param {Instance ptr} listPtr
  ' @param {any ptr} element
- ' @param {function} compare
- ' @returns {List.Node ptr}
- ' @throws {ListSearchNullReferenceError|ListSearchInvalidArgumentError}
+ ' @param {CompareFn} compare
+ ' @returns {Node ptr}
+ ' @throws {NullReferenceError|InvalidArgumentError}
  '/
-function search (listPtr as ListObj ptr, element as any ptr, compare as function(criteria as any ptr, current as any ptr) as integer) as List.Node ptr
-	dim as List.Node ptr nodePtr = NULL
-	dim as List.Node ptr result = NULL
+function search cdecl (listPtr as Instance ptr, element as any ptr, compare as CompareFn) as Node ptr
+	dim as Node ptr nodePtr = NULL
+	dim as Node ptr result = NULL
 
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListSearchNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListSearchNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
-	if element = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"ListSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
-			__FILE__, __LINE__ _
-		)
-	end if
-
-	if compare = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"ListSearchInvalidArgumentError", "Invalid 3rd Argument: compare must be a function", _
-			__FILE__, __LINE__ _
-		)
+	if element = NULL orelse compare = NULL then
+		_throwListSearchInvalidArgumentError(__FILE__, __LINE__)
+		return NULL
 	end if
 
 	nodePtr = getFirst(listPtr)
@@ -311,11 +329,12 @@ end function
 /''
  ' Integer search function used as default since system will be using indexed
  ' identifiers for deterministic references.
+ ' @function defaultCompare
  ' @param {any ptr} criteria
  ' @param {any ptr} current
- ' @returns {integer}
+ ' @returns {short}
  '/
-function defaultCompare (criteria as any ptr, current as any ptr) as integer
+function defaultCompare cdecl (criteria as any ptr, current as any ptr) as short
 	if *cptr(integer ptr, criteria) = *cptr(integer ptr, current) then
 		return true
 	else
@@ -326,19 +345,16 @@ end function
 /''
  ' Provides an Iterator instance that will return the element pointers of each
  ' node in the given list.
- ' @param {ListObj ptr} listPtr
- ' @returns {IteratorObj ptr}
- ' @throws {ListGetIteratorNullReferenceError}
+ ' @function getIterator
+ ' @param {Instance ptr} listPtr
+ ' @returns {Iterator.Instance ptr}
+ ' @throws {NullReferenceError}
  '/
-function getIterator (listPtr as ListObj ptr) as IteratorObj ptr
-	dim as IteratorObj ptr iter = _iterator->construct()
+function getIterator cdecl (listPtr as Instance ptr) as Iterator.Instance ptr
+	dim as Iterator.Instance ptr iter = _iterator->construct()
 
 	if listPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ListGetIteratorNullReferenceError", "Attempt to reference a NULL List", _
-			__FILE__, __LINE__ _
-		)
+		_throwListGetIteratorNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -351,14 +367,15 @@ end function
 
 /''
  ' Iteration handler for lists.
- ' @params {IteratorObj ptr} iter
- ' @params {any ptr} target
- ' @returns {integer}
+ ' @function _iterationHandler
+ ' @param {Iterator.Instance ptr} iter
+ ' @param {any ptr} target
+ ' @returns {short}
  ' @private
  '/
-function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integer
-	dim as ListObj ptr listPtr = iter->dataSet
-	dim as List.Node ptr current
+function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
+	dim as Instance ptr listPtr = iter->dataSet
+	dim as Node ptr current
 
 	if target = NULL then
 		iter->index = 0
@@ -381,3 +398,4 @@ function _iterationHandler (iter as IteratorObj ptr, target as any ptr) as integ
 end function
 
 end namespace
+
