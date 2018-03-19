@@ -24,7 +24,6 @@ REM Initialize XML file so templates have data to work off of
 if not exist modules\definitions\%moduleName%.xml (
     ECHO ^<?xml version="1.0" encoding="UTF-8"?^>^<module name="%moduleName%"^>^<namespace^>>> modules\definitions\%moduleName%.xml
     build\kebab-to-pascal %moduleName%>> modules\definitions\%moduleName%.xml
-    SET "namespace=%%~n#"
     ECHO ^</namespace^>^</module^>>> modules\definitions\%moduleName%.xml
 )
 

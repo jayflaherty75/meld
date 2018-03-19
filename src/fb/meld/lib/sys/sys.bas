@@ -103,9 +103,29 @@ end sub
  ' @private
  '/
 sub _loadMacAddress cdecl ()
+	dim as string addr
+
+	#IFDEF __FB_WIN32__
+
+	''''''''''''''''''''''''' WINDOWS IMPLEMENTATION ''''''''''''''''''''''''''
+	dim as long fHandle = freefile
+
+	open pipe "ipconfig /all" for input as #fHandle
+
+	do while not eof(fHandle) andalso state.macAddress = ""
+		line input #fHandle, addr
+		if instr(addr, "Physical Address") > 0 then
+			state.macAddress = trim(mid(addr, instr(addr, ":") + 1))
+		end if
+	loop
+
+	close #fHandle
+
+	#ELSE
+
+	'''''''''''''''''''''''''' LINUX IMPLEMENTATION '''''''''''''''''''''''''''
 	dim as string currentDir = curdir()
 	dim as string directory
-	dim as string addr
 
 	chdir("/sys/class/net")
 	directory = dir("*", fbNormal or fbDirectory or fbHidden or fbSystem)
@@ -123,6 +143,8 @@ sub _loadMacAddress cdecl ()
 	loop
 
 	chdir(currentDir)
+
+	#ENDIF
 end sub
 
 /''
