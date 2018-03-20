@@ -13,6 +13,12 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.startup = @PagedArray.startup
 	moduleState.methods.shutdown = @PagedArray.shutdown
 	moduleState.methods.test = @PagedArray.test
+	moduleState.methods.construct = @PagedArray.construct
+	moduleState.methods.destruct = @PagedArray.destruct
+	moduleState.methods.initialize = @PagedArray.initialize
+	moduleState.methods.createIndex = @PagedArray.createIndex
+	moduleState.methods.getIndex = @PagedArray.getIndex
+	moduleState.methods.pop = @PagedArray.pop
 
 	return @moduleState.methods
 End Function
@@ -56,6 +62,30 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+
+		errors.nullReferenceError = _fault->getCode("NullReferenceError")
+		If errors.nullReferenceError = NULL then
+			print("**** PagedArray.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
+
+		errors.outOfBoundsError = _fault->getCode("OutOfBoundsError")
+		If errors.outOfBoundsError = NULL then
+			print("**** PagedArray.load: Missing error definition for OutOfBoundsError")
+			Return false
+		End If
+
+		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+		If errors.resourceAllocationError = NULL then
+			print("**** PagedArray.load: Missing error definition for ResourceAllocationError")
+			Return false
+		End If
+
+		errors.resourceLimitSurpassed = _fault->getCode("ResourceLimitSurpassed")
+		If errors.resourceLimitSurpassed = NULL then
+			print("**** PagedArray.load: Missing error definition for ResourceLimitSurpassed")
+			Return false
+		End If
 
 
 	End If

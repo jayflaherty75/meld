@@ -13,13 +13,28 @@
 
 namespace PagedArray
 
+type Instance
+	size as ulong
+	pageLength as ulong
+	warnLimit as ulong
+	currentIndex as ulong
+	currentPageMax as ulong
+	currentMax as ulong
+	currentPage as ulong
+	pages as any ptr ptr
+end type
+
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	construct as any ptr
-	destruct as any ptr
+	construct as function cdecl () as Instance ptr
+	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
+	initialize as function cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
+	createIndex as function cdecl (arrayPtr as Instance ptr) as ulong
+	getIndex as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
+	pop as function cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
 end type
 
 end namespace
