@@ -77,11 +77,7 @@ function construct cdecl () as Instance ptr
 	dim as Instance ptr arrayPtr = allocate(sizeof(Instance))
 
 	if arrayPtr = NULL then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"PagedArrayAllocationError", "Failed to allocate PagedArray instance", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -106,11 +102,7 @@ sub destruct cdecl (arrayPtr as Instance ptr)
 	dim as integer pageIndex
 
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayDestructNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -149,11 +141,7 @@ end sub
  '/
 function initialize cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayInitializeNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayInitializeNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -162,20 +150,12 @@ function initialize cdecl (arrayPtr as Instance ptr, size as ulong, pageLength a
 	arrayPtr->warnLimit = warnLimit
 
 	if not _reallocatePageIndex(arrayPtr) then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"PagedArrayIndexAllocationError", "Failed to allocate page index", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayIndexAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if not _createPage(arrayPtr) then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"PagedArrayInitPageAllocationError", "Failed to allocate initial page", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayInitPageAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -193,11 +173,7 @@ function createIndex cdecl (arrayPtr as Instance ptr) as ulong
 	dim as integer result
 
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayCreateIndexNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayCreateIndexNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -206,11 +182,7 @@ function createIndex cdecl (arrayPtr as Instance ptr) as ulong
 
 	if arrayPtr->currentIndex > arrayPtr->currentPageMax then
 		if not _createPage(arrayPtr) then
-			_fault->throw( _
-				errors.resourceAllocationError, _
-				"PagedArrayCreateIndexAllocationError", "Failed to allocate page index", _
-				__FILE__, __LINE__ _
-			)
+			_throwPagedArrayCreateIndexAllocationError(__FILE__, __LINE__)
 		end if
 	end if
 
@@ -230,11 +202,7 @@ function getIndex cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 	dim as ulong offset
 
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayGetIndexNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayGetIndexNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -243,11 +211,7 @@ function getIndex cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 		pagePtr = arrayPtr->pages[0]
 		offset = index
 	elseif index >= arrayPtr->currentIndex then
-		_fault->throw(_
-			errors.outOfBoundsError, _
-			"PagedArrayOutOfBoundsError", "Index (" & index & ") is greater than current array length (" & arrayPtr->currentIndex & ")", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayOutOfBoundsError(index, arrayPtr->currentIndex, __FILE__, __LINE__)
 		return NULL
 	else
 		pagePtr = arrayPtr->pages[index \ arrayPtr->pageLength]
@@ -272,11 +236,7 @@ function pop cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
 	dim as integer index
 
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayPopNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayPopNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -308,11 +268,7 @@ end function
  '/
 function isEmpty cdecl (arrayPtr as Instance ptr) as short
 	if arrayPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"PagedArrayIsEmptyNullReferenceError", "Attempt to reference a NULL PagedArray", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayIsEmptyNullReferenceError(__FILE__, __LINE__)
 		return true
 	end if
 
@@ -350,11 +306,7 @@ function _createPage cdecl (arrayPtr as Instance ptr) as short
 	end if
 
 	if arrayPtr->currentIndex > arrayPtr->warnLimit then
-		_fault->throw( _
-			errors.resourceLimitSurpassed, _
-			"PagedArrayLimitSurpassed", "PagedArray warning limit has been surpassed", _
-			__FILE__, __LINE__ _
-		)
+		_throwPagedArrayLimitSurpassed(__FILE__, __LINE__)
 	end if
 
 	return true
