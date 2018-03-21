@@ -17,6 +17,12 @@
  '/
 namespace ResourceContainer
 
+'type Instance
+'	id as zstring*32
+'	resources as PagedArrayObj ptr
+'	stack as PagedArrayObj ptr
+'end type
+
 /''
  ' Application main routine.
  ' @function startup
