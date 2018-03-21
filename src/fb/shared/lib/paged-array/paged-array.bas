@@ -31,18 +31,6 @@ namespace PagedArray
  ' @member {any ptr ptr} pages
  '/
 
-'type Instance
-'	id as zstring*64
-'	size as integer
-'	pageLength as integer
-'	warnLimit as integer
-'	currentIndex as integer
-'	currentPageMax as integer
-'	currentMax as integer
-'	currentPage as integer
-'	pages as any ptr ptr
-'end type
-
 /''
  ' Application main routine.
  ' @function startup
