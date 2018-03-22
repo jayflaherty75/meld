@@ -1,7 +1,18 @@
 
 namespace PagedArray
 
-declare sub _throwXXXXXXXXXXXXXXX (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayAllocationError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayDestructNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayInitializeNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayIndexAllocationError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayInitPageAllocationError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayCreateIndexNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayCreateIndexAllocationError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayGetIndexNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayOutOfBoundsError (index as ulong, current as ulong, byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayPopNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayIsEmptyNullReferenceError (byref filename as zstring, lineNum as integer)
+declare sub _throwPagedArrayLimitSurpassed (byref filename as zstring, lineNum as integer)
 
 sub _throwPagedArrayAllocationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
