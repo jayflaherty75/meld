@@ -10,16 +10,26 @@
 #include once "../fault/fault-v1.bi"
 #include once "../error-handling/error-handling-v1.bi"
 #include once "../tester/tester-v1.bi"
+#include once "../paged-array/paged-array-v1.bi"
 
 namespace ResourceContainer
+
+type Instance
+	resources as PagedArray.Instance ptr
+	stack as PagedArray.Instance ptr
+end type
 
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	construct as any ptr
-	destruct as any ptr
+	construct as function cdecl () as Instance ptr
+	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describe as Tester.describeCallback) as short
+	initialize as function cdecl (contPtr as Instance ptr, size as short, pageLength as long, warnLimit as long) as short
+	request as function cdecl (contPtr as Instance ptr) as long
+	release as function cdecl (contPtr as Instance ptr, resourceId as long) as short
+	getPtr as function cdecl (contPtr as Instance ptr, resourceId as long) as any ptr
 end type
 
 end namespace
