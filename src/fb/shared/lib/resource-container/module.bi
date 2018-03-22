@@ -13,6 +13,12 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.startup = @ResourceContainer.startup
 	moduleState.methods.shutdown = @ResourceContainer.shutdown
 	moduleState.methods.test = @ResourceContainer.test
+	moduleState.methods.construct = @ResourceContainer.construct
+	moduleState.methods.destruct = @ResourceContainer.destruct
+	moduleState.methods.initialize = @ResourceContainer.initialize
+	moduleState.methods.request = @ResourceContainer.request
+	moduleState.methods.release = @ResourceContainer.release
+	moduleState.methods.getPtr = @ResourceContainer.getPtr
 
 	return @moduleState.methods
 End Function
@@ -56,6 +62,42 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_pagedArray = modulePtr->require("paged-array")
+		If _pagedArray = NULL then
+			print("**** ResourceContainer.load: Failed to load paged-array dependency")
+			Return false
+		End If
+
+
+		errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+		If errors.invalidArgumentError = NULL then
+			print("**** ResourceContainer.load: Missing error definition for InvalidArgumentError")
+			Return false
+		End If
+
+		errors.nullReferenceError = _fault->getCode("NullReferenceError")
+		If errors.nullReferenceError = NULL then
+			print("**** ResourceContainer.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
+
+		errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
+		If errors.releaseResourceError = NULL then
+			print("**** ResourceContainer.load: Missing error definition for ReleaseResourceError")
+			Return false
+		End If
+
+		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+		If errors.resourceAllocationError = NULL then
+			print("**** ResourceContainer.load: Missing error definition for ResourceAllocationError")
+			Return false
+		End If
+
+		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
+		If errors.resourceMissingError = NULL then
+			print("**** ResourceContainer.load: Missing error definition for ResourceMissingError")
+			Return false
+		End If
 
 
 	End If
