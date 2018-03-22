@@ -39,11 +39,6 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	return result
 end function
 
-'sub test1 cdecl (done as Tester.doneFn)
-'	_tester->expect(true, true, "Invalid result from test1")
-'	done()
-'end sub
-
 sub test1 cdecl (done as Tester.doneFn)
 	arrayPtr = _pagedArray->construct()
 	_tester->expectPtrNot(arrayPtr, NULL, "Constructor returned NULL")

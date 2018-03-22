@@ -264,7 +264,6 @@ end function
  ' @param {Instance ptr} arrayPtr
  ' @returns {short}
  ' @throws {NullReferenceError}
- ' @private
  '/
 function isEmpty cdecl (arrayPtr as Instance ptr) as short
 	if arrayPtr = NULL then
