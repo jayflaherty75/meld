@@ -35,6 +35,7 @@ type Interface
 	createIndex as function cdecl (arrayPtr as Instance ptr) as ulong
 	getIndex as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 	pop as function cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
+	isEmpty as function cdecl (arrayPtr as Instance ptr) as short
 end type
 
 end namespace

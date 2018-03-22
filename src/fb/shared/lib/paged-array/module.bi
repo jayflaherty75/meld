@@ -19,6 +19,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.createIndex = @PagedArray.createIndex
 	moduleState.methods.getIndex = @PagedArray.getIndex
 	moduleState.methods.pop = @PagedArray.pop
+	moduleState.methods.isEmpty = @PagedArray.isEmpty
 
 	return @moduleState.methods
 End Function
