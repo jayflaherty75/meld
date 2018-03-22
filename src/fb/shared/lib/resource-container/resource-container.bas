@@ -71,11 +71,7 @@ function construct cdecl () as Instance ptr
 	dim as Instance ptr contPtr = allocate(sizeof(Instance))
 
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"ResContAllocationError", "Failed to allocate new ResourceContainer instance", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -92,11 +88,7 @@ end function
  '/
 sub destruct cdecl (contPtr as Instance ptr)
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ResContDestructNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -124,33 +116,21 @@ end sub
  '/
 function initialize cdecl (contPtr as Instance ptr, size as short, pageLength as long, warnLimit as long) as short
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ResContInvalidArgumentError", "Attempt to reference a NULL ResourceContainer", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContInvalidArgumentError(__FILE__, __LINE__)
 		return false
 	end if
 
 	contPtr->resources = _pagedArray->construct()
 
 	if contPtr->resources = NULL then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"ResContResourceAllocationError", "Failed to create paged array", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContResourceAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	contPtr->stack = _pagedArray->construct()
 
 	if contPtr->stack = NULL then
-		_fault->throw( _
-			errors.resourceAllocationError, _
-			"ResContStackAllocationError", "Failed to create paged array for stack", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContStackAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -172,21 +152,13 @@ function request cdecl (contPtr as Instance ptr) as long
 	dim as any ptr resource = NULL
 
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ResContRequestNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContRequestNullReferenceError(__FILE__, __LINE__)
 		return -1
 	end if
 
 	if not _pagedArray->isEmpty(contPtr->stack) then
 		if not _pagedArray->pop(contPtr->stack, @resourceId) then
-			_fault->throw(_
-				errors.resourceMissingError, _
-				"ResContRequestResourceMissingError", "Failed to reuse resource from stack", _
-				__FILE__, __LINE__ _
-			)
+			_throwResContRequestResourceMissingError(__FILE__, __LINE__)
 			return -1
 		end if
 	end if
@@ -209,20 +181,12 @@ function release cdecl (contPtr as Instance ptr, resourceId as long) as short
 	dim as long ptr stackPtr
 
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ResContReleaseNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContReleaseNullReferenceError(__FILE__, __LINE__)
 		return -1
 	end if
 
 	if resourceId <= 0 then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"ResContReleaseInvalidArgumentError", "Invalid 2nd Argument: resourceId must be greater than zero", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContReleaseInvalidArgumentError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -230,11 +194,7 @@ function release cdecl (contPtr as Instance ptr, resourceId as long) as short
 	stackPtr = _pagedArray->getIndex(contPtr->stack, index)
 
 	if stackPtr = NULL then
-		_fault->throw(_
-			errors.releaseResourceError, _
-			"ResContReleaseResourceError", "Failed to release resource back to container", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContReleaseResourceError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -253,11 +213,7 @@ end function
  '/
 function getPtr cdecl (contPtr as Instance ptr, resourceId as long) as any ptr
 	if contPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"ResContGetPtrNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
-			__FILE__, __LINE__ _
-		)
+		_throwResContGetPtrNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
