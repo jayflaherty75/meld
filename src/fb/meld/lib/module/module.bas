@@ -304,6 +304,8 @@ function argc cdecl () as long
 end function
 
 /''
+ ' Sequential search of loaded modules.  Searches in reverse so that the latest
+ ' version loaded is found first.
  ' @function _findEntry
  ' @param {byref zstring} moduleName
  ' @returns {LibraryEntry ptr}
@@ -311,14 +313,14 @@ end function
  '/
 function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
 	dim as LibraryEntry ptr entryPtr = NULL
-	dim as long index = 0
+	dim as long index = state.libraryCount - 1
 
-	do while entryPtr = NULL andalso index < state.libraryCount
+	do while entryPtr = NULL andalso index >= 0
 		if state.libraries(index).moduleName = moduleName then
 			entryPtr = @state.libraries(index)
 		end if
 
-		index += 1
+		index -= 1
 	loop
 
 	return entryPtr
