@@ -6,7 +6,6 @@
 
 #include once "../../../../../modules/headers/iterator/iterator-v1.bi"
 
-dim shared _moduleLocal as Module.Interface
 dim shared _module as Module.Interface ptr
 dim shared _iterator as Iterator.Interface ptr
 dim shared _console as Console.Interface ptr

@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/iterator/iterator-v1.bi"
 #include once "iterator.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Iterator.startup

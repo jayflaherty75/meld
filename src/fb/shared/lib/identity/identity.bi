@@ -6,7 +6,6 @@
 
 #include once "../../../../../modules/headers/identity/identity-v1.bi"
 
-dim shared _moduleLocal as Module.Interface
 dim shared _module as Module.Interface ptr
 dim shared _identity as Identity.Interface ptr
 dim shared _console as Console.Interface ptr

@@ -16,6 +16,8 @@
 #include once "../../../../../modules/headers/<xsl:value-of select="$module" />/<xsl:value-of select="$module" />-v1.bi"
 #include once "<xsl:value-of select="$module" />.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	<xsl:text>&#xa;</xsl:text>
 	<xsl:for-each select="function">

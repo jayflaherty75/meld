@@ -6,7 +6,6 @@
 
 #include once "../../../../../modules/headers/sem-ver/sem-ver-v1.bi"
 
-dim shared _moduleLocal as Module.Interface
 dim shared _module as Module.Interface ptr
 dim shared _semver as Semver.Interface ptr
 dim shared _console as Console.Interface ptr

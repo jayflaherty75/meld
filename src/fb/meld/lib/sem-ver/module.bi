@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/sem-ver/sem-ver-v1.bi"
 #include once "sem-ver.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @SemVer.startup
