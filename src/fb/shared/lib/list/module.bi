@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/list/list-v1.bi"
 #include once "list.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @List.startup

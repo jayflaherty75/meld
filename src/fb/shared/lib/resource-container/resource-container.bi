@@ -6,7 +6,6 @@
 
 #include once "../../../../../modules/headers/resource-container/resource-container-v1.bi"
 
-dim shared _moduleLocal as Module.Interface
 dim shared _module as Module.Interface ptr
 dim shared _resourcecontainer as Resourcecontainer.Interface ptr
 dim shared _console as Console.Interface ptr

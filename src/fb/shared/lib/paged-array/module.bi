@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/paged-array/paged-array-v1.bi"
 #include once "paged-array.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @PagedArray.startup

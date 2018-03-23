@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/error-handling/error-handling-v1.bi"
 #include once "error-handling.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @ErrorHandling.startup

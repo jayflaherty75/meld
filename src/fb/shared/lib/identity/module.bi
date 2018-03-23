@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/identity/identity-v1.bi"
 #include once "identity.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Identity.startup

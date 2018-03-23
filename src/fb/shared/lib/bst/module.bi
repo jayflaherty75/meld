@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/bst/bst-v1.bi"
 #include once "bst.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Bst.startup

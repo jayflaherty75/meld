@@ -6,7 +6,6 @@
 
 #include once "../../../../../modules/headers/bst/bst-v1.bi"
 
-dim shared _moduleLocal as Module.Interface
 dim shared _module as Module.Interface ptr
 dim shared _bst as Bst.Interface ptr
 dim shared _console as Console.Interface ptr

@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/fault/fault-v1.bi"
 #include once "fault.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Fault.startup

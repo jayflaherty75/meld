@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/tester/tester-v1.bi"
 #include once "tester.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @Tester.startup

@@ -8,6 +8,8 @@
 #include once "../../../../../modules/headers/resource-container/resource-container-v1.bi"
 #include once "resource-container.bi"
 
+dim shared _moduleLocal as Module.Interface
+
 Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @ResourceContainer.startup
