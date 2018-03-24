@@ -15,8 +15,12 @@ type ModuleHasUnloadedFn as function cdecl (entryPtr as any ptr) as short
 type LibraryEntry
 	library as any ptr
 	interfacePtr as any ptr
+	moduleId as String
 	moduleName as String
+	moduleFullName as String
+	moduleVersion as String
 	fileName as String
+	unload as ModuleHasUnloadedFn
 end type
 
 type Interface

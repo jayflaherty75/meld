@@ -8,6 +8,7 @@
 
 dim shared _module as Module.Interface ptr
 dim shared _sys as Sys.Interface ptr
+dim shared _semVer as SemVer.Interface ptr
 
 type ModuleStateType
 	methods as Sys.Interface

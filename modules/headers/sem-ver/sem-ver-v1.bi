@@ -9,7 +9,7 @@
 #include once "../console/console-v1.bi"
 #include once "../fault/fault-v1.bi"
 #include once "../error-handling/error-handling-v1.bi"
-#include once "../tester/tester-v1.bi"
+#include once "../sys/sys-v1.bi"
 
 namespace SemVer
 
@@ -19,7 +19,7 @@ type Interface
 	construct as any ptr
 	destruct as any ptr
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as any ptr
 end type
 
 end namespace
