@@ -16,8 +16,6 @@ type "src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bas" | build\
 
 call build\header %moduleName%
 
-REM TODO: Generate dependency scripts
-
 xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\module.bi build\templates\module-fb.xslt modules\definitions\%moduleName%.xml
 
 xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bi build\templates\include-fb.xslt modules\definitions\%moduleName%.xml
@@ -29,5 +27,3 @@ IF %ERRORLEVEL% NEQ 0 (
 	ECHO Failed to compile %moduleName% module, build terminated
 	EXIT /B 1
 )
- 
-REM TODO: Call dependency scripts
