@@ -5,7 +5,6 @@
 
 #include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
-#include once "errors.bi"
 #include once "file.bi"
 
 /''
@@ -47,16 +46,26 @@ function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
 	dim as Module.LibraryEntry ptr _entry = entryPtr
 	dim as string moduleName = _entry->moduleName
 	dim as short versionPos = instr(moduleName, "_v")
+	dim as short miscPos
+	dim as string version
 
 	if versionPos = 0 then
 		_entry->moduleId = moduleName
 		_entry->moduleFullName = moduleName
 		_entry->moduleVersion = "0.1.0"
 	else
+		version = mid(moduleName, versionPos + 2)
+		miscPos = instr(version, "-")
+
 		_entry->moduleId = moduleName
 		_entry->moduleName = left(moduleName, versionPos - 1)
 		_entry->moduleFullName = moduleName
-		_entry->moduleVersion = mid(moduleName, versionPos + 2)
+
+		if miscPos = 0 then
+			_entry->moduleVersion = version
+		else
+			_entry->moduleVersion = left(version, miscPos - 1)
+		end if
 	end if
 
 	_entry->filename = "modules" & *_sys->getDirsep() & _entry->moduleName & "." & *_sys->getModuleExt()
