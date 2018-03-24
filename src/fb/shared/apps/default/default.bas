@@ -1,10 +1,10 @@
 
 /''
+ ' @requires sys
  ' @requires console
  ' @requires fault
  ' @requires error-handling
  ' @requires tester
- ' @requires sys
  '/
 
 #include once "../../../../../modules/headers/constants/constants-v1.bi"
@@ -47,7 +47,9 @@ end function
  ' @returns {short}
  '/
 function update cdecl (instancePtr as any ptr) as short
-	_console->logMessage("Updating...")
+	dim as Tester.Interface ptr _otherTester = _module->require("tester_v1.0.0")
+
+	_console->logMessage("Loading versioned tester module... " & _otherTester)
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
 
 	return true
