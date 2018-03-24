@@ -6,6 +6,7 @@
 
 #include once "../constants/constants-v1.bi"
 #include once "../module/module-v1.bi"
+#include once "../sem-ver/sem-ver-v1.bi"
 
 namespace Sys
 

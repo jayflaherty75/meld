@@ -14,7 +14,6 @@ Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @SemVer.startup
 	moduleState.methods.shutdown = @SemVer.shutdown
-	moduleState.methods.test = @SemVer.test
 
 	return @moduleState.methods
 End Function
@@ -52,9 +51,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
-		_tester = modulePtr->require("tester")
-		If _tester = NULL then
-			print("**** SemVer.load: Failed to load tester dependency")
+		_sys = modulePtr->require("sys")
+		If _sys = NULL then
+			print("**** SemVer.load: Failed to load sys dependency")
 			Return false
 		End If
 
@@ -83,21 +82,6 @@ Function unload cdecl Alias "unload" () As short export
 	return true
 End Function
 
-
-Function test cdecl Alias "test" () As short export
-	dim As SemVer.Interface ptr interfacePtr = exports()
-	dim As Tester.testModule tests(1)
-
-	If interfacePtr->test = NULL Then return true
-
-	tests(0) = interfacePtr->test
-
-	If not _tester->run(@tests(0), 1) Then
-		return false
-	End If
-
-	return true
-End Function
 
 
 Function startup cdecl Alias "startup" () As short export

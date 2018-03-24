@@ -38,6 +38,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_sys = exports()
 
+		_semVer = modulePtr->require("sem-ver")
+		If _semVer = NULL then
+			print("**** Sys.load: Failed to load sem-ver dependency")
+			Return false
+		End If
+
 
 
 	End If

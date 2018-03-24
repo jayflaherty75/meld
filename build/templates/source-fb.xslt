@@ -5,7 +5,6 @@
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
-
 /''
  ' @requires console
  ' @requires fault
