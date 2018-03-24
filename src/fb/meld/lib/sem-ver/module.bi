@@ -33,24 +33,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_semVer = exports()
 
-		_console = modulePtr->require("console")
-		If _console = NULL then
-			print("**** SemVer.load: Failed to load console dependency")
-			Return false
-		End If
-
-		_fault = modulePtr->require("fault")
-		If _fault = NULL then
-			print("**** SemVer.load: Failed to load fault dependency")
-			Return false
-		End If
-
-		_errorHandling = modulePtr->require("error-handling")
-		If _errorHandling = NULL then
-			print("**** SemVer.load: Failed to load error-handling dependency")
-			Return false
-		End If
-
 		_sys = modulePtr->require("sys")
 		If _sys = NULL then
 			print("**** SemVer.load: Failed to load sys dependency")

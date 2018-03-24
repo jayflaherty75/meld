@@ -35,6 +35,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_default = exports()
 
+		_sys = modulePtr->require("sys")
+		If _sys = NULL then
+			print("**** Default.load: Failed to load sys dependency")
+			Return false
+		End If
+
 		_console = modulePtr->require("console")
 		If _console = NULL then
 			print("**** Default.load: Failed to load console dependency")
@@ -56,12 +62,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		_tester = modulePtr->require("tester")
 		If _tester = NULL then
 			print("**** Default.load: Failed to load tester dependency")
-			Return false
-		End If
-
-		_sys = modulePtr->require("sys")
-		If _sys = NULL then
-			print("**** Default.load: Failed to load sys dependency")
 			Return false
 		End If
 

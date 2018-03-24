@@ -165,6 +165,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	end if
 
 	entryPtr = @state.libraries(state.libraryCount)
+	entryPtr->moduleId = moduleName
 	entryPtr->moduleName = moduleName
 	entryPtr->unload = state.unloadHandler
 
@@ -321,7 +322,7 @@ function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
 	dim as long index = state.libraryCount - 1
 
 	do while entryPtr = NULL andalso index >= 0
-		if state.libraries(index).moduleName = moduleName then
+		if state.libraries(index).moduleId = moduleName then
 			entryPtr = @state.libraries(index)
 		end if
 
