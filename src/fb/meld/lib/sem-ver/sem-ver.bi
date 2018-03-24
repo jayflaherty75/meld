@@ -11,7 +11,7 @@ dim shared _semver as Semver.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
-dim shared _tester as Tester.Interface ptr
+dim shared _sys as Sys.Interface ptr
 
 type ModuleStateType
 	methods as SemVer.Interface
@@ -25,7 +25,8 @@ namespace SemVer
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
+declare function _handleModuleHasUnloaded cdecl (entryPtr as any ptr) as short
 
 end namespace
 

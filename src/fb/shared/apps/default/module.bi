@@ -59,6 +59,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_sys = modulePtr->require("sys")
+		If _sys = NULL then
+			print("**** Default.load: Failed to load sys dependency")
+			Return false
+		End If
+
 
 		errors.generalError = _fault->getCode("GeneralError")
 		If errors.generalError = NULL then

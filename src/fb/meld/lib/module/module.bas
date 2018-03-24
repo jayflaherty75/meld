@@ -7,14 +7,6 @@
 namespace Module
 
 /''
- ' @class LibraryEntry
- ' @member {any ptr} library
- ' @member {any ptr} interfacePtr
- ' @member {String} moduleName
- ' @member {String} fileName
- '/
-
-/''
  ' @typedef {function} ModuleWillLoadFn
  ' @param {any ptr} entryPtr
  ' @returns {short}
@@ -24,6 +16,18 @@ namespace Module
  ' @typedef {function} ModuleHasUnloadedFn
  ' @param {any ptr} entryPtr
  ' @returns {short}
+ '/
+
+/''
+ ' @class LibraryEntry
+ ' @member {any ptr} library
+ ' @member {any ptr} interfacePtr
+ ' @member {String} moduleId
+ ' @member {String} moduleName
+ ' @member {String} moduleFullName
+ ' @member {String} moduleVersion
+ ' @member {String} fileName
+ ' @member {ModuleHasUnloadedFn} unload
  '/
 
 type StateType
@@ -90,14 +94,14 @@ function uninitialize cdecl() as short
 		end if
 	next
 
-	for index = 0 to state.libraryCount - 1
+	for index = state.libraryCount - 1 to 0 step -1
 		library = state.libraries(index).library
 
 		unloadFn = dylibsymbol(library, "unload")
 		if unloadFn = NULL orelse unloadFn() then
 			dylibfree(library)
 
-			if not state.unloadHandler(@state.libraries(index)) then
+			if not state.libraries(index).unload(@state.libraries(index)) then
 				print("**** Module.uninitialize: Warning: unload handler failed for " & state.libraries(index).moduleName)
 			end if
 
@@ -162,6 +166,7 @@ function require cdecl (byref moduleName as zstring) as any ptr
 
 	entryPtr = @state.libraries(state.libraryCount)
 	entryPtr->moduleName = moduleName
+	entryPtr->unload = state.unloadHandler
 
 	if not state.preloadHandler(entryPtr) then
 		print("**** Module.require: Missing module: " & moduleName)
@@ -239,7 +244,7 @@ function unload cdecl (byref moduleName as zstring) as short
 	if unloadFn = NULL orelse unloadFn() then
 		dylibfree(entryPtr->library)
 
-		if not state.unloadHandler(entryPtr) then
+		if not entryPtr->unload(entryPtr) then
 			print("**** Module.unload: Warning: unload handler failed for " & entryPtr->moduleName)
 		end if
 	end if
@@ -335,7 +340,10 @@ end function
 function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
 	dim as LibraryEntry ptr _entry = entryPtr
 
-	_entry->filename = "modules" & DIR_SEP & _entry->moduleName & "." & EXTERNAL_MODULE_EXTENSION
+	_entry->moduleId = _entry->moduleName
+	_entry->moduleFullName = _entry->moduleName
+	_entry->moduleVersion = "0.1.0"
+	_entry->filename = "modules" & DIR_SEP & _entry->moduleId & "." & EXTERNAL_MODULE_EXTENSION
 
 	if not fileexists(_entry->filename) then
 		return false

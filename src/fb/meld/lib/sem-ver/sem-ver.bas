@@ -1,16 +1,15 @@
 
-
 /''
  ' @requires console
  ' @requires fault
  ' @requires error-handling
- ' @requires tester
+ ' @requires sys
  '/
 
 #include once "../../../../../modules/headers/constants/constants-v1.bi"
 #include once "module.bi"
 #include once "errors.bi"
-#include once "test.bi"
+#include once "file.bi"
 
 /''
  ' @namespace SemVer
@@ -25,6 +24,9 @@ namespace SemVer
 function startup cdecl () as short
 	_console->logMessage("Starting sem-ver module")
 
+	_module->setModuleWillLoad(@_handleModuleWillLoad)
+	_module->setModuleHasUnloaded(@_handleModuleHasUnloaded)
+
 	return true
 end function
 
@@ -36,21 +38,41 @@ end function
 function shutdown cdecl () as short
 	_console->logMessage("Shutting down sem-ver module")
 
+	_module->setModuleWillLoad(NULL)
+	_module->setModuleHasUnloaded(NULL)
+
 	return true
 end function
 
 /''
- ' Standard test runner for modules.
- ' @function test
- ' @param {Tester.describeCallback} describeFn
+ ' @function _handleModuleWillLoad
+ ' @param {any ptr} entryPtr
  ' @returns {short}
+ ' @private
  '/
-function test cdecl (describeFn as Tester.describeCallback) as short
-	dim as short result = true
+function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
+	dim as Module.LibraryEntry ptr _entry = entryPtr
 
-	result = result andalso describeFn ("The SemVer module", @testCreate)
+	_entry->moduleId = _entry->moduleName
+	_entry->moduleFullName = _entry->moduleName
+	_entry->moduleVersion = "0.1.0"
+	_entry->filename = "modules" & *_sys->getDirsep() & _entry->moduleId & "." & *_sys->getModuleExt()
 
-	return result
+	if not fileexists(_entry->filename) then
+		return false
+	end if
+
+	return true
+end function
+
+/''
+ ' @function _handleModuleHasUnloaded
+ ' @param {any ptr} entryPtr
+ ' @returns {short}
+ ' @private
+ '/
+function _handleModuleHasUnloaded cdecl (entryPtr as any ptr) as short
+	return true
 end function
 
 end namespace
