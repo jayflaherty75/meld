@@ -1,6 +1,10 @@
 #!/bin/bash
 
-for filename in ./build/d/$1/*; do
+./build/meld
+
+echo
+
+for filename in ./build/m/*; do
 	echo "Building $filename"
 	$filename
 done
