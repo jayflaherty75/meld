@@ -1,8 +1,5 @@
 
 /''
- ' @requires console
- ' @requires fault
- ' @requires error-handling
  ' @requires sys
  '/
 
@@ -22,8 +19,6 @@ namespace SemVer
  ' @returns {short}
  '/
 function startup cdecl () as short
-	_console->logMessage("Starting sem-ver module")
-
 	_module->setModuleWillLoad(@_handleModuleWillLoad)
 	_module->setModuleHasUnloaded(@_handleModuleHasUnloaded)
 
@@ -36,8 +31,6 @@ end function
  ' @returns {short}
  '/
 function shutdown cdecl () as short
-	_console->logMessage("Shutting down sem-ver module")
-
 	_module->setModuleWillLoad(NULL)
 	_module->setModuleHasUnloaded(NULL)
 
@@ -52,11 +45,21 @@ end function
  '/
 function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
 	dim as Module.LibraryEntry ptr _entry = entryPtr
+	dim as string moduleName = _entry->moduleName
+	dim as short versionPos = instr(moduleName, "_v")
 
-	_entry->moduleId = _entry->moduleName
-	_entry->moduleFullName = _entry->moduleName
-	_entry->moduleVersion = "0.1.0"
-	_entry->filename = "modules" & *_sys->getDirsep() & _entry->moduleId & "." & *_sys->getModuleExt()
+	if versionPos = 0 then
+		_entry->moduleId = moduleName
+		_entry->moduleFullName = moduleName
+		_entry->moduleVersion = "0.1.0"
+	else
+		_entry->moduleId = moduleName
+		_entry->moduleName = left(moduleName, versionPos - 1)
+		_entry->moduleFullName = moduleName
+		_entry->moduleVersion = mid(moduleName, versionPos + 2)
+	end if
+
+	_entry->filename = "modules" & *_sys->getDirsep() & _entry->moduleName & "." & *_sys->getModuleExt()
 
 	if not fileexists(_entry->filename) then
 		return false

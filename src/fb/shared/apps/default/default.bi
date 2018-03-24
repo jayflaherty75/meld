@@ -8,11 +8,11 @@
 
 dim shared _module as Module.Interface ptr
 dim shared _default as Default.Interface ptr
+dim shared _sys as Sys.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
 dim shared _tester as Tester.Interface ptr
-dim shared _sys as Sys.Interface ptr
 
 type ModuleStateType
 	methods as Default.Interface

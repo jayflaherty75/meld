@@ -6,9 +6,6 @@
 
 #include once "../constants/constants-v1.bi"
 #include once "../module/module-v1.bi"
-#include once "../console/console-v1.bi"
-#include once "../fault/fault-v1.bi"
-#include once "../error-handling/error-handling-v1.bi"
 #include once "../sys/sys-v1.bi"
 
 namespace SemVer
