@@ -21,6 +21,9 @@
 	<xsl:text>-v1.bi"&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
+	<xsl:text>#define NULL 0&#xa;</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
+
 	<xsl:call-template name="declareInterface">
 		<xsl:with-param name="module" select="'module'" />
 	</xsl:call-template>
