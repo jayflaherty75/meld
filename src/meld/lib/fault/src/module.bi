@@ -5,26 +5,29 @@
 '/
 
 
-#include once "headers/console_v0.1.0.bi"
-#include once "console.bi"
+#include once "headers/fault_v0.1.0.bi"
+#include once "fault.bi"
 
 dim shared _moduleLocal as Module.Interface
 
 Function exports cdecl Alias "exports" () As any ptr export
 	
-	moduleState.methods.startup = @Console.startup
-	moduleState.methods.shutdown = @Console.shutdown
-	moduleState.methods.logMessage = @Console.logMessage
-	moduleState.methods.logWarning = @Console.logWarning
-	moduleState.methods.logError = @Console.logError
-	moduleState.methods.logSuccess = @Console.logSuccess
+	moduleState.methods.startup = @Fault.startup
+	moduleState.methods.shutdown = @Fault.shutdown
+	moduleState.methods.registerType = @Fault.registerType
+	moduleState.methods.assignHandler = @Fault.assignHandler
+	moduleState.methods.getCode = @Fault.getCode
+	moduleState.methods.throw = @Fault.throw
+	moduleState.methods.defaultFatalHandler = @Fault.defaultFatalHandler
+	moduleState.methods.defaultErrorHandler = @Fault.defaultErrorHandler
+	moduleState.methods.defaultWarningHandler = @Fault.defaultWarningHandler
 
 	return @moduleState.methods
 End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Console.load: Invalid Module interface pointer")
+		print("**** Fault.load: Invalid Module interface pointer")
 		return false
 	End If
 
@@ -35,26 +38,20 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		_moduleLocal = *modulePtr
 		_module = @_moduleLocal
 
-		_console = exports()
+		_fault = exports()
 
-		_fault_v0.1.0 = modulePtr->require("fault_v0.1.0")
-		If _fault_v0.1.0 = NULL then
-			print("**** Console.load: Failed to load fault_v0.1.0 dependency")
+		_console = modulePtr->require("console")
+		If _console = NULL then
+			print("**** Fault.load: Failed to load console dependency")
 			Return false
 		End If
 
-		_errorHandling_v0.1.0 = modulePtr->require("error-handling_v0.1.0")
-		If _errorHandling_v0.1.0 = NULL then
-			print("**** Console.load: Failed to load error-handling_v0.1.0 dependency")
+
+		errors.internalSystemError = _fault->getCode("InternalSystemError")
+		If errors.internalSystemError = NULL then
+			print("**** Fault.load: Missing error definition for InternalSystemError")
 			Return false
 		End If
-
-		_sys_v0.1.0 = modulePtr->require("sys_v0.1.0")
-		If _sys_v0.1.0 = NULL then
-			print("**** Console.load: Failed to load sys_v0.1.0 dependency")
-			Return false
-		End If
-
 
 
 	End If
@@ -67,7 +64,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Console.unload: Module shutdown handler failed")
+				print("**** Fault.unload: Module shutdown handler failed")
 				return false
 			End If
 		End If
@@ -86,7 +83,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Console.startup: Module startup handler failed")
+				print("**** Fault.startup: Module startup handler failed")
 				return false
 			End If
 		End If
@@ -101,7 +98,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Console.shutdown: Module shutdown handler failed")
+				print("**** Fault.shutdown: Module shutdown handler failed")
 			End If
 		End If
 

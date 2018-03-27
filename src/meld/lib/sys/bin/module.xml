@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="sys">
+  <requires module='sem-ver' version='1' />
+  <version>0.1.0</version>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='getNewline'>
+    <returns type='zstring' modifier='pointer' />
+  </function>
+  <function name='getDirsep'>
+    <returns type='zstring' modifier='pointer' />
+  </function>
+  <function name='getModuleExt'>
+    <returns type='zstring' modifier='pointer' />
+  </function>
+  <function name='getTimestamp'>
+    <returns type='ulongint' modifier='value' />
+  </function>
+  <function name='getMacAddress'>
+    <param name='addr' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='_loadMacAddress'>
+    <private />
+  </function>
+  <function name='_readFileLine'>
+    <param name='directory' type='zstring' modifier='reference' const='false' />
+    <param name='filename' type='zstring' modifier='reference' const='false' />
+    <param name='result' type='string' modifier='reference' const='false' />
+    <private />
+  </function>
+  <function name='_isMacAddress'>
+    <param name='addr' type='zstring' modifier='reference' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+  </function>
+  <namespace>Sys</namespace>
+</module>

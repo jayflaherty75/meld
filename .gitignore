@@ -48,3 +48,5 @@ meld_modules
 /modules/definitions/*.xml
 /modules/local/*
 !/modules/local/.gitkeep
+/modules/global/*
+!/modules/global/.gitkeep

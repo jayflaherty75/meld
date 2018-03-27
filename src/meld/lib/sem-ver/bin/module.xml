@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="sem-ver">
+  <requires module='sys' version='1' />
+  <version>0.1.0</version>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='_handleModuleWillLoad'>
+    <param name='entryPtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+  </function>
+  <function name='_handleModuleHasUnloaded'>
+    <param name='entryPtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+  </function>
+  <namespace>SemVer</namespace>
+</module>

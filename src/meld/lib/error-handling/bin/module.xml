@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="error-handling">
+  <requires module='console' version='1' />
+  <requires module='fault' version='1' />
+  <version>0.1.0</version>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='_assignHandler'>
+    <param name='_fault' type='Fault.Interface' modifier='pointer' const='false' />
+    <param name='errCodePtr' type='integer' modifier='pointer' const='false' />
+    <param name='errName' type='zstring' modifier='reference' const='false' />
+    <param name='handler' type='Fault.handler' modifier='value' const='false' />
+    <private />
+    <description>Helper function to assign a handler to an error code.</description>
+  </function>
+  <namespace>ErrorHandling</namespace>
+</module>
