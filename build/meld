@@ -56,7 +56,7 @@ compile module lib meld
 echo;
 echo Building Meld Core...;
 
-fbc -mt -C "./src/fb/meld.bas" -x "./meld" \
+fbc -mt -C "./src/fb/meld.bas" -x "./commands/launch" \
 	"./src/fb/meld/lib/module/module.o" \
 	|| { echo; echo Build failed; exit 1; }
 

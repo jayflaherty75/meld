@@ -19,7 +19,7 @@ ECHO.
 
 ECHO Building Meld Core...
 
-fbc -mt -C "src/fb/meld.bas" -x "meld.exe" ^
+fbc -mt -C "src/fb/meld.bas" -x "commands/launch.exe" ^
 	"src/fb/meld/lib/module/module.o"
 
 IF %ERRORLEVEL% NEQ 0 (
