@@ -4,12 +4,15 @@
 ' during the next build.
 '/
 
-#include once "../../../../../modules/headers/console/console-v1.bi"
+#include once "headers/console_v0.1.0.bi"
 
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
 dim shared _console as Console.Interface ptr
+dim shared _fault_v0.1.0 as Fault_v0.1.0.Interface ptr
+dim shared _errorHandling_v0.1.0 as ErrorHandling_v0.1.0.Interface ptr
+dim shared _sys_v0.1.0 as Sys_v0.1.0.Interface ptr
 
 type ModuleStateType
 	methods as Console.Interface
@@ -21,6 +24,13 @@ dim shared as ModuleStateType moduleState
 
 namespace Console
 
+declare function startup cdecl () as short
+declare function shutdown cdecl () as short
+declare sub logMessage cdecl (byref message as zstring)
+declare sub logWarning cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+declare sub logError cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+declare sub logSuccess cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+declare function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
 
 end namespace
 
