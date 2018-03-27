@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "Meld v0.1.0"
+	exit 0;
+fi
+
+if [ "$1" == "run" ]; then
+	if [ -z "$2" ]; then
+		echo "Missing run command"
+		exit 1;
+	fi
+
+	if [ ! -f ./commands/$2 ]; then
+		echo "Not a valid command"
+		exit 1;
+	fi
+
+	./commands/$2 "$@"
+else
+	./commands/launch "$@"
+fi
+
