@@ -4,6 +4,11 @@ MELD_DIR=$1
 MODULE_NAME=$2
 
 # Create source and build directories if they don't already exist
+if [ ! -d "./.meld" ]; then
+	mkdir "./.meld"
+	touch "./.meld/.gitkeep"
+fi
+
 if [ ! -d "./src" ]; then
 	mkdir "./src"
 fi
@@ -13,12 +18,12 @@ if [ ! -d "./bin" ]; then
 fi
 
 if [ ! -L "./meld_modules" ]; then
-	ln -s $MELD_DIR/modules/global ./meld_modules
+	ln -s $MELD_DIR/modules/local ./meld_modules
 fi
 
 # Initialize XML file for templates to build from
 if [ ! -f ./bin/module.xml ]; then
-    echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$MODULE_NAME\"><namespace>" >> ./bin/module.xml
+	echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$MODULE_NAME\"><namespace>" >> ./bin/module.xml
 	"$MELD_DIR/build/kebab-to-pascal" $MODULE_NAME | tr '\n' '<' >> ./bin/module.xml
 	echo "/namespace><version>0.1.0</version></module>" >> ./bin/module.xml
 fi
@@ -33,3 +38,4 @@ fi
 # Generate dynamic source files, not modifiable by the user
 xsltproc -o ./src/module.bi "$MELD_DIR/build/templates/module-fb.xslt" ./bin/module.xml
 xsltproc -o ./src/$MODULE_NAME.bi "$MELD_DIR/build/templates/include-fb.xslt" ./bin/module.xml
+xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml

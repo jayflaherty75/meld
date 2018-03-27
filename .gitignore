@@ -39,6 +39,7 @@ luac.out
 *.x86_64
 *.hex
 
+.meld
 meld_modules
 /commands/launch
 /tester

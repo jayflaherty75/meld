@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ ! -f "./.meld/undo-link" ]; then
+	echo "Module not currently linked"
+	exit 0
+fi
+
+./.meld/undo-link
+
+rm ./.meld/undo-link
