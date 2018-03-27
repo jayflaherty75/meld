@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Get running directory of Meld
+SOURCE="${BASH_SOURCE[0]}"
+
+while [ -h "$SOURCE" ]; do
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+
+MELD_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+MODULE_NAME=${PWD##*/}
+
 if [ $# -eq 0 ]; then
 	echo "Meld v0.1.0"
 	exit 0;
@@ -11,13 +23,13 @@ if [ "$1" == "run" ]; then
 		exit 1;
 	fi
 
-	if [ ! -f ./commands/$2 ]; then
+	if [ ! -f "$MELD_DIR/commands/$2" ]; then
 		echo "Not a valid command"
 		exit 1;
 	fi
 
-	./commands/$2 "$@"
+	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME"
 else
-	./commands/launch "$@"
+	$MELD_DIR/commands/launch "$@"
 fi
 

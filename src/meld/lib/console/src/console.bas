@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-<xsl:output method="text" indent="no" omit-xml-declaration="yes" />
-
-<xsl:template match="module">
-	<xsl:variable name="namespace" select="normalize-space(namespace)" />
 /''
  ' @requires console
  ' @requires fault
@@ -17,9 +11,9 @@
 #include once "test.bi"
 
 /''
- ' @namespace <xsl:value-of select="$namespace" />
+ ' @namespace Console
  '/
-namespace <xsl:value-of select="$namespace" />
+namespace Console
 
 /''
  ' Application main routine.
@@ -27,7 +21,7 @@ namespace <xsl:value-of select="$namespace" />
  ' @returns {short}
  '/
 function startup cdecl () as short
-	_console->logMessage("Starting <xsl:value-of select="@name" /> module")
+	_console->logMessage("Starting console module")
 
 	return true
 end function
@@ -38,7 +32,7 @@ end function
  ' @returns {short}
  '/
 function shutdown cdecl () as short
-	_console->logMessage("Shutting down <xsl:value-of select="@name" /> module")
+	_console->logMessage("Shutting down console module")
 
 	return true
 end function
@@ -52,12 +46,10 @@ end function
 function test cdecl (describeFn as Tester.describeCallback) as short
 	dim as short result = true
 
-	result = result andalso describeFn ("The <xsl:value-of select="$namespace" /> module", @testCreate)
+	result = result andalso describeFn ("The Console module", @testCreate)
 
 	return result
 end function
 
 end namespace
 
-</xsl:template>
-</xsl:stylesheet>
