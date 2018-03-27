@@ -1,8 +1,8 @@
 
 /''
- ' @requires console
- ' @requires fault
- ' @requires error-handling
+ ' @requires console_v0.1.0
+ ' @requires fault_v0.1.0
+ ' @requires error-handling_v0.1.0
  '/
 
 #include once "module.bi"

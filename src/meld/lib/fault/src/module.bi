@@ -40,9 +40,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_fault = exports()
 
-		_console = modulePtr->require("console")
-		If _console = NULL then
-			print("**** Fault.load: Failed to load console dependency")
+		_console_v0.1.0 = modulePtr->require("console_v0.1.0")
+		If _console_v0.1.0 = NULL then
+			print("**** Fault.load: Failed to load console_v0.1.0 dependency")
 			Return false
 		End If
 

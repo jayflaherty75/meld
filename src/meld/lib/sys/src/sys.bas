@@ -1,6 +1,6 @@
 
 /''
- ' @requires sem-ver
+ ' @requires sem-ver_v0.1.0
  '/
 
 #include once "module.bi"

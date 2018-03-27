@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module name="sys">
-  <requires module='sem-ver' version='1' />
+  <requires module='sem-ver_v0.1.0' version='1' />
   <version>0.1.0</version>
   <function name='startup'>
     <returns type='short' modifier='value' />

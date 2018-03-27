@@ -10,7 +10,7 @@
 
 dim shared _module as Module.Interface ptr
 dim shared _semver as Semver.Interface ptr
-dim shared _sys as Sys.Interface ptr
+dim shared _sys_v0.1.0 as Sys_v0.1.0.Interface ptr
 
 type ModuleStateType
 	methods as SemVer.Interface

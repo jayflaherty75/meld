@@ -4,8 +4,6 @@ MELD_DIR=$1
 MODULE_NAME=$2
 MODULE_VERSION=$(<./.meld/version)
 SEP="_v"
-#CURRENT=$(pwd)
-#TARGET=$(realpath "$CURRENT/bin")
 
 compileExternal () {
 	fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
@@ -17,6 +15,15 @@ cat "./src/$MODULE_NAME.bas" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/mod
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
 
 xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/module.xml
+
+MODULE_DEPS=$(<./.meld/deps)
+
+while read -r REQUIRE; do
+	xsltproc -o ./src/headers/$REQUIRE.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$REQUIRE/module.xml"
+done <<< "$MODULE_DEPS"
+
+xsltproc -o ./src/headers/meld_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/meld_v0.1.0/module.xml"
+xsltproc -o ./src/headers/module_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/module_v0.1.0/module.xml"
 
 xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.bi "$MELD_DIR/build/templates/header-fb.xslt" ./bin/module.xml
 

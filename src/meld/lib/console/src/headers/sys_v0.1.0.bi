@@ -5,10 +5,9 @@
 '/
 
 #include once "module_v0.1.0.bi"
-#include once "console_v0.1.0.bi"
-#include once "fault_v0.1.0.bi"
+#include once "sem-ver.bi"
 
-namespace ErrorHandling
+namespace Sys
 
 type Interface
 	startup as function cdecl () as short
@@ -17,6 +16,11 @@ type Interface
 	destruct as any ptr
 	update as any ptr
 	test as any ptr
+	getNewline as function cdecl () as zstring ptr
+	getDirsep as function cdecl () as zstring ptr
+	getModuleExt as function cdecl () as zstring ptr
+	getTimestamp as function cdecl () as ulongint
+	getMacAddress as sub cdecl (byref addr as zstring)
 end type
 
 end namespace
