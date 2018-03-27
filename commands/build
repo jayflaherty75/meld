@@ -2,20 +2,26 @@
 
 MELD_DIR=$1
 MODULE_NAME=$2
+MODULE_VERSION=$(<./.meld/version)
+SEP="_v"
+#CURRENT=$(pwd)
+#TARGET=$(realpath "$CURRENT/bin")
 
-#compileExternal () {
-#	fbc -mt -s console -dylib -export "./src/fb/$3/$2/$1/$1.bas" -x "modules/$1.so" \
-#		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
-#}
+compileExternal () {
+	fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
+		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
+}
 
-cat "./src/$MODULE_NAME.bas" | "$MELD_DIR/build/parse-fb $MODULE_NAME" > "./bin/module.xml"
+cat "./src/$MODULE_NAME.bas" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
 
-xsltproc -o ./modules/headers/$MODULE_NAME/$MODULE_NAME-v0.1.0.bi ./build/templates/header-fb.xslt ./modules/definitions/$MODULE_NAME.xml
+xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
 
-#$MELD_DIR/build/header $MODULE_NAME
+xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/module.xml
 
-#xsltproc -o ./src/$MODULE_NAME/module.bi "$MELD_DIR/build/templates/module-fb.xslt" "./bin/module.xml"
+xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.bi "$MELD_DIR/build/templates/header-fb.xslt" ./bin/module.xml
 
-#xsltproc -o ./src/$MODULE_NAME/$MODULE_NAME.bi "$MELD_DIR/build/templates/include-fb.xslt" "./bin/module.xml"
+xsltproc -o ./src/module.bi "$MELD_DIR/build/templates/module-fb.xslt" ./bin/module.xml
 
-#compileExternal $MODULE_NAME ${2:-lib} ${3:-shared}
+xsltproc -o ./src/$MODULE_NAME.bi "$MELD_DIR/build/templates/include-fb.xslt" ./bin/module.xml
+
+compileExternal $MODULE_NAME

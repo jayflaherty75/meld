@@ -7,10 +7,16 @@ MODULE_NAME=$2
 if [ ! -d "./.meld" ]; then
 	mkdir "./.meld"
 	touch "./.meld/.gitkeep"
+	touch "./.meld/deps"
 fi
 
 if [ ! -d "./src" ]; then
 	mkdir "./src"
+fi
+
+if [ ! -d "./src/headers" ]; then
+	mkdir "./src/headers"
+	touch "./src/headers/.gitkeep"
 fi
 
 if [ ! -d "./bin" ]; then

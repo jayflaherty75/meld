@@ -18,6 +18,7 @@
 
 /''
  ' @namespace <xsl:value-of select="$namespace" />
+ ' @version 0.1.0
  '/
 namespace <xsl:value-of select="$namespace" />
 

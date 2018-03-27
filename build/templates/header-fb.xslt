@@ -12,23 +12,18 @@
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+	<xsl:variable name="version" select="normalize-space(version)" />
 
 	<xsl:call-template name="warningMessage" />
 
-	<xsl:call-template name="include">
-		<xsl:with-param name="module" select="'constants'" />
-		<xsl:with-param name="version" select="'1'" />
-	</xsl:call-template>
 	<xsl:if test="@name != 'module'">
 		<xsl:call-template name="include">
-			<xsl:with-param name="module" select="'module'" />
-			<xsl:with-param name="version" select="'1'" />
+			<xsl:with-param name="module" select="'module_v0.1.0'" />
 		</xsl:call-template>
 	</xsl:if>
 	<xsl:for-each select="requires">
 		<xsl:call-template name="include">
 			<xsl:with-param name="module" select="@module" />
-			<xsl:with-param name="version" select="@version" />
 		</xsl:call-template>
 	</xsl:for-each>
 	<xsl:text>&#xa;</xsl:text>

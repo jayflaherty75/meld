@@ -4,13 +4,9 @@
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
 <xsl:template match="module">
-	<xsl:choose>
-		<xsl:when test="count(version) &gt; 0">
-			<xsl:value-of select="normalize-space(version)" />
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:text>0.1.0</xsl:text>
-		</xsl:otherwise>
-	</xsl:choose>
+	<xsl:for-each select="requires">
+		<xsl:value-of select="@module" />
+		<xsl:text>&#xa;</xsl:text>
+	</xsl:for-each>
 </xsl:template>
 </xsl:stylesheet>

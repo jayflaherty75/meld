@@ -4,14 +4,9 @@
 
 <xsl:template name="include">
 	<xsl:param name="module" />
-	<xsl:param name="version" />
 
-	<xsl:text>#include once "../</xsl:text>
+	<xsl:text>#include once "</xsl:text>
 	<xsl:value-of select="$module" />
-	<xsl:text>/</xsl:text>
-	<xsl:value-of select="$module" />
-	<xsl:text>-v</xsl:text>
-	<xsl:value-of select="$version" />
 	<xsl:text>.bi"</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 </xsl:template>

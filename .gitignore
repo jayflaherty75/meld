@@ -46,3 +46,5 @@ meld_modules
 /build/parse-*
 /build/kebab-to-pascal
 /modules/definitions/*.xml
+/modules/local/*
+!/modules/local/.gitkeep

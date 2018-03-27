@@ -11,14 +11,22 @@
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+	<xsl:variable name="version" select="normalize-space(version)" />
 
 	<xsl:call-template name="warningMessage" />
 
-	<xsl:text>#include once "../../../../../modules/headers/</xsl:text>
+	<xsl:text>#include once "headers/</xsl:text>
 	<xsl:value-of select="@name" />
-	<xsl:text>/</xsl:text>
-	<xsl:value-of select="@name" />
-	<xsl:text>-v1.bi"&#xa;</xsl:text>
+	<xsl:text>_v</xsl:text>
+	<xsl:choose>
+		<xsl:when test="categoryName != ''">
+			<xsl:value-of select="$version" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:text>0.1.0</xsl:text>
+		</xsl:otherwise>
+	</xsl:choose>
+	<xsl:text>.bi"&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>#define NULL 0&#xa;</xsl:text>
