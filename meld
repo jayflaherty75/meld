@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Get running directory of Meld
+# Get root directory of Meld
 SOURCE="${BASH_SOURCE[0]}"
 
 while [ -h "$SOURCE" ]; do
@@ -12,11 +12,14 @@ done
 MELD_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 MODULE_NAME=${PWD##*/}
 
+# Display help page if no arguments given
 if [ $# -eq 0 ]; then
-	echo "Meld v0.1.0"
+	$MELD_DIR/commands/help
 	exit 0;
 fi
 
+# If 'run' argument passed, launch from commands directory, otherwise launch
+# the given module passing all arguments to it
 if [ "$1" == "run" ]; then
 	if [ -z "$2" ]; then
 		echo "Missing run command"
@@ -28,7 +31,7 @@ if [ "$1" == "run" ]; then
 		exit 1;
 	fi
 
-	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME"
+	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME" "$@"
 else
 	$MELD_DIR/commands/launch "$@"
 fi

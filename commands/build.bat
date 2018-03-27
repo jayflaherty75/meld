@@ -14,7 +14,7 @@ IF "%3"=="" (
 
 type "src\fb\%moduleSystem%\%moduleType%\%moduleName%\%moduleName%.bas" | build\parse-fb %moduleName% > modules\definitions\%moduleName%.xml
 
-call build\header %moduleName%
+xsltproc -o modules\headers\%moduleName%\%moduleName%-v0.1.0.bi build\templates\header-fb.xslt modules\definitions\%moduleName%.xml
 
 xsltproc -o src\fb\%moduleSystem%\%moduleType%\%moduleName%\module.bi build\templates\module-fb.xslt modules\definitions\%moduleName%.xml
 

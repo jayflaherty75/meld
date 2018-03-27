@@ -1,0 +1,26 @@
+#!/bin/bash
+
+MELD_DIR=$1
+MODULE_NAME=$2
+MODULE_VERSION=$(<./.meld/version)
+CURRENT=$(pwd)
+TARGET=$(realpath "$CURRENT/bin")
+
+if [ -L "$MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION" ]; then
+	ORIGINAL=$(readlink -f "$MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION")
+	unlink $MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION
+else
+	ORIGINAL=""
+fi
+
+ln -s $TARGET $MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION
+
+# Generate undo-link script to reliably remove link across version changes
+echo "#!/bin/bash" > ./.meld/undo-link
+echo "unlink $MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION" >> ./.meld/undo-link
+
+if [ "$ORIGINAL" != "" ] && [ "$TARGET" != "$ORIGINAL" ]; then
+	echo "ln -s $ORIGINAL $MELD_DIR/modules/local/$MODULE_NAME-v$MODULE_VERSION" >> ./.meld/undo-link
+fi
+
+chmod +x ./.meld/undo-link
