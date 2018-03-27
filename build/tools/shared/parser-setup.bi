@@ -13,6 +13,7 @@
 #include once "../shared/parser-xml-cmd-typedef.bi"
 #include once "../shared/parser-xml-cmd-class.bi"
 #include once "../shared/parser-xml-cmd-property.bi"
+#include once "../shared/parser-xml-cmd-version.bi"
 
 declare sub parserSetup()
 
@@ -30,4 +31,5 @@ sub parserSetup()
 	Parser.addCommand(@ParserXmlCmdTypedef.handler)
 	Parser.addCommand(@ParserXmlCmdClass.handler)
 	Parser.addCommand(@ParserXmlCmdProperty.handler)
+	Parser.addCommand(@ParserXmlCmdVersion.handler)
 end sub
