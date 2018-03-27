@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="tester">
+  <requires module='console' version='1' />
+  <requires module='fault' version='1' />
+  <requires module='error-handling' version='1' />
+  <version>0.1.0</version>
+  <typedef name='doneFn' type='function' modifier='value'>
+  </typedef>
+  <typedef name='testFunc' type='function' modifier='value'>
+    <param name='done' type='doneFn' modifier='value' const='false' />
+  </typedef>
+  <typedef name='itCallback' type='function' modifier='value'>
+    <param name='description' type='zstring' modifier='reference' const='false' />
+    <param name='test' type='testFunc' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <typedef name='suiteFunc' type='function' modifier='value'>
+    <param name='it' type='itCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <typedef name='describeCallback' type='function' modifier='value'>
+    <param name='description' type='zstring' modifier='reference' const='false' />
+    <param name='callback' type='suiteFunc' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <typedef name='testModule' type='function' modifier='value'>
+    <param name='describeFn' type='describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='run'>
+    <param name='tests' type='testModule' modifier='pointer' const='false' />
+    <param name='count' type='short' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Given a pointer to an array of test modules and a count, runs all tests up until a first failure and returns true if all passed or false if any one fails.</description>
+  </function>
+  <function name='describe'>
+    <param name='description' type='zstring' modifier='value' const='false' />
+    <param name='callback' type='suiteFunc' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Passed to the test module so the module can provide a description.</description>
+  </function>
+  <function name='suite'>
+    <param name='description' type='zstring' modifier='value' const='false' />
+    <param name='testFn' type='testFunc' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Passed to the test so the test can describe and run each individual testunit.</description>
+  </function>
+  <function name='expect'>
+    <param name='result' type='long' modifier='value' const='false' />
+    <param name='expected' type='long' modifier='value' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='expectNot'>
+    <param name='result' type='long' modifier='value' const='false' />
+    <param name='expected' type='long' modifier='value' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='expectStr'>
+    <param name='result' type='zstring' modifier='reference' const='false' />
+    <param name='expected' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='expectStrNot'>
+    <param name='result' type='zstring' modifier='reference' const='false' />
+    <param name='expected' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='expectPtr'>
+    <param name='result' type='any' modifier='pointer' const='false' />
+    <param name='expected' type='any' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='expectPtrNot'>
+    <param name='result' type='any' modifier='pointer' const='false' />
+    <param name='expected' type='any' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='reference' const='false' />
+  </function>
+  <function name='_done'>
+    <private />
+  </function>
+  <namespace>Tester</namespace>
+</module>

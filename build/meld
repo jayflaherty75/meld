@@ -1,23 +1,30 @@
 #!/bin/bash
 
-compileExternal () {
-	echo $3
-	fbc -mt -s console -dylib -export "./src/fb/$1/$2/$3/$3.bas" -x "modules/$3.so" \
-		|| { echo; echo Failed to compile $3 module, build terminated; exit 1; }
-}
+#compileExternal () {
+#	echo $3
+#	fbc -mt -s console -dylib -export "./src/fb/$1/$2/$3/$3.bas" -x "modules/$3.so" \
+#		|| { echo; echo Failed to compile $3 module, build terminated; exit 1; }
+#}
 
 compile () {
 	echo $1
-	cat "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" | ./build/parse-fb $1 > ./modules/definitions/$1.xml
-	./build/header $1
+
+	if [ ! -d "./modules/local/$1_v0.1.0" ]; then
+		mkdir -p "./modules/local/$1_v0.1.0"
+	fi
+
+	cat "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" | ./build/parse-fb $1 > ./modules/local/$1_v0.1.0/module.xml
 	fbc -mt -c "./src/fb/${3:-shared}/${2:-lib}/$1/$1.bas" || { echo; echo Failed to compile $1, build terminated; exit 1; }
 }
 
 echo Starting Meld Core build...
 echo
 
-cat "./src/fb/meld/lib/meld/meld.bas" | ./build/parse-fb meld > ./modules/definitions/meld.xml
-./build/header meld
+if [ ! -d "./modules/local/meld_v0.1.0" ]; then
+	mkdir -p "./modules/local/meld_v0.1.0"
+fi
+
+cat "./src/fb/meld/lib/meld/meld.bas" | ./build/parse-fb meld > ./modules/local/meld_v0.1.0/module.xml
 
 #echo Compiling modules...
 #echo

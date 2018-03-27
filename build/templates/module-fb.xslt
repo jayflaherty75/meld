@@ -11,9 +11,10 @@
 <xsl:template match="module">
 	<xsl:variable name="module" select="@name" />
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
+	<xsl:variable name="version" select="normalize-space(version)" />
 
 	<xsl:call-template name="warningMessage" />
-#include once "../../../../../modules/headers/<xsl:value-of select="$module" />/<xsl:value-of select="$module" />-v1.bi"
+#include once "headers/<xsl:value-of select="$module" />_v<xsl:value-of select="$version" />.bi"
 #include once "<xsl:value-of select="$module" />.bi"
 
 dim shared _moduleLocal as Module.Interface
