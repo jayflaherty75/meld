@@ -10,7 +10,7 @@
 
 dim shared _module as Module.Interface ptr
 dim shared _fault as Fault.Interface ptr
-dim shared _console as Console.Interface ptr
+dim shared _console_v0.1.0 as Console_v0.1.0.Interface ptr
 
 type ModuleStateType
 	methods as Fault.Interface

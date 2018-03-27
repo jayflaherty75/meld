@@ -33,15 +33,15 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_errorHandling = exports()
 
-		_console = modulePtr->require("console")
-		If _console = NULL then
-			print("**** ErrorHandling.load: Failed to load console dependency")
+		_console_v0.1.0 = modulePtr->require("console_v0.1.0")
+		If _console_v0.1.0 = NULL then
+			print("**** ErrorHandling.load: Failed to load console_v0.1.0 dependency")
 			Return false
 		End If
 
-		_fault = modulePtr->require("fault")
-		If _fault = NULL then
-			print("**** ErrorHandling.load: Failed to load fault dependency")
+		_fault_v0.1.0 = modulePtr->require("fault_v0.1.0")
+		If _fault_v0.1.0 = NULL then
+			print("**** ErrorHandling.load: Failed to load fault_v0.1.0 dependency")
 			Return false
 		End If
 

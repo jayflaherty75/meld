@@ -1,6 +1,6 @@
 
 /''
- ' @requires console
+ ' @requires console_v0.1.0
  '/
 
 #include once "module.bi"

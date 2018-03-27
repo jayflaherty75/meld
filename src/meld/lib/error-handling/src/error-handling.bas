@@ -1,7 +1,7 @@
 
 /''
- ' @requires console
- ' @requires fault
+ ' @requires console_v0.1.0
+ ' @requires fault_v0.1.0
  '/
 
 #include once "module.bi"

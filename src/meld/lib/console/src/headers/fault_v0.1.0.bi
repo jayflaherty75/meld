@@ -5,7 +5,7 @@
 '/
 
 #include once "module_v0.1.0.bi"
-#include once "console_v0.1.0.bi"
+#include once "console.bi"
 
 namespace Fault
 

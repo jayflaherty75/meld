@@ -33,9 +33,9 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_semVer = exports()
 
-		_sys = modulePtr->require("sys")
-		If _sys = NULL then
-			print("**** SemVer.load: Failed to load sys dependency")
+		_sys_v0.1.0 = modulePtr->require("sys_v0.1.0")
+		If _sys_v0.1.0 = NULL then
+			print("**** SemVer.load: Failed to load sys_v0.1.0 dependency")
 			Return false
 		End If
 
