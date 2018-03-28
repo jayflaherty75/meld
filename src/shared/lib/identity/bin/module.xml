@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="identity">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <requires module='sys' version='0.1.0' />
+  <version>0.1.0</version>
+  <class name='Instance'>
+    <property name='autoinc' type='ulong' modifier='value' const='false' />
+    <description>Standard library instance.</description>
+  </class>
+  <class name='Unique'>
+    <property name='v(15-1)' type='ubyte' modifier='value' const='false' />
+    <description>Represents a binary, non-serialized unique identifier.</description>
+  </class>
+  <typedef name='Encoded' type='zstring*21' modifier='value'>
+    <description>Represents a serialized unique identifier.</description>
+  </typedef>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Module startup routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Module shutdown routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Identity.Instance' modifier='pointer' />
+    <throws type='ResourceAllocationError' />
+  </function>
+  <function name='destruct'>
+    <param name='idPtr' type='Identity.Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='getAutoInc'>
+    <param name='idPtr' type='Identity.Instance' modifier='pointer' const='false' />
+    <returns type='ulong' modifier='value' />
+    <description>Simple auto-increment ID generator for local resources.</description>
+  </function>
+  <function name='generate'>
+    <returns type='Unique' modifier='value' />
+    <description>Unique ID generator providing binary representation of application resources designed to be efficiently searched using binary search trees.</description>
+  </function>
+  <function name='encode'>
+    <param name='id' type='Unique' modifier='pointer' const='false' />
+    <param name='dest' type='Encoded' modifier='pointer' const='false' />
+    <description>Serializes a binary unique identifier into a 20-character ID.</description>
+  </function>
+  <function name='decode'>
+    <param name='source' type='Encoded' modifier='pointer' const='false' />
+    <param name='id' type='Unique' modifier='pointer' const='false' />
+    <description>Deserializes a 20-character identifier into a binary unique ID.</description>
+  </function>
+  <function name='_reverseByteOrder'>
+    <param name='dest' type='ubyte' modifier='pointer' const='false' />
+    <param name='source' type='ubyte' modifier='pointer' const='false' />
+    <param name='length' type='long' modifier='value' const='false' />
+    <private />
+    <description>Intended for use on big-endian systems to ensure that the first bytes of an identifier are the most frequently changing.</description>
+  </function>
+  <function name='_mapEncoding'>
+    <param name='index' type='ubyte' modifier='value' const='false' />
+    <param name='ascii' type='ubyte' modifier='value' const='false' />
+    <private />
+    <description>Saves mapping values for base64 encoding.</description>
+  </function>
+  <function name='_generateEncodeMapping'>
+    <private />
+    <description>Generate mappings for encoding and decoding base64.</description>
+  </function>
+  <function name='_generateBinDistMapping'>
+    <private />
+    <description>Distributes generated values to be search-friendly.</description>
+  </function>
+  <function name='_convertMacAddress'>
+    <param name='source' type='zstring' modifier='reference' const='false' />
+    <returns type='ulongint' modifier='value' />
+    <private />
+    <description>Converts a network MAC address into a number value.  Used for determining the "space" portion of the unique identifier.</description>
+  </function>
+  <function name='_convertHex'>
+    <param name='char' type='zstring' modifier='reference' const='false' />
+    <returns type='ubyte' modifier='value' />
+    <private />
+    <description>Returns a 0-15 value for a single hexidecimal character.</description>
+  </function>
+  <function name='_copy'>
+    <param name='source' type='ubyte' modifier='pointer' const='false' />
+    <param name='dest' type='ubyte' modifier='pointer' const='false' />
+    <param name='length' type='long' modifier='value' const='false' />
+    <private />
+    <description>Simple copy function to move generated values into resulting identifiers. Converts each byte to binary distribution during the copy.</description>
+  </function>
+  <namespace>Identity</namespace>
+  <description>Library for generating simple auto-incement IDs or unique identifiers.</description>
+</module>

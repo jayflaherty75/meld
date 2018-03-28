@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="paged-array">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <version>0.1.0</version>
+  <class name='Instance'>
+    <property name='size' type='ulong' modifier='value' const='false' />
+    <property name='pageLength' type='ulong' modifier='value' const='false' />
+    <property name='warnLimit' type='ulong' modifier='value' const='false' />
+    <property name='currentIndex' type='ulong' modifier='value' const='false' />
+    <property name='currentPageMax' type='ulong' modifier='value' const='false' />
+    <property name='currentMax' type='ulong' modifier='value' const='false' />
+    <property name='currentPage' type='ulong' modifier='value' const='false' />
+    <property name='pages' type='any ptr' modifier='pointer' const='false' />
+  </class>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Instance' modifier='pointer' />
+    <throws type='ResourceAllocationError' />
+    <description>Construct lifecycle function called by Meld framework.</description>
+  </function>
+  <function name='destruct'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+    <description>Destruct lifecycle function called by Meld framework.</description>
+  </function>
+  <function name='initialize'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='size' type='ulong' modifier='value' const='false' />
+    <param name='pageLength' type='ulong' modifier='value' const='false' />
+    <param name='warnLimit' type='ulong' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceAllocationError' />
+    <description>Initialize paged array.</description>
+  </function>
+  <function name='createIndex'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='ulong' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceAllocationError' />
+    <description>Creates and returns a new index available in the paged array.</description>
+  </function>
+  <function name='getIndex'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='ulong' modifier='value' const='false' />
+    <returns type='any' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <throws type='OutOfBoundsError' />
+    <description>Returns the data pointer for the given index of the paged array.</description>
+  </function>
+  <function name='pop'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='dataPtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <description>Pops and releases the last created index from the paged array and stores it at the given data pointer.</description>
+  </function>
+  <function name='isEmpty'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <description>Returns true if the paged array is empty.</description>
+  </function>
+  <function name='_createPage'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='ResourceLimitSurpassed' />
+    <private />
+    <description>Utility function to create a new page when the array runs out of available elements.</description>
+  </function>
+  <function name='_reallocatePageIndex'>
+    <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+    <description>Utility function to reallocate the page index, doubling it's size, when there are no more page pointer left.</description>
+  </function>
+  <namespace>PagedArray</namespace>
+</module>
