@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./build/module default apps shared

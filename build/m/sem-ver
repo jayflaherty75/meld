@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./build/module sem-ver lib meld
