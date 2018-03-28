@@ -21,7 +21,7 @@
     <description>Run or update an instance or pass NULL to run statically.</description>
   </function>
   <function name='test'>
-    <param name='describe' type='Tester.describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>

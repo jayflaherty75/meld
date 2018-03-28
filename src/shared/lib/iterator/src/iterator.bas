@@ -61,13 +61,14 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {any ptr} describe
+ ' @param {any ptr} describeFn
  ' @returns {short}
  '/
-function test cdecl (describe as any ptr) as short
+function test cdecl (describeFn as any ptr) as short
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describe ("The Iterator module", @testCreate)
+	result = result andalso describePtr ("The Iterator module", @testCreate)
 
 	return result
 end function

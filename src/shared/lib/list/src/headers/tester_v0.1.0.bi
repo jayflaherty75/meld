@@ -16,7 +16,7 @@ type suiteFunc as function cdecl (it as itCallback) as short
 
 type describeCallback as function cdecl (byref description as zstring, callback as suiteFunc) as short
 
-type testModule as function cdecl (describeFn as describeCallback) as short
+type testModule as function cdecl (describeFn as any ptr) as short
 
 type Interface
 	startup as function cdecl () as short
@@ -24,7 +24,7 @@ type Interface
 	construct as any ptr
 	destruct as any ptr
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	run as function cdecl (tests as testModule ptr, count as short) as short
 	describe as function cdecl (description as zstring, callback as suiteFunc) as short
 	suite as function cdecl (description as zstring, testFn as testFunc) as short

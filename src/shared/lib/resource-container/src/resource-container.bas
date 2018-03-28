@@ -19,8 +19,8 @@ namespace ResourceContainer
 
 /''
  ' @class Instance
- ' @member {PagedArray.Instance ptr} resources
- ' @member {PagedArray.Instance ptr} stack
+ ' @member {any ptr} resources
+ ' @member {any ptr} stack
  '/
 
 /''
@@ -52,10 +52,10 @@ end function
  ' @returns {short}
  '/
 function test cdecl (describeFn as any ptr) as short
-	dim as Tester.describeCallback describe = describeFn
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describe ("The ResourceContainer module", @testCreate)
+	result = result andalso describePtr ("The ResourceContainer module", @testCreate)
 
 	return result
 end function

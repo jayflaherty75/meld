@@ -59,10 +59,10 @@ end function
  ' @returns {short}
  '/
 function test cdecl (describeFn as any ptr) as short
-	dim as Tester.describeCallback describe = describeFn
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describe ("The PagedArray module", @testCreate)
+	result = result andalso describePtr ("The PagedArray module", @testCreate)
 
 	return result
 end function

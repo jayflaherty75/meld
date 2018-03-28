@@ -7,8 +7,8 @@
 namespace ResourceContainer
 
 type Instance
-	resources as PagedArray.Instance ptr
-	stack as PagedArray.Instance ptr
+	resources as any ptr
+	stack as any ptr
 end type
 
 type Interface
@@ -17,7 +17,7 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	initialize as function cdecl (contPtr as Instance ptr, size as short, pageLength as long, warnLimit as long) as short
 	request as function cdecl (contPtr as Instance ptr) as long
 	release as function cdecl (contPtr as Instance ptr, resourceId as long) as short

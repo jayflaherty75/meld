@@ -5,6 +5,7 @@
   <requires module='error-handling' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
   <requires module='iterator' version='0.1.0' />
+  <version>0.1.0</version>
   <typedef name='CompareFn' type='function' modifier='value'>
     <param name='criteria' type='any' modifier='pointer' const='false' />
     <param name='current' type='any' modifier='pointer' const='false' />
@@ -29,7 +30,7 @@
     <description>Application main routine.</description>
   </function>
   <function name='test'>
-    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>
@@ -103,7 +104,7 @@
   </function>
   <function name='getIterator'>
     <param name='listPtr' type='Instance' modifier='pointer' const='false' />
-    <returns type='Iterator.Instance' modifier='pointer' />
+    <returns type='any' modifier='pointer' />
     <throws type='NullReferenceError' />
     <description>Provides an Iterator instance that will return the element pointers of each node in the given list.</description>
   </function>
@@ -114,4 +115,5 @@
     <private />
     <description>Iteration handler for lists.</description>
   </function>
+  <namespace>List</namespace>
 </module>

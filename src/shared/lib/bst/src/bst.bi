@@ -42,15 +42,15 @@ namespace Bst
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Bst.Instance ptr
 declare sub destruct cdecl (btreePtr as Bst.Instance ptr)
 declare function insert cdecl (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 declare sub remove cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 declare sub purge cdecl (btreePtr as Bst.Instance ptr)
-declare function search cdecl (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
+declare function search cdecl (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = 0) as Bst.Node ptr
 declare function getLength cdecl (btreePtr as Bst.Instance ptr) as integer
-declare function getIterator cdecl (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
+declare function getIterator cdecl (btreePtr as Bst.Instance ptr) as any ptr
 declare function defaultCompare cdecl (criteria as any ptr, element as any ptr) as short
 declare function _createNode cdecl (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 declare sub _deleteNode cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)

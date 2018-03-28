@@ -48,7 +48,7 @@ namespace Tester
 
 /''
  ' @typedef {function} testModule
- ' @param {describeCallback} describeFn
+ ' @param {any ptr} describeFn
  ' @returns {short}
  '/
 
@@ -84,13 +84,14 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {describeCallback} describeFn
+ ' @param {any ptr} describeFn
  ' @returns {short}
  '/
-function test cdecl (describeFn as describeCallback) as short
+function test cdecl (describeFn as any ptr) as short
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describeFn ("The Tester module", @testCreate)
+	result = result andalso describePtr ("The Tester module", @testCreate)
 
 	return result
 end function

@@ -24,7 +24,7 @@
     <returns type='short' modifier='value' />
   </typedef>
   <typedef name='testModule' type='function' modifier='value'>
-    <param name='describeFn' type='describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
   </typedef>
   <function name='startup'>
@@ -36,7 +36,7 @@
     <description>Application main routine.</description>
   </function>
   <function name='test'>
-    <param name='describeFn' type='describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>
