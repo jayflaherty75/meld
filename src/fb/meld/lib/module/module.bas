@@ -345,7 +345,7 @@ function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
 	_entry->moduleId = _entry->moduleName
 	_entry->moduleFullName = _entry->moduleName
 	_entry->moduleVersion = "0.1.0"
-	_entry->filename = "modules" & DIR_SEP & _entry->moduleId & "." & EXTERNAL_MODULE_EXTENSION
+	_entry->filename = "modules" & DIR_SEP & "local" & DIR_SEP & _entry->moduleId & DIR_SEP & "module." & EXTERNAL_MODULE_EXTENSION
 
 	if not fileexists(_entry->filename) then
 		return false
