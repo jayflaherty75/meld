@@ -4,6 +4,7 @@
 
 <xsl:template name="acquireInterface">
 	<xsl:param name="module" />
+	<xsl:param name="version" />
 
 	<xsl:variable name="var-name">
 		<xsl:call-template name="convertCase">
@@ -16,6 +17,8 @@
 	<xsl:value-of select="$var-name" />
 	<xsl:text> = modulePtr->require("</xsl:text>
 	<xsl:value-of select="$module" />
+	<xsl:text>_v</xsl:text>
+	<xsl:value-of select="$version" />
 	<xsl:text>")&#xa;</xsl:text>
 	<xsl:text>&#x9;&#x9;</xsl:text>
 	<xsl:text>If _</xsl:text>

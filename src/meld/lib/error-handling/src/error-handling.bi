@@ -4,14 +4,17 @@
 ' during the next build.
 '/
 
+#include once "headers/module_v0.1.0.bi"
+#include once "headers/console_v0.1.0.bi"
+#include once "headers/fault_v0.1.0.bi"
 #include once "headers/error-handling_v0.1.0.bi"
 
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
 dim shared _errorhandling as Errorhandling.Interface ptr
-dim shared _console_v0.1.0 as Console_v0.1.0.Interface ptr
-dim shared _fault_v0.1.0 as Fault_v0.1.0.Interface ptr
+dim shared _console as Console.Interface ptr
+dim shared _fault as Fault.Interface ptr
 
 type ModuleStateType
 	methods as ErrorHandling.Interface

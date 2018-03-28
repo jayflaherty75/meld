@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module name="fault">
-  <requires module='console_v0.1.0' version='1' />
+  <requires module='console' version='0.1.0' />
   <version>0.1.0</version>
   <class name='Header'>
     <property name='name' type='zstring*64' modifier='value' const='false' />

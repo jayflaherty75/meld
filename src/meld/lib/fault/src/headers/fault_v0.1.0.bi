@@ -4,9 +4,6 @@
 ' during the next build.
 '/
 
-#include once "module_v0.1.0.bi"
-#include once "console_v0.1.0.bi"
-
 namespace Fault
 
 type Handler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)

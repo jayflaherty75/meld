@@ -4,10 +4,6 @@
 ' during the next build.
 '/
 
-#include once "module_v0.1.0.bi"
-#include once "console.bi"
-#include once "fault.bi"
-
 namespace ErrorHandling
 
 type Interface

@@ -8,6 +8,7 @@
 <xsl:include href="lib/declare-interface-fb.xslt" />
 <xsl:include href="lib/warning-message-fb.xslt" />
 <xsl:include href="lib/function-fb.xslt" />
+<xsl:include href="lib/include-fb.xslt" />
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
@@ -15,18 +16,22 @@
 
 	<xsl:call-template name="warningMessage" />
 
-	<xsl:text>#include once "headers/</xsl:text>
-	<xsl:value-of select="@name" />
-	<xsl:text>_v</xsl:text>
-	<xsl:choose>
-		<xsl:when test="categoryName != ''">
-			<xsl:value-of select="$version" />
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:text>0.1.0</xsl:text>
-		</xsl:otherwise>
-	</xsl:choose>
-	<xsl:text>.bi"&#xa;</xsl:text>
+	<xsl:if test="@name != 'module'">
+		<xsl:call-template name="include">
+			<xsl:with-param name="module" select="'module'" />
+			<xsl:with-param name="version" select="'0.1.0'" />
+		</xsl:call-template>
+	</xsl:if>
+	<xsl:for-each select="requires">
+		<xsl:call-template name="include">
+			<xsl:with-param name="module" select="@module" />
+			<xsl:with-param name="version" select="@version" />
+		</xsl:call-template>
+	</xsl:for-each>
+	<xsl:call-template name="include">
+		<xsl:with-param name="module" select="@name" />
+		<xsl:with-param name="version" select="$version" />
+	</xsl:call-template>
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>#define NULL 0&#xa;</xsl:text>

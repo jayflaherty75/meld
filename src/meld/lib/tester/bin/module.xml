@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module name="tester">
-  <requires module='console_v0.1.0' version='1' />
-  <requires module='fault_v0.1.0' version='1' />
-  <requires module='error-handling_v0.1.0' version='1' />
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
   <version>0.1.0</version>
   <typedef name='doneFn' type='function' modifier='value'>
   </typedef>
