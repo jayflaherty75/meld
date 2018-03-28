@@ -4,7 +4,6 @@
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
 <xsl:include href="lib/warning-message-fb.xslt" />
-<xsl:include href="lib/include-fb.xslt" />
 <xsl:include href="lib/type-fb.xslt" />
 <xsl:include href="lib/function-fb.xslt" />
 
@@ -15,18 +14,6 @@
 	<xsl:variable name="version" select="normalize-space(version)" />
 
 	<xsl:call-template name="warningMessage" />
-
-	<xsl:if test="@name != 'module'">
-		<xsl:call-template name="include">
-			<xsl:with-param name="module" select="'module_v0.1.0'" />
-		</xsl:call-template>
-	</xsl:if>
-	<xsl:for-each select="requires">
-		<xsl:call-template name="include">
-			<xsl:with-param name="module" select="@module" />
-		</xsl:call-template>
-	</xsl:for-each>
-	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:text>namespace </xsl:text>
 	<xsl:value-of select="$namespace" />

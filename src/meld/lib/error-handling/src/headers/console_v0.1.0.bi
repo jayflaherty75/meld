@@ -4,11 +4,6 @@
 ' during the next build.
 '/
 
-#include once "module_v0.1.0.bi"
-#include once "fault_v0.1.0.bi"
-#include once "error-handling_v0.1.0.bi"
-#include once "sys_v0.1.0.bi"
-
 namespace Console
 
 type Interface

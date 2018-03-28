@@ -15,6 +15,7 @@ dim shared as StateType state
 declare function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 
 declare function _parseDescription(parserPtr as Parser.StateType ptr, byref source as string) as short
+declare sub _parseVersion(byref modName as string, byref version as string)
 
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
@@ -26,7 +27,7 @@ function handler(ByRef cmd As String, ByRef definition As String, parserPtr As P
 		end if
 
 		state.moduleName = ""
-		state.moduleVersion = ""
+		state.moduleVersion = "0.0.0"
 
 		if not _parseDescription(parserPtr, definition) then
 			return false
@@ -55,9 +56,18 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 		end if
 	end if
 
-	if state.moduleVersion = "" then state.moduleVersion = "1"
+	_parseVersion(state.moduleName, state.moduleVersion)
 
 	return true
 end function
+
+sub _parseVersion(byref modName as string, byref version as string)
+	dim as short seperator = instr(modName, "_v")
+
+	if seperator > 0 then
+		version = mid(modName, seperator + 2)
+		modName = left(modName, seperator - 1)
+	end if
+end sub
 
 end namespace

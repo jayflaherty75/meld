@@ -61,6 +61,7 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		<xsl:for-each select="requires">
 			<xsl:call-template name="acquireInterface">
 				<xsl:with-param name="module" select="@module" />
+				<xsl:with-param name="version" select="@version" />
 			</xsl:call-template>
 		</xsl:for-each>
 		<xsl:text>&#xa;</xsl:text>

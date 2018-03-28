@@ -9,6 +9,8 @@
 #include once "errors.bi"
 #include once "test.bi"
 
+#define TESTER_TIMEOUT_DEFAULT		2000
+
 /''
  ' @namespace Tester
  ' @version 0.1.0

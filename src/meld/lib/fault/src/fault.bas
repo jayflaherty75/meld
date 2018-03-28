@@ -6,6 +6,8 @@
 #include once "module.bi"
 #include once "errors.bi"
 
+#define ERROR_MAX_TYPES                     256
+
 /''
  ' @namespace Fault
  ' @version 0.1.0

@@ -4,9 +4,6 @@
 ' during the next build.
 '/
 
-#include once "module_v0.1.0.bi"
-#include once "sem-ver.bi"
-
 namespace Sys
 
 type Interface

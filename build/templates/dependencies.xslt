@@ -6,6 +6,8 @@
 <xsl:template match="module">
 	<xsl:for-each select="requires">
 		<xsl:value-of select="@module" />
+		<xsl:text>_v</xsl:text>
+		<xsl:value-of select="@version" />
 		<xsl:text>&#xa;</xsl:text>
 	</xsl:for-each>
 </xsl:template>

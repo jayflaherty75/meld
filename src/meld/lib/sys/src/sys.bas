@@ -7,6 +7,10 @@
 #include once "vbcompat.bi"
 #include once "file.bi"
 
+#define MILLISECONDS_PER_DAY		86400000
+#define MILLISECONDS_PER_MONTH		2678400000
+#define MILLISECONDS_PER_YEAR		32140800000
+
 /''
  ' @namespace Sys
  ' @version 0.1.0

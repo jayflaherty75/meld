@@ -4,13 +4,15 @@
 ' during the next build.
 '/
 
+#include once "headers/module_v0.1.0.bi"
+#include once "headers/sys_v0.1.0.bi"
 #include once "headers/sem-ver_v0.1.0.bi"
 
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
 dim shared _semver as Semver.Interface ptr
-dim shared _sys_v0.1.0 as Sys_v0.1.0.Interface ptr
+dim shared _sys as Sys.Interface ptr
 
 type ModuleStateType
 	methods as SemVer.Interface
