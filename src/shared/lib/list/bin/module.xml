@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="list">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <requires module='iterator' version='0.1.0' />
+  <typedef name='CompareFn' type='function' modifier='value'>
+    <param name='criteria' type='any' modifier='pointer' const='false' />
+    <param name='current' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <class name='Node'>
+    <property name='nextPtr' type='Node' modifier='pointer' const='false' />
+    <property name='prevPtr' type='Node' modifier='pointer' const='false' />
+    <property name='element' type='any' modifier='pointer' const='false' />
+  </class>
+  <class name='Instance'>
+    <property name='first' type='Node' modifier='pointer' const='false' />
+    <property name='last' type='Node' modifier='pointer' const='false' />
+    <property name='length' type='long' modifier='value' const='false' />
+  </class>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Instance' modifier='pointer' />
+    <throws type='ResourceAllocationError' />
+    <description>Creates a new list instance.</description>
+  </function>
+  <function name='destruct'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+    <throws type='ReleaseResourceError' />
+    <description>Deletes a previously created list instance.</description>
+  </function>
+  <function name='insert'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='element' type='any' modifier='pointer' const='false' />
+    <param name='prevPtr' type='Node' modifier='pointer' const='false' />
+    <returns type='Node' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+    <throws type='ResourceAllocationError' />
+    <description>Inserts a node after the prevPtr node.  If prevPtr is not supplied or null, the new node is inserted as the first element.</description>
+  </function>
+  <function name='remove'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='node' type='Node' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+    <description>Removes a node from the list.</description>
+  </function>
+  <function name='getFirst'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='Node' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <description>Returns the first node of a list.</description>
+  </function>
+  <function name='getLast'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='Node' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <description>Returns the last node of a list.</description>
+  </function>
+  <function name='getNext'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='node' type='Node' modifier='pointer' const='false' />
+    <returns type='Node' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <description>Returns the node after the given node.</description>
+  </function>
+  <function name='getLength'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
+    <description>Returns the length of the given list.</description>
+  </function>
+  <function name='search'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='element' type='any' modifier='pointer' const='false' />
+    <param name='compare' type='CompareFn' modifier='value' const='false' />
+    <returns type='Node' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+    <description>Search for an element in the list using the given compare function.  If searching for integer values, just pass defaultCompare.</description>
+  </function>
+  <function name='defaultCompare'>
+    <param name='criteria' type='any' modifier='pointer' const='false' />
+    <param name='current' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Integer search function used as default since system will be using indexed identifiers for deterministic references.</description>
+  </function>
+  <function name='getIterator'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='Iterator.Instance' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <description>Provides an Iterator instance that will return the element pointers of each node in the given list.</description>
+  </function>
+  <function name='_iterationHandler'>
+    <param name='iter' type='Iterator.Instance' modifier='pointer' const='false' />
+    <param name='target' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+    <description>Iteration handler for lists.</description>
+  </function>
+</module>

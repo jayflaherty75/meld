@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="iterator">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <version>0.1.0</version>
+  <typedef name='InstanceAlias' type='Instance' modifier='value'>
+  </typedef>
+  <typedef name='IteratorHandler' type='function' modifier='value'>
+    <param name='result' type='InstanceAlias' modifier='pointer' const='false' />
+    <param name='expected' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <class name='Instance'>
+    <property name='dataSet' type='any' modifier='pointer' const='false' />
+    <property name='index' type='long' modifier='value' const='false' />
+    <property name='length' type='long' modifier='value' const='false' />
+    <property name='current' type='any' modifier='pointer' const='false' />
+    <property name='handler' type='any' modifier='pointer' const='false' />
+  </class>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describe' type='Tester.describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Instance' modifier='pointer' />
+    <throws type='ResourceAllocationError' />
+  </function>
+  <function name='destruct'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='setHandler'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <param name='cb' type='IteratorHandler' modifier='value' const='false' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+  </function>
+  <function name='setData'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <param name='dataSet' type='any' modifier='pointer' const='false' />
+    <param name='setLength' type='long' modifier='value' const='false'>
+      <default>-1</default>
+    </param>
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='length'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='getNext'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <param name='target' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+  </function>
+  <function name='reset'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='_defaultHandler'>
+    <param name='iter' type='Instance' modifier='pointer' const='false' />
+    <param name='target' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+  </function>
+  <namespace>Iterator</namespace>
+</module>

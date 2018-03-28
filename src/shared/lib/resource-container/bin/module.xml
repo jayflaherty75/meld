@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="resource-container">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <requires module='paged-array' version='0.1.0' />
+  <version>0.1.0</version>
+  <class name='Instance'>
+    <property name='resources' type='PagedArray.Instance' modifier='pointer' const='false' />
+    <property name='stack' type='PagedArray.Instance' modifier='pointer' const='false' />
+  </class>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Instance' modifier='pointer' />
+    <throws type='ResourceAllocationError' />
+    <description>Creates a resource container that manages the creation and reuse of existing resource.</description>
+  </function>
+  <function name='destruct'>
+    <param name='contPtr' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='initialize'>
+    <param name='contPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='size' type='short' modifier='value' const='false' />
+    <param name='pageLength' type='long' modifier='value' const='false' />
+    <param name='warnLimit' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceAllocationError' />
+    <description>Creates a resource container that manages the creation and reuse of existing resource.</description>
+  </function>
+  <function name='request'>
+    <param name='contPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+    <description>Request the index of a newly created resource.</description>
+  </function>
+  <function name='release'>
+    <param name='contPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='resourceId' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
+    <throws type='ReleaseResourceError' />
+    <description>Release the resource of the given index.</description>
+  </function>
+  <function name='getPtr'>
+    <param name='contPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='resourceId' type='long' modifier='value' const='false' />
+    <returns type='any' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <description>Returns the point to the resource of the given index.</description>
+  </function>
+  <namespace>ResourceContainer</namespace>
+</module>

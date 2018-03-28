@@ -6,10 +6,10 @@
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />
 /''
- ' @requires console
- ' @requires fault
- ' @requires error-handling
- ' @requires tester
+ ' @requires console_v0.1.0
+ ' @requires fault_v0.1.0
+ ' @requires error-handling_v0.1.0
+ ' @requires tester_v0.1.0
  '/
 
 #include once "module.bi"
