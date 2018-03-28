@@ -4,7 +4,7 @@
 ' during the next build.
 '/
 
-namespace 
+namespace List
 
 type CompareFn as function cdecl (criteria as any ptr, current as any ptr) as short
 
@@ -26,7 +26,7 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	insert as function cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr) as Node ptr
 	remove as sub cdecl (listPtr as Instance ptr, node as Node ptr)
 	getFirst as function cdecl (listPtr as Instance ptr) as Node ptr
@@ -35,7 +35,7 @@ type Interface
 	getLength as function cdecl (listPtr as Instance ptr) as long
 	search as function cdecl (listPtr as Instance ptr, element as any ptr, compare as CompareFn) as Node ptr
 	defaultCompare as function cdecl (criteria as any ptr, current as any ptr) as short
-	getIterator as function cdecl (listPtr as Instance ptr) as Iterator.Instance ptr
+	getIterator as function cdecl (listPtr as Instance ptr) as any ptr
 end type
 
 end namespace

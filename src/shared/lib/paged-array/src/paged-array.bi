@@ -40,7 +40,7 @@ namespace PagedArray
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (arrayPtr as Instance ptr)
 declare function initialize cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short

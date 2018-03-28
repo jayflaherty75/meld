@@ -12,6 +12,12 @@
 #include once "test.bi"
 
 /''
+ ' @namespace List
+ ' @version 0.1.0
+ '/
+namespace List
+
+/''
  ' @typedef {function} CompareFn
  ' @param {any ptr} criteria
  ' @param {any ptr} current
@@ -61,10 +67,10 @@ end function
  ' @returns {short}
  '/
 function test cdecl (describeFn as any ptr) as short
-	dim as Tester.describeCallback describe = describeFn
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describe ("The List module", @testCreate)
+	result = result andalso describePtr ("The List module", @testCreate)
 
 	return result
 end function
@@ -341,10 +347,10 @@ end function
  ' node in the given list.
  ' @function getIterator
  ' @param {Instance ptr} listPtr
- ' @returns {Iterator.Instance ptr}
+ ' @returns {any ptr}
  ' @throws {NullReferenceError}
  '/
-function getIterator cdecl (listPtr as Instance ptr) as Iterator.Instance ptr
+function getIterator cdecl (listPtr as Instance ptr) as any ptr
 	dim as Iterator.Instance ptr iter = _iterator->construct()
 
 	if listPtr = NULL then

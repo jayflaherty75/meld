@@ -31,7 +31,7 @@
     <description>Application main routine.</description>
   </function>
   <function name='test'>
-    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>
@@ -73,7 +73,7 @@
     <param name='element' type='any' modifier='pointer' const='false' />
     <param name='start' type='Bst.Node' modifier='pointer' const='false'>
       <description>Defaults to root node</description>
-      <default>NULL</default>
+      <default>0</default>
     </param>
     <returns type='Bst.Node' modifier='pointer' />
     <throws type='NullReferenceError' />
@@ -88,7 +88,7 @@
   </function>
   <function name='getIterator'>
     <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
-    <returns type='Iterator.Instance' modifier='pointer' />
+    <returns type='any' modifier='pointer' />
     <throws type='NullReferenceError' />
     <throws type='ResourceAllocationError' />
     <description>Creates a new Iterator for the tree.  Use the Iterator->destruct function to destroy the iterator.</description>

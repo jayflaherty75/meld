@@ -24,7 +24,7 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	setHandler as sub cdecl (iter as Instance ptr, cb as IteratorHandler)
 	setData as sub cdecl (iter as Instance ptr, dataSet as any ptr, setLength as long = -1)
 	length as function cdecl (iter as Instance ptr) as long

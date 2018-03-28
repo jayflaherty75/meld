@@ -23,7 +23,7 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	initialize as function cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
 	createIndex as function cdecl (arrayPtr as Instance ptr) as ulong
 	getIndex as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr

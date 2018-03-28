@@ -7,8 +7,8 @@
   <requires module='paged-array' version='0.1.0' />
   <version>0.1.0</version>
   <class name='Instance'>
-    <property name='resources' type='PagedArray.Instance' modifier='pointer' const='false' />
-    <property name='stack' type='PagedArray.Instance' modifier='pointer' const='false' />
+    <property name='resources' type='any' modifier='pointer' const='false' />
+    <property name='stack' type='any' modifier='pointer' const='false' />
   </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
@@ -19,7 +19,7 @@
     <description>Application main routine.</description>
   </function>
   <function name='test'>
-    <param name='describeFn' type='Tester.describeCallback' modifier='value' const='false' />
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>

@@ -15,7 +15,7 @@
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
-dim shared _ as .Interface ptr
+dim shared _list as List.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
@@ -23,7 +23,7 @@ dim shared _tester as Tester.Interface ptr
 dim shared _iterator as Iterator.Interface ptr
 
 type ModuleStateType
-	methods as .Interface
+	methods as List.Interface
 	isLoaded as short
 	isStarted as short
 end type
@@ -38,11 +38,11 @@ end type
 dim shared as ModuleStateType moduleState
 dim shared as ErrorCodes errors
 
-namespace 
+namespace List
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (listPtr as Instance ptr)
 declare function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr) as Node ptr
@@ -53,7 +53,7 @@ declare function getNext cdecl (listPtr as Instance ptr, node as Node ptr) as No
 declare function getLength cdecl (listPtr as Instance ptr) as long
 declare function search cdecl (listPtr as Instance ptr, element as any ptr, compare as CompareFn) as Node ptr
 declare function defaultCompare cdecl (criteria as any ptr, current as any ptr) as short
-declare function getIterator cdecl (listPtr as Instance ptr) as Iterator.Instance ptr
+declare function getIterator cdecl (listPtr as Instance ptr) as any ptr
 declare function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
 
 end namespace

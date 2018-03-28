@@ -69,10 +69,10 @@ end function
  ' @returns {short}
  '/
 function test cdecl (describeFn as any ptr) as short
-	dim as Tester.describeCallback describe = describeFn
+	dim as Tester.describeCallback describePtr = describeFn
 	dim as short result = true
 
-	result = result andalso describe ("The Bst module", @testCreate)
+	result = result andalso describePtr ("The Bst module", @testCreate)
 
 	return result
 end function
@@ -253,7 +253,7 @@ end sub
  ' @function search
  ' @param {Bst.Instance ptr} btreePtr
  ' @param {any ptr} element
- ' @param {Bst.Node ptr} [start=NULL] - Defaults to root node
+ ' @param {Bst.Node ptr} [start=0] - Defaults to root node
  ' @returns {Bst.Node ptr}
  ' @throws {NullReferenceError|InvalidArgumentError}
  '/
@@ -306,10 +306,10 @@ end function
  ' to destroy the iterator.
  ' @function getIterator
  ' @param {Bst.Instance ptr} btreePtr
- ' @returns {Iterator.Instance ptr}
+ ' @returns {any ptr}
  ' @throws {NullReferenceError|ResourceAllocationError}
  '/
-function getIterator cdecl (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
+function getIterator cdecl (btreePtr as Bst.Instance ptr) as any ptr
 	dim as Iterator.Instance ptr iter
 
 	if btreePtr = NULL then

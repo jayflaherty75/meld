@@ -22,7 +22,7 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	getAutoInc as function cdecl (idPtr as Identity.Instance ptr) as ulong
 	generate as function cdecl () as Unique
 	encode as sub cdecl (id as Unique ptr, dest as Encoded ptr)

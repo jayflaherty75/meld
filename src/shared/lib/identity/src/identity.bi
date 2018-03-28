@@ -40,7 +40,7 @@ namespace Identity
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as Tester.describeCallback) as short
+declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Identity.Instance ptr
 declare sub destruct cdecl (idPtr as Identity.Instance ptr)
 declare function getAutoInc cdecl (idPtr as Identity.Instance ptr) as ulong

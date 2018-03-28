@@ -27,13 +27,13 @@ type Interface
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
-	test as function cdecl (describe as Tester.describeCallback) as short
+	test as function cdecl (describeFn as any ptr) as short
 	insert as function cdecl (btreePtr as Bst.Instance ptr, element as any ptr) as Bst.Node ptr
 	remove as sub cdecl (btreePtr as Bst.Instance ptr, nodePtr as Bst.Node ptr)
 	purge as sub cdecl (btreePtr as Bst.Instance ptr)
-	search as function cdecl (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = NULL) as Bst.Node ptr
+	search as function cdecl (btreePtr as Bst.Instance ptr, element as any ptr, start as Bst.Node ptr = 0) as Bst.Node ptr
 	getLength as function cdecl (btreePtr as Bst.Instance ptr) as integer
-	getIterator as function cdecl (btreePtr as Bst.Instance ptr) as Iterator.Instance ptr
+	getIterator as function cdecl (btreePtr as Bst.Instance ptr) as any ptr
 	defaultCompare as function cdecl (criteria as any ptr, element as any ptr) as short
 end type
 
