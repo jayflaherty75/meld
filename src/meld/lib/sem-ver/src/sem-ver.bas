@@ -68,8 +68,7 @@ function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
 		end if
 	end if
 
-	_entry->filename = "modules" & *_sys->getDirsep() _
-		& "local" & *_sys->getDirsep() _
+	_entry->filename = "meld_modules" & *_sys->getDirsep() _
 		& _entry->moduleId & *_sys->getDirsep() & "module." _
 		& *_sys->getModuleExt()
 
