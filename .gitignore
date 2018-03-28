@@ -42,10 +42,8 @@ luac.out
 .meld
 meld_modules
 /commands/launch
-/tester
 /build/parse-*
 /build/kebab-to-pascal
-/modules/definitions/*.xml
 /modules/local/*
 !/modules/local/.gitkeep
 /modules/global/*
