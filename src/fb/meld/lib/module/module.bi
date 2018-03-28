@@ -3,7 +3,8 @@
 #define MODULE_MAX_ENTRIES		4096
 #endif
 
-#include once "../../../../../modules/headers/meld/meld-v1.bi"
+#include once "headers/meld_v0.1.0/module.bi"
+#include once "headers/module_v0.1.0/module.bi"
 #include once "file.bi"
 
 #IFDEF __FB_WIN32__
@@ -13,6 +14,8 @@
 	#define EXTERNAL_MODULE_EXTENSION		"so"
 	#define DIR_SEP							"/"
 #ENDIF
+
+#define NULL	0
 
 namespace Module
 

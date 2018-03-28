@@ -58,10 +58,10 @@ end function
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {Tester.describeCallback} describe
+ ' @param {any ptr} describe
  ' @returns {short}
  '/
-function test cdecl (describe as Tester.describeCallback) as short
+function test cdecl (describe as any ptr) as short
 	dim as short result = true
 
 	result = result andalso describe ("The Default module", @Default.testCreate)
