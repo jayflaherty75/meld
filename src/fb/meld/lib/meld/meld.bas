@@ -50,6 +50,6 @@
 /''
  ' Standard test runner for modules.
  ' @function test
- ' @param {Tester.describeCallback} describe
+ ' @param {any ptr} describeFn
  ' @returns {short}
  '/

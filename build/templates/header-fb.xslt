@@ -83,7 +83,7 @@
 		</xsl:choose>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='test']) &gt; 0">
-				<xsl:text>&#x9;test as function cdecl (describe as Tester.describeCallback) as short&#xa;</xsl:text>
+				<xsl:text>&#x9;test as function cdecl (describeFn as any ptr) as short&#xa;</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>&#x9;test as any ptr&#xa;</xsl:text>
