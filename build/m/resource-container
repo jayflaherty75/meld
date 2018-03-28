@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./build/module resource-container lib shared

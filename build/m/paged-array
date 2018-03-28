@@ -1,3 +1,0 @@
-#!/bin/bash
-
-./build/module paged-array lib shared
