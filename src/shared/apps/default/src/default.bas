@@ -47,7 +47,7 @@ end function
  ' @returns {short}
  '/
 function update cdecl (instancePtr as any ptr) as short
-	dim as Tester.Interface ptr _otherTester = _module->require("tester_v1.0.0")
+	dim as Tester.Interface ptr _otherTester = _module->require("tester_v0.1.0")
 
 	_console->logMessage("Loading versioned tester module... " & _otherTester)
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)

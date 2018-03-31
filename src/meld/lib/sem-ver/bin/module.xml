@@ -15,6 +15,11 @@
     <returns type='short' modifier='value' />
     <private />
   </function>
+  <function name='_getLatestVersion'>
+    <param name='search' type='string' modifier='reference' const='false' />
+    <returns type='string' modifier='value' />
+    <private />
+  </function>
   <function name='_handleModuleHasUnloaded'>
     <param name='entryPtr' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />

@@ -23,6 +23,7 @@ function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
 
 	if not Module.testModule(app) then
 		print("**** main: " & app & " unit test failed")
+		Module.uninitialize()
 		return 1
 	end if
 

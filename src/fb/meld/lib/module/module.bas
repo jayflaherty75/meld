@@ -1,5 +1,6 @@
 
 #include once "module.bi"
+#include once "resolve-version.bi"
 
 /''
  ' @namespace Module
@@ -152,6 +153,8 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as function cdecl () as any ptr exportsFn
 	dim as function cdecl () as short startupFn
 
+	dim as string filename
+	dim as string fullname
 	dim as LibraryEntry ptr entryPtr
 	dim as Interface safeApi = api
 
@@ -160,20 +163,31 @@ function require cdecl (byref moduleName as zstring) as any ptr
 		return NULL
 	end if
 
-	entryPtr = _findEntry(moduleName)
-	if entryPtr <> NULL then
+	filename = Version.resolve(moduleName)
+
+	if filename = "" then
+		print("**** Module.require: Could not resolve " & moduleName)
+		return NULL
+	end if
+
+	fullName = Version.formatModule(_
+		Version.getModule(moduleName), _
+		Version.getVersion(fileName), _
+		Version.getExtra(moduleName) _
+	)
+
+	entryPtr = _findEntry(fullName)
+	if entryPtr <> NULL andalso entryPtr->interfacePtr <> NULL then
 		return entryPtr->interfacePtr
 	end if
 
 	entryPtr = @state.libraries(state.libraryCount)
-	entryPtr->moduleId = moduleName
-	entryPtr->moduleName = moduleName
+	entryPtr->moduleId = fullName
+	entryPtr->moduleName = Version.getModule(moduleName)
+	entryPtr->moduleVersion = Version.getVersion(fileName)
+	entryPtr->moduleFullName = moduleName
+	entryPtr->filename = "meld_modules" & DIR_SEP & filename & DIR_SEP & "module." & EXTERNAL_MODULE_EXTENSION
 	entryPtr->unload = state.unloadHandler
-
-	if not state.preloadHandler(entryPtr) then
-		print("**** Module.require: Missing module: " & moduleName)
-		return NULL
-	end if
 
 	entryPtr->library = dylibload(entryPtr->filename)
 	if entryPtr->library = NULL then
@@ -231,7 +245,11 @@ function unload cdecl (byref moduleName as zstring) as short
 		return false
 	end if
 
-	entryPtr = _findEntry(moduleName)
+	entryPtr = _findEntry(Version.formatModule(_
+		Version.getModule(moduleName), _
+		Version.getVersion(Version.resolve(moduleName)), _
+		Version.getExtra(moduleName) _
+	))
 	if entryPtr = NULL then
 		print("**** Module.unload: Not a loaded module: " & moduleName)
 		return false
@@ -271,7 +289,11 @@ function testModule cdecl (byref moduleName as zstring) as short
 		return false
 	end if
 
-	entryPtr = _findEntry(moduleName)
+	entryPtr = _findEntry(Version.formatModule(_
+		Version.getModule(moduleName), _
+		Version.getVersion(Version.resolve(moduleName)), _
+		Version.getExtra(moduleName) _
+	))
 	if entryPtr = NULL then
 		return false
 	end if

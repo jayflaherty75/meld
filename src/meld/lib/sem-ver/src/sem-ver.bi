@@ -27,6 +27,7 @@ namespace SemVer
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function _handleModuleWillLoad cdecl (entryPtr as any ptr) as short
+declare function _getLatestVersion cdecl (byref search as string) as string
 declare function _handleModuleHasUnloaded cdecl (entryPtr as any ptr) as short
 
 end namespace
