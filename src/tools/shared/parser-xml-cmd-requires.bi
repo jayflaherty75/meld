@@ -1,4 +1,5 @@
 
+#include once "../../fb/meld/lib/module/resolve-version.bi"
 #include once "global.bi"
 #include once "parser-types.bi"
 #include once "parser-lib.bi"
@@ -15,7 +16,7 @@ dim shared as StateType state
 declare function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 
 declare function _parseDescription(parserPtr as Parser.StateType ptr, byref source as string) as short
-declare sub _parseVersion(byref modName as string, byref version as string)
+declare sub _parseVersion(byref modName as string, byref modVersion as string)
 
 function handler(ByRef cmd As String, ByRef definition As String, parserPtr As Parser.StateType Ptr) As Short
 	dim as short position
@@ -61,13 +62,11 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 	return true
 end function
 
-sub _parseVersion(byref modName as string, byref version as string)
-	dim as short seperator = instr(modName, "_v")
+sub _parseVersion(byref modName as string, byref modVersion as string)
+	dim as string fullName = Version.resolve(modName)
 
-	if seperator > 0 then
-		version = mid(modName, seperator + 2)
-		modName = left(modName, seperator - 1)
-	end if
+	modName = Version.getModule(fullName)
+	modVersion = Version.getVersion(fullName)
 end sub
 
 end namespace
