@@ -43,6 +43,22 @@ function getVersion(byref search as string) as string
 	return result
 end function
 
+function getExtra(byref search as string) as string
+	dim as short versionPos = instr(search, "_v")
+	dim as string result = ""
+	dim as short extraPos
+
+	if versionPos = 0 then return ""
+
+	extraPos = instr(versionPos, search, "-")
+
+	if extraPos > 0 then
+		result = mid(search, extraPos + 1)
+	end if
+
+	return result
+end function
+
 function getMajor(byref version as string) as long
 	dim as short startPos = instr(version, ".")
 
@@ -82,22 +98,6 @@ function compare(byref version1 as string, byref version2 as string) as short
 	if diff <> 0 then return sgn(diff)
 
 	return 0
-end function
-
-function getExtra(byref search as string) as string
-	dim as short versionPos = instr(search, "_v")
-	dim as string result = ""
-	dim as short extraPos
-
-	if versionPos = 0 then return ""
-
-	extraPos = instr(versionPos, search, "-")
-
-	if extraPos > 0 then
-		result = mid(search, extraPos + 1)
-	end if
-
-	return result
 end function
 
 function formatModule(byref moduleName as string, byref version as string = "", byref extra as string = "") as string

@@ -44,6 +44,7 @@ meld_modules
 /commands/launch
 /build/parse-*
 /build/kebab-to-pascal
+/build/resolve-version
 /modules/local/*
 !/modules/local/.gitkeep
 /modules/global/*

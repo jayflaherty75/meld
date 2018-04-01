@@ -4,7 +4,6 @@ declare function capitalize(byval source as string) as string
 
 function main() As integer
 	dim as string moduleName = command(1)
-	dim as string filePath = "../modules/definitions/" & moduleName & ".xml"
 	dim as string result = ""
 	dim as string words(20)
 	dim as integer position = 0
