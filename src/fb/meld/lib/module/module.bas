@@ -186,8 +186,13 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	entryPtr->moduleName = Version.getModule(moduleName)
 	entryPtr->moduleVersion = Version.getVersion(fileName)
 	entryPtr->moduleFullName = moduleName
-	entryPtr->filename = "meld_modules" & DIR_SEP & filename & DIR_SEP & "module." & EXTERNAL_MODULE_EXTENSION
+	entryPtr->filename = filename
 	entryPtr->unload = state.unloadHandler
+
+	if not state.preloadHandler(entryPtr) then
+		print("**** Module.require: Module not found: " & moduleName)
+		return NULL
+	end if
 
 	entryPtr->library = dylibload(entryPtr->filename)
 	if entryPtr->library = NULL then
@@ -364,10 +369,9 @@ end function
 function _defaultPreloadHandler cdecl (entryPtr as any ptr) as short
 	dim as LibraryEntry ptr _entry = entryPtr
 
-	_entry->moduleId = _entry->moduleName
-	_entry->moduleFullName = _entry->moduleName
-	_entry->moduleVersion = "0.1.0"
-	_entry->filename = "meld_modules" & DIR_SEP & _entry->moduleId & DIR_SEP & "module." & EXTERNAL_MODULE_EXTENSION
+	_entry->filename = "meld_modules" & DIR_SEP _
+		& _entry->filename & DIR_SEP _
+		& "module." & EXTERNAL_MODULE_EXTENSION
 
 	if not fileexists(_entry->filename) then
 		return false
