@@ -7,7 +7,6 @@
 #include once "headers/module_v0.1.0.bi"
 #include once "headers/console_v0.1.0.bi"
 #include once "headers/fault_v0.1.0.bi"
-#include once "headers/error-handling_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
 #include once "headers/paged-array_v0.1.0.bi"
 
@@ -17,7 +16,6 @@ dim shared _module as Module.Interface ptr
 dim shared _pagedarray as Pagedarray.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
-dim shared _errorHandling as ErrorHandling.Interface ptr
 dim shared _tester as Tester.Interface ptr
 
 type ModuleStateType

@@ -30,8 +30,8 @@ fi
 # Initialize XML file for templates to build from
 if [ ! -f ./bin/module.xml ]; then
 	echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$MODULE_NAME\"><namespace>" >> ./bin/module.xml
-	"$MELD_DIR/build/kebab-to-pascal" $MODULE_NAME | tr '\n' '<' >> ./bin/module.xml
-	echo "/namespace><version>0.1.0</version></module>" >> ./bin/module.xml
+	"$MELD_DIR/build/kebab-to-pascal" $MODULE_NAME >> ./bin/module.xml
+	echo "</namespace><version>0.1.0</version></module>" >> ./bin/module.xml
 fi
 
 # Generate one-time, user modifiable boilerplate

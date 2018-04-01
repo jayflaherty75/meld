@@ -2,7 +2,6 @@
 /''
  ' @requires console_v0.*
  ' @requires fault_v0.*
- ' @requires error-handling_v0.*
  ' @requires tester_v0.*
  ' @requires iterator_v0.*
  '/

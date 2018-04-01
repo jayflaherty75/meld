@@ -55,12 +55,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
-		_errorHandling = modulePtr->require("error-handling_v0.1.0")
-		If _errorHandling = NULL then
-			print("**** Tester.load: Failed to load error-handling dependency")
-			Return false
-		End If
-
 
 
 	End If
