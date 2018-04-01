@@ -1,8 +1,4 @@
 
-/''
- ' @requires sem-ver_v0.1.0
- '/
-
 #include once "module.bi"
 #include once "vbcompat.bi"
 #include once "file.bi"

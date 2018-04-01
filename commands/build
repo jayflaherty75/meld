@@ -10,18 +10,28 @@ compileExternal () {
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
 
+if [ -f "./bin/module.xml" ]; then
+	rm ./bin/module.xml
+fi
+
+if [ -f "./.meld/deps" ]; then
+	rm ./.meld/deps
+fi
+
 cat "./src/$MODULE_NAME.bas" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
 
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
 
 xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/module.xml
 
-MODULE_DEPS=$(<./.meld/deps)
+if [ -f "./.meld/deps" ]; then
+	MODULE_DEPS=$(<./.meld/deps)
 
-while read -r REQUIRE; do
-	RESOLVED=`$MELD_DIR/build/resolve-version $REQUIRE`
-	xsltproc -o ./src/headers/$RESOLVED.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$RESOLVED/module.xml"
-done <<< "$MODULE_DEPS"
+	while read -r REQUIRE; do
+		RESOLVED=`$MELD_DIR/build/resolve-version $REQUIRE`
+		xsltproc -o ./src/headers/$RESOLVED.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$RESOLVED/module.xml"
+	done <<< "$MODULE_DEPS"
+fi
 
 xsltproc -o ./src/headers/meld_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/meld_v0.1.0/module.xml"
 xsltproc -o ./src/headers/module_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/module_v0.1.0/module.xml"

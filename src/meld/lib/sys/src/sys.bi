@@ -5,14 +5,12 @@
 '/
 
 #include once "headers/module_v0.1.0.bi"
-#include once "headers/sem-ver_v0.1.0.bi"
 #include once "headers/sys_v0.1.0.bi"
 
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
 dim shared _sys as Sys.Interface ptr
-dim shared _semVer as SemVer.Interface ptr
 
 type ModuleStateType
 	methods as Sys.Interface
