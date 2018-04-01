@@ -10,7 +10,7 @@ function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
 		return 1
 	end if
 
-	print(result)
+	print result;
 
 	return 0
 end function

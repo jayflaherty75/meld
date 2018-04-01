@@ -19,7 +19,8 @@ xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/mod
 MODULE_DEPS=$(<./.meld/deps)
 
 while read -r REQUIRE; do
-	xsltproc -o ./src/headers/$REQUIRE.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$REQUIRE/module.xml"
+	RESOLVED=`$MELD_DIR/build/resolve-version $REQUIRE`
+	xsltproc -o ./src/headers/$RESOLVED.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$RESOLVED/module.xml"
 done <<< "$MODULE_DEPS"
 
 xsltproc -o ./src/headers/meld_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/meld_v0.1.0/module.xml"
