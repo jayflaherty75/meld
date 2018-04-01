@@ -35,6 +35,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_default = exports()
 
+		_errorHandling = modulePtr->require("error-handling_v0.1.0")
+		If _errorHandling = NULL then
+			print("**** Default.load: Failed to load error-handling dependency")
+			Return false
+		End If
+
 		_sys = modulePtr->require("sys_v0.1.0")
 		If _sys = NULL then
 			print("**** Default.load: Failed to load sys dependency")
@@ -50,12 +56,6 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
 			print("**** Default.load: Failed to load fault dependency")
-			Return false
-		End If
-
-		_errorHandling = modulePtr->require("error-handling_v0.1.0")
-		If _errorHandling = NULL then
-			print("**** Default.load: Failed to load error-handling dependency")
 			Return false
 		End If
 

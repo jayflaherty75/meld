@@ -7,6 +7,13 @@ SEP="_v"
 CURRENT=$(pwd)
 TARGET=$(realpath "$CURRENT/bin")
 
+# Check if already linked
+if [ -f "./.meld/undo-link" ]; then
+	./.meld/undo-link
+	rm ./.meld/undo-link
+fi
+
+# Check if global install already exists and "remember" it
 if [ -L "$MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION" ]; then
 	ORIGINAL=$(readlink -f "$MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION")
 	unlink $MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION
@@ -20,6 +27,7 @@ ln -s $TARGET $MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION
 echo "#!/bin/bash" > ./.meld/undo-link
 echo "unlink $MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION" >> ./.meld/undo-link
 
+# If replacing an existing link, restore it in the "undo" script
 if [ "$ORIGINAL" != "" ] && [ "$TARGET" != "$ORIGINAL" ]; then
 	echo "ln -s $ORIGINAL $MELD_DIR/modules/local/$MODULE_NAME$SEP$MODULE_VERSION" >> ./.meld/undo-link
 fi

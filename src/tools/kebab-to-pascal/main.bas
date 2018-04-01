@@ -24,7 +24,7 @@ function main() As integer
 		result &= capitalize(words(i))
 	next
 
-	print(result)
+	print result;
 
 	return 0
 end function

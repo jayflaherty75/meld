@@ -2,7 +2,6 @@
 
 /''
  ' @requires fault_v0.1.0
- ' @requires error-handling_v0.1.0
  ' @requires sys_v0.1.0
  '/
 
