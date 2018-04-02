@@ -100,6 +100,8 @@ sub destruct cdecl (contPtr as Instance ptr)
 		_pagedArray->destruct(contPtr->stack)
 		contPtr->stack = NULL
 	end if
+
+	deallocate(contPtr)
 end sub
 
 /''

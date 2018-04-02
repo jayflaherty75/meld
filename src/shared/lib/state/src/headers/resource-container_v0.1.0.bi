@@ -4,10 +4,11 @@
  ' during the next build.
  '/
 
-namespace State
+namespace ResourceContainer
 
 type Instance
-	temp as any ptr
+	resources as any ptr
+	stack as any ptr
 end type
 
 type Interface
@@ -17,6 +18,10 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
+	initialize as function cdecl (contPtr as Instance ptr, size as short, pageLength as long, warnLimit as long) as short
+	request as function cdecl (contPtr as Instance ptr) as long
+	release as function cdecl (contPtr as Instance ptr, resourceId as long) as short
+	getPtr as function cdecl (contPtr as Instance ptr, resourceId as long) as any ptr
 end type
 
 end namespace
