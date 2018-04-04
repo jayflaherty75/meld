@@ -15,6 +15,19 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.startup = @Map.startup
 	moduleState.methods.shutdown = @Map.shutdown
 	moduleState.methods.test = @Map.test
+	moduleState.methods.construct = @Map.construct
+	moduleState.methods.destruct = @Map.destruct
+	moduleState.methods.assign = @Map.assign
+	moduleState.methods.assignPtr = @Map.assignPtr
+	moduleState.methods.request = @Map.request
+	moduleState.methods.requestPtr = @Map.requestPtr
+	moduleState.methods.requestRev = @Map.requestRev
+	moduleState.methods.requestRevPtr = @Map.requestRevPtr
+	moduleState.methods.unassign = @Map.unassign
+	moduleState.methods.length = @Map.length
+	moduleState.methods.purge = @Map.purge
+	moduleState.methods._compare = @Map._compare
+	moduleState.methods._compareReverse = @Map._compareReverse
 
 	return @moduleState.methods
 End Function
@@ -52,6 +65,30 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_resourceContainer = modulePtr->require("resource-container_v0.1.0")
+		If _resourceContainer = NULL then
+			print("**** Map.load: Failed to load resource-container dependency")
+			Return false
+		End If
+
+		_bst = modulePtr->require("bst_v0.1.0")
+		If _bst = NULL then
+			print("**** Map.load: Failed to load bst dependency")
+			Return false
+		End If
+
+
+		errors.allocationError = _fault->getCode("AllocationError")
+		If errors.allocationError = NULL then
+			print("**** Map.load: Missing error definition for AllocationError")
+			Return false
+		End If
+
+		errors.nullReferenceError = _fault->getCode("NullReferenceError")
+		If errors.nullReferenceError = NULL then
+			print("**** Map.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
 
 
 	End If

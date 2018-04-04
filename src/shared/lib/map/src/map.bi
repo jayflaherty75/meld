@@ -8,6 +8,8 @@
 #include once "headers/console_v0.1.0.bi"
 #include once "headers/fault_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
+#include once "headers/resource-container_v0.1.0.bi"
+#include once "headers/bst_v0.1.0.bi"
 #include once "headers/map_v0.1.0.bi"
 
 #define NULL 0
@@ -17,6 +19,8 @@ dim shared _map as Map.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _tester as Tester.Interface ptr
+dim shared _resourceContainer as ResourceContainer.Interface ptr
+dim shared _bst as Bst.Interface ptr
 
 type ModuleStateType
 	methods as Map.Interface
@@ -24,13 +28,32 @@ type ModuleStateType
 	isStarted as short
 end type
 
+type ErrorCodes
+	allocationError as integer
+	nullReferenceError as integer
+end type
+
 dim shared as ModuleStateType moduleState
+dim shared as ErrorCodes errors
 
 namespace Map
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as any ptr) as short
+declare function construct cdecl () as Instance ptr
+declare sub destruct cdecl (instancePtr as Instance ptr)
+declare function assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resIdx as long) as short
+declare function assignPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resPtr as any ptr) as short
+declare function request cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
+declare function requestPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
+declare function requestRev cdecl (mapPtr as Instance ptr, resIdx as long) as ubyte ptr
+declare function requestRevPtr cdecl (mapPtr as Instance ptr, resPtr as any ptr) as ubyte ptr
+declare function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
+declare function length cdecl (mapPtr as Instance ptr) as long
+declare sub purge cdecl (mapPtr as Instance ptr)
+declare function _compare cdecl (criteria as any ptr, element as any ptr) as short
+declare function _compareReverse cdecl (criteria as any ptr, element as any ptr) as short
 
 end namespace
 

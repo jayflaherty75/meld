@@ -12,8 +12,8 @@ declare sub test2 cdecl (done as Tester.doneFn)
 function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
 
-	result = result andalso it("performs test 1 successfully", @test1)
-	 result = result andalso it("performs test 2 successfully", @test2)
+	result = result andalso it("constructs instance successfully", @test1)
+	result = result andalso it("destroys instance successfully", @test2)
 
 	return result
 end function

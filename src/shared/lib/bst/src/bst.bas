@@ -342,6 +342,22 @@ function defaultCompare cdecl (criteria as any ptr, element as any ptr) as short
 end function
 
 /''
+ ' @function setCompareHandler
+ ' @param {Instance ptr} btreePtr
+ ' @param {CompareFunction} [handler=0]
+ ' @returns {any ptr}
+ '/
+function setCompareHandler cdecl (btreePtr as Instance ptr, handler as CompareFunction = NULL) as any ptr
+	dim as CompareFunction result = btreePtr->compare
+
+	if handler <> NULL then
+		btreePtr->compare = handler
+	end if
+
+	return result
+end function
+
+/''
  ' Creates a node, increments the length but does not place in the tree.
  ' @function _createNode
  ' @param {Instance ptr} btreePtr

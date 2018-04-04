@@ -94,6 +94,8 @@ sub destruct cdecl (statePtr as Instance ptr)
 		_throwStateDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
+
+	deallocate(statePtr)
 end sub
 
 end namespace

@@ -6,13 +6,30 @@
 
 namespace Map
 
+type Instance
+	mappings as any ptr
+	reverse as any ptr
+	length as long
+end type
+
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
-	construct as any ptr
-	destruct as any ptr
+	construct as function cdecl () as Instance ptr
+	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
+	assign as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resIdx as long) as short
+	assignPtr as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resPtr as any ptr) as short
+	request as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
+	requestPtr as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
+	requestRev as function cdecl (mapPtr as Instance ptr, resIdx as long) as ubyte ptr
+	requestRevPtr as function cdecl (mapPtr as Instance ptr, resPtr as any ptr) as ubyte ptr
+	unassign as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
+	length as function cdecl (mapPtr as Instance ptr) as long
+	purge as sub cdecl (mapPtr as Instance ptr)
+	_compare as function cdecl (criteria as any ptr, element as any ptr) as short
+	_compareReverse as function cdecl (criteria as any ptr, element as any ptr) as short
 end type
 
 end namespace
