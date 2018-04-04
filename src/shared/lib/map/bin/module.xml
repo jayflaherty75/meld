@@ -3,7 +3,14 @@
   <requires module='console' version='0.1.0' />
   <requires module='fault' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
+  <requires module='resource-container' version='0.1.0' />
+  <requires module='bst' version='0.1.0' />
   <version>0.1.0</version>
+  <class name='Instance'>
+    <property name='mappings' type='any' modifier='pointer' const='false' />
+    <property name='reverse' type='any' modifier='pointer' const='false' />
+    <property name='length' type='long' modifier='value' const='false' />
+  </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
     <description>Application main routine.</description>
@@ -16,6 +23,70 @@
     <param name='describeFn' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
+  </function>
+  <function name='construct'>
+    <returns type='Instance' modifier='pointer' />
+    <throws type='AllocationError' />
+    <description>Constructor</description>
+  </function>
+  <function name='destruct'>
+    <param name='instancePtr' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
+    <description>Destructor</description>
+  </function>
+  <function name='assign'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
+    <param name='resIdx' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='assignPtr'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
+    <param name='resPtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='request'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+  </function>
+  <function name='requestPtr'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
+    <returns type='any' modifier='pointer' />
+  </function>
+  <function name='requestRev'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='resIdx' type='long' modifier='value' const='false' />
+    <returns type='ubyte' modifier='pointer' />
+  </function>
+  <function name='requestRevPtr'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='resPtr' type='any' modifier='pointer' const='false' />
+    <returns type='ubyte' modifier='pointer' />
+  </function>
+  <function name='unassign'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='length'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+  </function>
+  <function name='purge'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+  </function>
+  <function name='_compare'>
+    <param name='criteria' type='any' modifier='pointer' const='false' />
+    <param name='element' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='_compareReverse'>
+    <param name='criteria' type='any' modifier='pointer' const='false' />
+    <param name='element' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
   </function>
   <namespace>Map</namespace>
 </module>

@@ -35,18 +35,18 @@
     <description>Standard test runner for modules.</description>
   </function>
   <function name='construct'>
-    <returns type='Bst.Instance' modifier='pointer' />
+    <returns type='Instance' modifier='pointer' />
     <throws type='ResourceAllocationError' />
     <description>Creates a new binary search tree.</description>
   </function>
   <function name='destruct'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <throws type='NullReferenceError' />
     <throws type='ReleaseResourceError' />
     <description>Destroys a binary search tree and any nodes within it.  It does not affect any data the nodes point to.</description>
   </function>
   <function name='insert'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <returns type='Bst.Node' modifier='pointer' />
     <throws type='NullReferenceError' />
@@ -55,20 +55,20 @@
     <description>Creates a node for the given element and places it within the tree.</description>
   </function>
   <function name='remove'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='nodePtr' type='Bst.Node' modifier='pointer' const='false' />
     <throws type='NullReferenceError' />
     <throws type='InvalidArgumentError' />
     <description>Removes a node from the tree.</description>
   </function>
   <function name='purge'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <throws type='NullReferenceError' />
     <throws type='ReleaseResourceError' />
     <description>Purges tree of all elements.</description>
   </function>
   <function name='search'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <param name='start' type='Bst.Node' modifier='pointer' const='false'>
       <description>Defaults to root node</description>
@@ -80,13 +80,13 @@
     <description>Returns the node referencing the given element.  The element values must be equal, not the element pointers.  Results are based on the BSTs compare function.</description>
   </function>
   <function name='getLength'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <returns type='integer' modifier='value' />
     <throws type='NullReferenceError' />
     <description>Returns the number of nodes in the tree.</description>
   </function>
   <function name='getIterator'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <returns type='any' modifier='pointer' />
     <throws type='NullReferenceError' />
     <throws type='ResourceAllocationError' />
@@ -98,27 +98,34 @@
     <returns type='short' modifier='value' />
     <description>Default compare function operating on integer values.</description>
   </function>
+  <function name='setCompareHandler'>
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='handler' type='CompareFunction' modifier='value' const='false'>
+      <default>0</default>
+    </param>
+    <returns type='any' modifier='pointer' />
+  </function>
   <function name='_createNode'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <returns type='Bst.Node' modifier='pointer' />
     <private />
     <description>Creates a node, increments the length but does not place in the tree.</description>
   </function>
   <function name='_deleteNode'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='nodePtr' type='Bst.Node' modifier='pointer' const='false' />
     <private />
     <description>Deletes node completely from tree.</description>
   </function>
   <function name='_deleteNodeRecurse'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='nodePtr' type='Bst.Node' modifier='pointer' const='false' />
     <private />
     <description>Deletes node and all of it's children.</description>
   </function>
   <function name='_searchRecurse'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='nodePtr' type='Bst.Node' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <returns type='Bst.Node' modifier='pointer'>
@@ -134,7 +141,7 @@
     <description>This routine initially expects the right pointer of the starting node and traverses left from there.  In a BST, this will always produce the next highest value, not including the parent.  This can be used to great purpose in many processes dealing with BSTs, such as removing nodes, balancing the tree, iteration, etc.</description>
   </function>
   <function name='_nextParentRecurse'>
-    <param name='btreePtr' type='Bst.Instance' modifier='pointer' const='false' />
+    <param name='btreePtr' type='Instance' modifier='pointer' const='false' />
     <param name='current' type='Bst.Node' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <returns type='Bst.Node' modifier='pointer' />
