@@ -26,8 +26,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.unassign = @Map.unassign
 	moduleState.methods.length = @Map.length
 	moduleState.methods.purge = @Map.purge
-	moduleState.methods._compare = @Map._compare
-	moduleState.methods._compareReverse = @Map._compareReverse
+	moduleState.methods.getIterator = @Map.getIterator
 
 	return @moduleState.methods
 End Function
@@ -77,6 +76,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_iterator = modulePtr->require("iterator_v0.1.0")
+		If _iterator = NULL then
+			print("**** Map.load: Failed to load iterator dependency")
+			Return false
+		End If
+
 
 		errors.allocationError = _fault->getCode("AllocationError")
 		If errors.allocationError = NULL then
@@ -87,6 +92,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
 			print("**** Map.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
+
+		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+		If errors.resourceAllocationError = NULL then
+			print("**** Map.load: Missing error definition for ResourceAllocationError")
 			Return false
 		End If
 
