@@ -50,15 +50,13 @@ declare function assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resId
 declare function assignPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resPtr as any ptr) as short
 declare function request cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
 declare function requestPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
-declare function requestRev cdecl (mapPtr as Instance ptr, resIdx as long) as ubyte ptr
-declare function requestRevPtr cdecl (mapPtr as Instance ptr, resPtr as any ptr) as ubyte ptr
 declare function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 declare function length cdecl (mapPtr as Instance ptr) as long
 declare sub purge cdecl (mapPtr as Instance ptr)
 declare function getIterator cdecl (mapPtr as Instance ptr) as any ptr
 declare function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as any ptr) as short
+declare function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any ptr
 declare function _compare cdecl (criteria as any ptr, element as any ptr) as short
-declare function _compareReverse cdecl (criteria as any ptr, element as any ptr) as short
 
 end namespace
 

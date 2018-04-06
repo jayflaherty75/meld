@@ -186,7 +186,7 @@ function release cdecl (contPtr as Instance ptr, resourceId as long) as short
 		return -1
 	end if
 
-	if resourceId <= 0 then
+	if resourceId < 0 then
 		_throwResContReleaseInvalidArgumentError(__FILE__, __LINE__)
 		return -1
 	end if

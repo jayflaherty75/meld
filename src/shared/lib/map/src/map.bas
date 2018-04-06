@@ -22,7 +22,6 @@ namespace Map
  ' @class Instance
  ' @member {any ptr} container
  ' @member {any ptr} mappings
- ' @member {any ptr} reverse
  '/
 
 union Locator
@@ -89,7 +88,6 @@ function construct cdecl () as Instance ptr
 
 	mapPtr->container = _resourceContainer->construct()
 	mapPtr->mappings = _bst->construct()
-	mapPtr->reverse = _bst->construct()
 
 	if mapPtr->container = NULL then
 		destruct(mapPtr)
@@ -103,12 +101,6 @@ function construct cdecl () as Instance ptr
 		return NULL
 	end if
 
-	if mapPtr->reverse = NULL then
-		destruct(mapPtr)
-		'_throwResContResourceAllocationError(__FILE__, __LINE__)
-		return NULL
-	end if
-
 	if not _resourceContainer->initialize(mapPtr->container, sizeof(Mapping), 1024, 1024*1024) then
 		destruct(mapPtr)
 		' error
@@ -116,7 +108,6 @@ function construct cdecl () as Instance ptr
 	end if
 
 	_bst->setCompareHandler(mapPtr->mappings, @_compare)
-	_bst->setCompareHandler(mapPtr->reverse, @_compareReverse)
 
 	return mapPtr
 end function
@@ -141,11 +132,6 @@ sub destruct cdecl (mapPtr as Instance ptr)
 	if mapPtr->mappings <> NULL then
 		_bst->destruct(mapPtr->mappings)
 		mapPtr->mappings = NULL
-	end if
-
-	if mapPtr->reverse <> NULL then
-		_bst->destruct(mapPtr->reverse)
-		mapPtr->reverse = NULL
 	end if
 
 	deallocate(mapPtr)
@@ -188,25 +174,13 @@ end function
  ' @returns {long}
  '/
 function request cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
-	dim as Bst.Node ptr nodePtr
 	dim as Mapping criteria
 	dim as Mapping ptr result
 
-	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
-		return -1
-	end if
-
 	criteria.identifier = idPtr
 
-	nodePtr = _bst->search(mapPtr->mappings, @criteria)
-	if nodePtr = NULL then
-		return -1
-	end if
-
-	result = nodePtr->element
+	result = _request(mapPtr, @criteria)
 	if result = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -220,48 +194,17 @@ end function
  ' @returns {any ptr}
  '/
 function requestPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
-	dim as any ptr result = NULL
+	dim as Mapping criteria
+	dim as Mapping ptr result
 
-	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+	criteria.identifier = idPtr
+
+	result = _request(mapPtr, @criteria)
+	if result = NULL then
 		return NULL
 	end if
 
-	return result
-end function
-
-/''
- ' @function requestRev
- ' @param {Instance ptr} mapPtr
- ' @param {long} resIdx
- ' @returns {ubyte ptr}
- '/
-function requestRev cdecl (mapPtr as Instance ptr, resIdx as long) as ubyte ptr
-	dim as ubyte ptr result = NULL
-
-	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
-		return NULL
-	end if
-
-	return result
-end function
-
-/''
- ' @function requestRevPtr
- ' @param {Instance ptr} mapPtr
- ' @param {any ptr} resPtr
- ' @returns {ubyte ptr}
- '/
-function requestRevPtr cdecl (mapPtr as Instance ptr, resPtr as any ptr) as ubyte ptr
-	dim as ubyte ptr result = NULL
-
-	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
-		return NULL
-	end if
-
-	return result
+	return result->location.atPtr
 end function
 
 /''
@@ -271,10 +214,30 @@ end function
  ' @returns {short}
  '/
 function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
+	dim as Mapping criteria
+	dim as Bst.Node ptr nodePtr
+	dim as Mapping ptr result
+
 	if mapPtr = NULL then
+		'_throwMapIteratorNullReferenceError(__FILE__, __LINE__)
+		return NULL
+	end if
+
+	criteria.identifier = idPtr
+
+	nodePtr = _bst->search(mapPtr->mappings, @criteria)
+	if nodePtr = NULL then
+		return false
+	end if
+
+	result = nodePtr->element
+	if result = NULL then
 		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
+
+	_resourceContainer->release(mapPtr->container, result->index)
+	_bst->remove(mapPtr->mappings, nodePtr)
 
 	return true
 end function
@@ -304,7 +267,6 @@ sub purge cdecl (mapPtr as Instance ptr)
 	end if
 
 	_bst->purge(mapPtr->mappings)
-	_bst->purge(mapPtr->reverse)
 end sub
 
 /''
@@ -348,7 +310,6 @@ function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as an
 	dim as long mappingIdx
 	dim as Mapping ptr mappingPtr
 	dim as Bst.Node ptr nodePtr
-	dim as Bst.Node ptr revPtr
 
 	if mapPtr = NULL then
 		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
@@ -367,7 +328,6 @@ function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as an
 	mappingPtr->location = location
 
 	nodePtr = _bst->insert(mapPtr->mappings, mappingPtr)
-	revPtr = _bst->insert(mapPtr->reverse, mappingPtr)
 
 	if nodePtr = NULL then
 		_resourceContainer->release(mapPtr->container, mappingIdx)
@@ -375,14 +335,37 @@ function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as an
 		return false
 	end if
 
-	if revPtr = NULL then
-		_resourceContainer->release(mapPtr->container, mappingIdx)
-		_bst->remove(mapPtr->mappings, nodePtr)
-		' error
-		return false
+	return true
+end function
+
+/''
+ ' @function _request
+ ' @param {Instance ptr} mapPtr
+ ' @param {any ptr} criteriaPtr
+ ' @returns {any ptr}
+ ' @private
+ '/
+function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any ptr
+	dim as Bst.Node ptr nodePtr
+	dim as Mapping ptr result
+
+	if mapPtr = NULL then
+		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		return NULL
 	end if
 
-	return true
+	nodePtr = _bst->search(mapPtr->mappings, criteriaPtr)
+	if nodePtr = NULL then
+		return NULL
+	end if
+
+	result = nodePtr->element
+	if result = NULL then
+		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		return NULL
+	end if
+
+	return result
 end function
 
 /''
@@ -396,23 +379,6 @@ function _compare cdecl (criteria as any ptr, element as any ptr) as short
 	if cptr(Mapping ptr, criteria)->identifier > cptr(Mapping ptr, element)->identifier then
 		return 1
 	elseif cptr(Mapping ptr, criteria)->identifier < cptr(Mapping ptr, element)->identifier then
-		return -1
-	end if
-
-	return 0
-end function
-
-/''
- ' @function _compareReverse
- ' @param {any ptr} criteria
- ' @param {any ptr} element
- ' @returns {short}
- ' @private
- '/
-function _compareReverse cdecl (criteria as any ptr, element as any ptr) as short
-	if cptr(Mapping ptr, criteria)->location.atPtr > cptr(Mapping ptr, element)->location.atPtr then
-		return 1
-	elseif cptr(Mapping ptr, criteria)->location.atPtr < cptr(Mapping ptr, element)->location.atPtr then
 		return -1
 	end if
 

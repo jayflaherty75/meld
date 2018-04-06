@@ -9,7 +9,6 @@ namespace Map
 type Instance
 	container as any ptr
 	mappings as any ptr
-	reverse as any ptr
 end type
 
 type Interface
@@ -23,8 +22,6 @@ type Interface
 	assignPtr as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, resPtr as any ptr) as short
 	request as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
 	requestPtr as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
-	requestRev as function cdecl (mapPtr as Instance ptr, resIdx as long) as ubyte ptr
-	requestRevPtr as function cdecl (mapPtr as Instance ptr, resPtr as any ptr) as ubyte ptr
 	unassign as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 	length as function cdecl (mapPtr as Instance ptr) as long
 	purge as sub cdecl (mapPtr as Instance ptr)
