@@ -27,6 +27,8 @@
   <function name='construct'>
     <returns type='Instance' modifier='pointer' />
     <throws type='AllocationError' />
+    <throws type='ResourceAllocationError' />
+    <throws type='ResourceInitializationError' />
     <description>Constructor</description>
   </function>
   <function name='destruct'>
@@ -60,13 +62,17 @@
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
     <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
   </function>
-  <function name='length'>
+  <function name='getLength'>
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
     <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
   </function>
   <function name='purge'>
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <throws type='NullReferenceError' />
   </function>
   <function name='getIterator'>
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
@@ -79,12 +85,16 @@
     <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
     <param name='locPtr' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
     <private />
   </function>
   <function name='_request'>
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
     <param name='criteriaPtr' type='any' modifier='pointer' const='false' />
     <returns type='any' modifier='pointer' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
     <private />
   </function>
   <function name='_compare'>

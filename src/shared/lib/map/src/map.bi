@@ -34,6 +34,8 @@ type ErrorCodes
 	allocationError as integer
 	nullReferenceError as integer
 	resourceAllocationError as integer
+	resourceInitializationError as integer
+	resourceMissingError as integer
 end type
 
 dim shared as ModuleStateType moduleState
@@ -51,7 +53,7 @@ declare function assignPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, re
 declare function request cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
 declare function requestPtr cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
 declare function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
-declare function length cdecl (mapPtr as Instance ptr) as long
+declare function getLength cdecl (mapPtr as Instance ptr) as long
 declare sub purge cdecl (mapPtr as Instance ptr)
 declare function getIterator cdecl (mapPtr as Instance ptr) as any ptr
 declare function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as any ptr) as short

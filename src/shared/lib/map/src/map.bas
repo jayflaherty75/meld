@@ -76,13 +76,13 @@ end function
  ' Constructor
  ' @function construct
  ' @returns {Instance ptr}
- ' @throws {AllocationError}
+ ' @throws {AllocationError|ResourceAllocationError|ResourceInitializationError}
  '/
 function construct cdecl () as Instance ptr
 	dim as Instance ptr mapPtr = allocate(sizeof(Instance))
 
 	if mapPtr = NULL then
-		'_throwStateAllocationError(__FILE__, __LINE__)
+		_throwMapConstructAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -91,19 +91,19 @@ function construct cdecl () as Instance ptr
 
 	if mapPtr->container = NULL then
 		destruct(mapPtr)
-		' error
+		_throwMapConstructResourceAllocationError("container", __FILE__, __LINE__)
 		return NULL
 	end if
 
 	if mapPtr->mappings = NULL then
 		destruct(mapPtr)
-		'_throwResContResourceAllocationError(__FILE__, __LINE__)
+		_throwMapConstructResourceAllocationError("mappings", __FILE__, __LINE__)
 		return NULL
 	end if
 
 	if not _resourceContainer->initialize(mapPtr->container, sizeof(Mapping), 1024, 1024*1024) then
 		destruct(mapPtr)
-		' error
+		_throwMapConstructResourceInitializationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -120,7 +120,7 @@ end function
  '/
 sub destruct cdecl (mapPtr as Instance ptr)
 	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -212,6 +212,7 @@ end function
  ' @param {Instance ptr} mapPtr
  ' @param {ubyte ptr} idPtr
  ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
  '/
 function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 	dim as Mapping criteria
@@ -219,7 +220,7 @@ function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 	dim as Mapping ptr result
 
 	if mapPtr = NULL then
-		'_throwMapIteratorNullReferenceError(__FILE__, __LINE__)
+		_throwMapUnassignNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -232,7 +233,7 @@ function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 
 	result = nodePtr->element
 	if result = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapUnassignResourceMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -243,13 +244,14 @@ function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 end function
 
 /''
- ' @function length
+ ' @function getLength
  ' @param {Instance ptr} mapPtr
  ' @returns {long}
+ ' @throws {NullReferenceError}
  '/
-function length cdecl (mapPtr as Instance ptr) as long
+function getLength cdecl (mapPtr as Instance ptr) as long
 	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapGetLengthNullReferenceError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -259,10 +261,11 @@ end function
 /''
  ' @function purge
  ' @param {Instance ptr} mapPtr
+ ' @throws {NullReferenceError}
  '/
 sub purge cdecl (mapPtr as Instance ptr)
 	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapPurgeNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -279,14 +282,14 @@ function getIterator cdecl (mapPtr as Instance ptr) as any ptr
 	dim as Iterator.Instance ptr iter
 
 	if mapPtr = NULL then
-		'_throwMapIteratorNullReferenceError(__FILE__, __LINE__)
+		_throwMapGetIteratorNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	iter = _iterator->construct()
 
 	if iter = NULL then
-		'_throwMapIteratorAllocationError(mapPtr, __FILE__, __LINE__)
+		_throwMapGetIteratorResourceAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -304,6 +307,7 @@ end function
  ' @param {ubyte ptr} idPtr
  ' @param {any ptr} locPtr
  ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
  ' @private
  '/
 function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as any ptr) as short
@@ -313,13 +317,13 @@ function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as an
 	dim as Bst.Node ptr nodePtr
 
 	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapAssignNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	mappingIdx = _resourceContainer->request(mapPtr->container)
 	if mappingIdx = -1 then
-		' error
+		_throwMapAssignResourceMissingError("mapping", __FILE__, __LINE__)
 		return false
 	end if
 
@@ -332,7 +336,7 @@ function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as an
 
 	if nodePtr = NULL then
 		_resourceContainer->release(mapPtr->container, mappingIdx)
-		' error
+		_throwMapAssignResourceMissingError("node", __FILE__, __LINE__)
 		return false
 	end if
 
@@ -344,6 +348,7 @@ end function
  ' @param {Instance ptr} mapPtr
  ' @param {any ptr} criteriaPtr
  ' @returns {any ptr}
+ ' @throws {NullReferenceError|ResourceMissingError}
  ' @private
  '/
 function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any ptr
@@ -351,7 +356,7 @@ function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any 
 	dim as Mapping ptr result
 
 	if mapPtr = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapRequestNullReferenceError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -362,7 +367,7 @@ function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any 
 
 	result = nodePtr->element
 	if result = NULL then
-		'_throwStateDestructNullReferenceError(__FILE__, __LINE__)
+		_throwMapRequestResourceMissingError(__FILE__, __LINE__)
 		return NULL
 	end if
 

@@ -22,7 +22,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.request = @Map.request
 	moduleState.methods.requestPtr = @Map.requestPtr
 	moduleState.methods.unassign = @Map.unassign
-	moduleState.methods.length = @Map.length
+	moduleState.methods.getLength = @Map.getLength
 	moduleState.methods.purge = @Map.purge
 	moduleState.methods.getIterator = @Map.getIterator
 
@@ -96,6 +96,18 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
 			print("**** Map.load: Missing error definition for ResourceAllocationError")
+			Return false
+		End If
+
+		errors.resourceInitializationError = _fault->getCode("ResourceInitializationError")
+		If errors.resourceInitializationError = NULL then
+			print("**** Map.load: Missing error definition for ResourceInitializationError")
+			Return false
+		End If
+
+		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
+		If errors.resourceMissingError = NULL then
+			print("**** Map.load: Missing error definition for ResourceMissingError")
 			Return false
 		End If
 

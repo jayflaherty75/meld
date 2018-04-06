@@ -19,6 +19,7 @@ type Codes
 	fatalOperationalError as integer
 	moduleLoadingError as integer
 	resourceAllocationError as integer
+	resourceInitializationError as integer
 	releaseResourceError as integer
 	nullReferenceError as integer
 	resourceMissingError as integer
@@ -49,6 +50,7 @@ function startup cdecl () as short
 	_assignHandler(_fault, @state.errs.fatalOperationalError, "FatalOperationalError", _fault->defaultFatalHandler)
 	_assignHandler(_fault, @state.errs.moduleLoadingError, "ModuleLoadingError", _fault->defaultErrorHandler)
 	_assignHandler(_fault, @state.errs.resourceAllocationError, "ResourceAllocationError", _fault->defaultErrorHandler)
+	_assignHandler(_fault, @state.errs.resourceInitializationError, "ResourceInitializationError", _fault->defaultErrorHandler)
 	_assignHandler(_fault, @state.errs.releaseResourceError, "ReleaseResourceError", _fault->defaultErrorHandler)
 	_assignHandler(_fault, @state.errs.nullReferenceError, "NullReferenceError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.resourceMissingError, "ResourceMissingError", _fault->defaultWarningHandler)
