@@ -57,6 +57,7 @@ declare function getIterator cdecl (mapPtr as Instance ptr) as any ptr
 declare function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as any ptr) as short
 declare function _request cdecl (mapPtr as Instance ptr, criteriaPtr as any ptr) as any ptr
 declare function _compare cdecl (criteria as any ptr, element as any ptr) as short
+declare function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as integer
 
 end namespace
 

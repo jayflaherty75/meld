@@ -283,16 +283,17 @@ function getIterator cdecl (mapPtr as Instance ptr) as any ptr
 		return NULL
 	end if
 
-'	iter = _iterator->construct()
+	iter = _iterator->construct()
 
-'	if iter = NULL then
-'		'_throwMapIteratorAllocationError(mapPtr, __FILE__, __LINE__)
-'		return NULL
-'	end if
+	if iter = NULL then
+		'_throwMapIteratorAllocationError(mapPtr, __FILE__, __LINE__)
+		return NULL
+	end if
 
-'	iter->handler = @_iterationHandler
+	iter->handler = @_iterationHandler
 
-'	_iterator->setData(iter, mapPtr)
+	' Stacked iterators FTW!
+	_iterator->setData(iter, _bst->getIterator(mapPtr->mappings))
 
 	return iter
 end function
@@ -383,6 +384,40 @@ function _compare cdecl (criteria as any ptr, element as any ptr) as short
 	end if
 
 	return 0
+end function
+
+/''
+ ' Handler for generic Iterator.
+ ' @function _iterationHandler
+ ' @param {Iterator.Instance ptr} iter
+ ' @param {any ptr} target
+ ' @returns {integer}
+ ' @private
+ '/
+function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as integer
+	dim as Iterator.Instance ptr delegatePtr = iter->dataSet
+	dim as Mapping ptr current
+	dim as integer result
+
+	if target = NULL then
+		result = _iterator->getNext(delegatePtr, @iter->current)
+		iter->index = delegatePtr->index
+		iter->length = delegatePtr->length
+
+		return result
+	elseif iter->current <> NULL then
+		current = iter->current
+
+		*cptr(any ptr ptr, target) = current->identifier
+
+		result = _iterator->getNext(delegatePtr, @iter->current)
+
+		iter->index = delegatePtr->index
+
+		return result
+	else
+		return false
+	end if
 end function
 
 end namespace

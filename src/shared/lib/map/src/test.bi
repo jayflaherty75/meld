@@ -13,6 +13,8 @@ declare sub test1 cdecl (done as Tester.doneFn)
 declare sub test2 cdecl (done as Tester.doneFn)
 declare sub test3 cdecl (done as Tester.doneFn)
 declare sub test4 cdecl (done as Tester.doneFn)
+declare sub test5 cdecl (done as Tester.doneFn)
+declare sub test6 cdecl (done as Tester.doneFn)
 declare sub test30 cdecl (done as Tester.doneFn)
 
 function testCreate cdecl (it as Tester.itCallback) as short
@@ -24,13 +26,15 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	id4 = "zds9gz8dll4kjrdfm"
 	id5 = "dvbkuysm,snsemnb"
 	id6 = "xufyyy ya348oyoreu87tyhzdkfj"
-	id7 = "FOO_MODULE-THISLOOKS_LIKEAREALID"
+	id7 = "FOO_MODULE-THISLOOKS_LIKEAREALMESSAGEID"
 	id8 = "38499ea97e8347uzer7gakm"
 
 	result = result andalso it("constructs an instance", @test1)
 	result = result andalso it("assigns a set of key/index pairs", @test2)
 	result = result andalso it("returns correct locators", @test3)
 	result = result andalso it("unassigns mappings", @test4)
+	result = result andalso it("iterates remaining keys", @test5)
+	result = result andalso it("purges all contents", @test6)
 	result = result andalso it("destroys instance", @test30)
 
 	return result
@@ -78,6 +82,30 @@ sub test4 cdecl (done as Tester.doneFn)
 	_tester->expect(_map->request(testPtr, strptr(id3)), -1, "Request failed for '" & id3 & "'")
 	_tester->expect(_map->request(testPtr, strptr(id1)), -1, "Request failed for '" & id1 & "'")
 	_tester->expect(_map->length(testPtr), 5, "Incorrect length returned")
+
+	done()
+end sub
+
+sub test5 cdecl (done as Tester.doneFn)
+	dim as Iterator.Instance ptr iterPtr = _map->getIterator(testPtr)
+	dim as zstring ptr idPtr
+	dim as short safeCount = 0
+
+	do while _iterator->getNext(iterPtr, @idPtr) ANDALSO safeCount < 20
+		if idPtr <> NULL then
+			print(*idPtr)
+		else
+			print("ERROR!")
+		end if
+		safeCount += 1
+	loop
+
+	done()
+end sub
+
+sub test6 cdecl (done as Tester.doneFn)
+	_map->purge(testPtr)
+	_tester->expect(_map->length(testPtr), 0, "Incorrect length returned")
 
 	done()
 end sub
