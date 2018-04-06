@@ -80,7 +80,7 @@ end sub
 sub _throwResContReleaseInvalidArgumentError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.invalidArgumentError, _
-		"ResContReleaseInvalidArgumentError", "Invalid 2nd Argument: resourceId must be greater than zero", _
+		"ResContReleaseInvalidArgumentError", "Invalid 2nd Argument: resourceId must be greater than or equal zero", _
 		filename, lineNum _
 	)
 end sub

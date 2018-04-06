@@ -21,8 +21,6 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.assignPtr = @Map.assignPtr
 	moduleState.methods.request = @Map.request
 	moduleState.methods.requestPtr = @Map.requestPtr
-	moduleState.methods.requestRev = @Map.requestRev
-	moduleState.methods.requestRevPtr = @Map.requestRevPtr
 	moduleState.methods.unassign = @Map.unassign
 	moduleState.methods.length = @Map.length
 	moduleState.methods.purge = @Map.purge

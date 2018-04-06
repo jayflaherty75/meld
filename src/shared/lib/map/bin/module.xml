@@ -10,7 +10,6 @@
   <class name='Instance'>
     <property name='container' type='any' modifier='pointer' const='false' />
     <property name='mappings' type='any' modifier='pointer' const='false' />
-    <property name='reverse' type='any' modifier='pointer' const='false' />
   </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
@@ -57,16 +56,6 @@
     <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
     <returns type='any' modifier='pointer' />
   </function>
-  <function name='requestRev'>
-    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
-    <param name='resIdx' type='long' modifier='value' const='false' />
-    <returns type='ubyte' modifier='pointer' />
-  </function>
-  <function name='requestRevPtr'>
-    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
-    <param name='resPtr' type='any' modifier='pointer' const='false' />
-    <returns type='ubyte' modifier='pointer' />
-  </function>
   <function name='unassign'>
     <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
     <param name='idPtr' type='ubyte' modifier='pointer' const='false' />
@@ -92,13 +81,13 @@
     <returns type='short' modifier='value' />
     <private />
   </function>
-  <function name='_compare'>
-    <param name='criteria' type='any' modifier='pointer' const='false' />
-    <param name='element' type='any' modifier='pointer' const='false' />
-    <returns type='short' modifier='value' />
+  <function name='_request'>
+    <param name='mapPtr' type='Instance' modifier='pointer' const='false' />
+    <param name='criteriaPtr' type='any' modifier='pointer' const='false' />
+    <returns type='any' modifier='pointer' />
     <private />
   </function>
-  <function name='_compareReverse'>
+  <function name='_compare'>
     <param name='criteria' type='any' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
