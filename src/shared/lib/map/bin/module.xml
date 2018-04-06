@@ -93,5 +93,12 @@
     <returns type='short' modifier='value' />
     <private />
   </function>
+  <function name='_iterationHandler'>
+    <param name='iter' type='Iterator.Instance' modifier='pointer' const='false' />
+    <param name='target' type='any' modifier='pointer' const='false' />
+    <returns type='integer' modifier='value' />
+    <private />
+    <description>Handler for generic Iterator.</description>
+  </function>
   <namespace>Map</namespace>
 </module>
