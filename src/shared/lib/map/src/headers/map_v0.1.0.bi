@@ -7,9 +7,9 @@
 namespace Map
 
 type Instance
+	container as any ptr
 	mappings as any ptr
 	reverse as any ptr
-	length as long
 end type
 
 type Interface
@@ -28,8 +28,7 @@ type Interface
 	unassign as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 	length as function cdecl (mapPtr as Instance ptr) as long
 	purge as sub cdecl (mapPtr as Instance ptr)
-	_compare as function cdecl (criteria as any ptr, element as any ptr) as short
-	_compareReverse as function cdecl (criteria as any ptr, element as any ptr) as short
+	getIterator as function cdecl (mapPtr as Instance ptr) as any ptr
 end type
 
 end namespace

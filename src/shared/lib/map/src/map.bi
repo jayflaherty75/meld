@@ -10,6 +10,7 @@
 #include once "headers/tester_v0.1.0.bi"
 #include once "headers/resource-container_v0.1.0.bi"
 #include once "headers/bst_v0.1.0.bi"
+#include once "headers/iterator_v0.1.0.bi"
 #include once "headers/map_v0.1.0.bi"
 
 #define NULL 0
@@ -21,6 +22,7 @@ dim shared _fault as Fault.Interface ptr
 dim shared _tester as Tester.Interface ptr
 dim shared _resourceContainer as ResourceContainer.Interface ptr
 dim shared _bst as Bst.Interface ptr
+dim shared _iterator as Iterator.Interface ptr
 
 type ModuleStateType
 	methods as Map.Interface
@@ -31,6 +33,7 @@ end type
 type ErrorCodes
 	allocationError as integer
 	nullReferenceError as integer
+	resourceAllocationError as integer
 end type
 
 dim shared as ModuleStateType moduleState
@@ -52,6 +55,8 @@ declare function requestRevPtr cdecl (mapPtr as Instance ptr, resPtr as any ptr)
 declare function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 declare function length cdecl (mapPtr as Instance ptr) as long
 declare sub purge cdecl (mapPtr as Instance ptr)
+declare function getIterator cdecl (mapPtr as Instance ptr) as any ptr
+declare function _assign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr, locPtr as any ptr) as short
 declare function _compare cdecl (criteria as any ptr, element as any ptr) as short
 declare function _compareReverse cdecl (criteria as any ptr, element as any ptr) as short
 

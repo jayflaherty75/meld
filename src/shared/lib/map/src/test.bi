@@ -35,6 +35,7 @@ function testCreate cdecl (it as Tester.itCallback) as short
 
 	result = result andalso it("constructs an instance", @test1)
 	result = result andalso it("assigns a set of key/index pairs", @test2)
+	result = result andalso it("returns correct locators", @test3)
 	result = result andalso it("destroys instance", @test30)
 
 	return result
@@ -48,14 +49,28 @@ sub test1 cdecl (done as Tester.doneFn)
 end sub
 
 sub test2 cdecl (done as Tester.doneFn)
-	_tester->expect(_map->assign(testPtr, strptr(id1), indices(0)), true, "Failed to assign " & id1 & " -> " & indices(0))
-	_tester->expect(_map->assign(testPtr, strptr(id2), indices(1)), true, "Failed to assign " & id2 & " -> " & indices(1))
-	_tester->expect(_map->assign(testPtr, strptr(id3), indices(2)), true, "Failed to assign " & id3 & " -> " & indices(2))
-	_tester->expect(_map->assign(testPtr, strptr(id4), indices(3)), true, "Failed to assign " & id4 & " -> " & indices(3))
-	_tester->expect(_map->assign(testPtr, strptr(id5), indices(4)), true, "Failed to assign " & id5 & " -> " & indices(4))
-	_tester->expect(_map->assign(testPtr, strptr(id6), indices(5)), true, "Failed to assign " & id6 & " -> " & indices(5))
-	_tester->expect(_map->assign(testPtr, strptr(id7), indices(6)), true, "Failed to assign " & id7 & " -> " & indices(6))
-	_tester->expect(_map->assign(testPtr, strptr(id8), indices(7)), true, "Failed to assign " & id8 & " -> " & indices(7))
+	_tester->expect(_map->assign(testPtr, strptr(id1), indices(0)), true, "Failed to assign '" & id1 & "' -> " & indices(0))
+	_tester->expect(_map->assign(testPtr, strptr(id2), indices(1)), true, "Failed to assign '" & id2 & "' -> " & indices(1))
+	_tester->expect(_map->assign(testPtr, strptr(id3), indices(2)), true, "Failed to assign '" & id3 & "' -> " & indices(2))
+	_tester->expect(_map->assign(testPtr, strptr(id4), indices(3)), true, "Failed to assign '" & id4 & "' -> " & indices(3))
+	_tester->expect(_map->assign(testPtr, strptr(id5), indices(4)), true, "Failed to assign '" & id5 & "' -> " & indices(4))
+	_tester->expect(_map->assign(testPtr, strptr(id6), indices(5)), true, "Failed to assign '" & id6 & "' -> " & indices(5))
+	_tester->expect(_map->assign(testPtr, strptr(id7), indices(6)), true, "Failed to assign '" & id7 & "' -> " & indices(6))
+	_tester->expect(_map->assign(testPtr, strptr(id8), indices(7)), true, "Failed to assign '" & id8 & "' -> " & indices(7))
+	_tester->expect(_map->length(testPtr), 8, "Incorrect length returned")
+
+	done()
+end sub
+
+sub test3 cdecl (done as Tester.doneFn)
+	_tester->expect(_map->request(testPtr, strptr(id1)), indices(0), "Request failed for '" & id1 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id2)), indices(1), "Request failed for '" & id2 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id3)), indices(2), "Request failed for '" & id3 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id4)), indices(3), "Request failed for '" & id4 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id5)), indices(4), "Request failed for '" & id5 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id6)), indices(5), "Request failed for '" & id6 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id7)), indices(6), "Request failed for '" & id7 & "'")
+	_tester->expect(_map->request(testPtr, strptr(id8)), indices(7), "Request failed for '" & id8 & "'")
 
 	done()
 end sub
