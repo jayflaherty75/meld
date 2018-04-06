@@ -23,7 +23,7 @@ type Interface
 	request as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as long
 	requestPtr as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as any ptr
 	unassign as function cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
-	length as function cdecl (mapPtr as Instance ptr) as long
+	getLength as function cdecl (mapPtr as Instance ptr) as long
 	purge as sub cdecl (mapPtr as Instance ptr)
 	getIterator as function cdecl (mapPtr as Instance ptr) as any ptr
 end type
