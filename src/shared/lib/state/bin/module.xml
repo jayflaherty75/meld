@@ -4,9 +4,21 @@
   <requires module='fault' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
   <requires module='resource-container' version='0.1.0' />
+  <requires module='map' version='0.1.0' />
   <version>0.1.0</version>
+  <typedef name='AllocatorFn' type='function' modifier='value'>
+    <param name='memPtr' type='any' modifier='pointer' const='false' />
+    <param name='size' type='long' modifier='value' const='false' />
+    <returns type='any' modifier='pointer' />
+  </typedef>
   <class name='Instance'>
-    <property name='temp' type='any' modifier='pointer' const='false' />
+    <property name='mappings' type='any' modifier='pointer' const='false'>
+      <description>Map pointer</description>
+    </property>
+    <property name='resources' type='any' modifier='pointer' const='false'>
+      <description>ResourceContainer pointer</description>
+    </property>
+    <property name='allocator' type='AllocatorFn' modifier='value' const='false' />
   </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
@@ -24,12 +36,76 @@
   <function name='construct'>
     <returns type='Instance' modifier='pointer' />
     <throws type='AllocationError' />
+    <throws type='ResourceAllocationError' />
     <description>Constructor</description>
   </function>
   <function name='destruct'>
     <param name='instancePtr' type='Instance' modifier='pointer' const='false' />
     <throws type='NullReferenceError' />
     <description>Destructor</description>
+  </function>
+  <function name='initialize'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='pageLength' type='long' modifier='value' const='false'>
+      <default>1024</default>
+    </param>
+    <param name='warnLimit' type='long' modifier='value' const='false'>
+      <default>2147483647</default>
+    </param>
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceInitializationError' />
+  </function>
+  <function name='setAllocator'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='allocator' type='AllocatorFn' modifier='value' const='false' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='request'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='id' type='ubyte' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceInitializationError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='release'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+    <throws type='ReleaseResourceError' />
+  </function>
+  <function name='assign'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <param name='size' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='assignFromContainer'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <param name='contPtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+    <throws type='ResourceAllocationError' />
+  </function>
+  <function name='unassign'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='_defaultAllocator'>
+    <param name='memPtr' type='any' modifier='pointer' const='false' />
+    <param name='size' type='long' modifier='value' const='false' />
+    <returns type='any' modifier='pointer' />
+    <private />
   </function>
   <namespace>State</namespace>
 </module>
