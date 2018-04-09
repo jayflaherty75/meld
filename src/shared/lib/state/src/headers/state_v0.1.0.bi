@@ -6,8 +6,12 @@
 
 namespace State
 
+type AllocatorFn as function cdecl (memPtr as any ptr, size as long) as any ptr
+
 type Instance
-	temp as any ptr
+	mappings as any ptr
+	resources as any ptr
+	allocator as AllocatorFn
 end type
 
 type Interface
@@ -17,6 +21,13 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
+	initialize as function cdecl (statePtr as Instance ptr, pageLength as long = 1024, warnLimit as long = 2147483647) as short
+	setAllocator as sub cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
+	request as function cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
+	release as function cdecl (statePtr as Instance ptr, index as long) as short
+	assign as function cdecl (statePtr as Instance ptr, index as long, size as long) as short
+	assignFromContainer as function cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
+	unassign as function cdecl (statePtr as Instance ptr, index as long) as short
 end type
 
 end namespace

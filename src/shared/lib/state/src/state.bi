@@ -9,6 +9,7 @@
 #include once "headers/fault_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
 #include once "headers/resource-container_v0.1.0.bi"
+#include once "headers/map_v0.1.0.bi"
 #include once "headers/state_v0.1.0.bi"
 
 #define NULL 0
@@ -19,6 +20,7 @@ dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _tester as Tester.Interface ptr
 dim shared _resourceContainer as ResourceContainer.Interface ptr
+dim shared _map as Map.Interface ptr
 
 type ModuleStateType
 	methods as State.Interface
@@ -29,6 +31,10 @@ end type
 type ErrorCodes
 	allocationError as integer
 	nullReferenceError as integer
+	releaseResourceError as integer
+	resourceAllocationError as integer
+	resourceInitializationError as integer
+	resourceMissingError as integer
 end type
 
 dim shared as ModuleStateType moduleState
@@ -41,6 +47,14 @@ declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (instancePtr as Instance ptr)
+declare function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, warnLimit as long = 2147483647) as short
+declare sub setAllocator cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
+declare function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
+declare function release cdecl (statePtr as Instance ptr, index as long) as short
+declare function assign cdecl (statePtr as Instance ptr, index as long, size as long) as short
+declare function assignFromContainer cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
+declare function unassign cdecl (statePtr as Instance ptr, index as long) as short
+declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 
 end namespace
 
