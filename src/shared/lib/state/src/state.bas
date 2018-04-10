@@ -94,22 +94,14 @@ function construct cdecl () as Instance ptr
 	statePtr->mappings = _map->construct()
 	if statePtr->mappings = NULL then
 		destruct(statePtr)
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"stateMapperAllocationError", "Failed to allocate State mapper", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateMapperAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
 	statePtr->resources = _resourceContainer->construct()
 	if statePtr->resources = NULL then
 		destruct(statePtr)
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"stateContainerAllocationError", "Failed to allocate State resource container", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateContainerAllocationError(__FILE__, __LINE__)
 		return NULL
 	end if
 
@@ -127,11 +119,7 @@ end function
  '/
 sub destruct cdecl (statePtr as Instance ptr)
 	if statePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"stateDestructNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateDestructNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -152,26 +140,18 @@ end sub
  ' @function initialize
  ' @param {Instance ptr} statePtr
  ' @param {long} [pageLength=1024]
- ' @param {long} [warnLimit=2147483647]
+ ' @param {long} [warnLimit=2147483647] - By default, does not warn
  ' @returns {short}
  ' @throws {NullReferenceError|ResourceInitializationError}
  '/
 function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, warnLimit as long = 2147483647) as short
 	if statePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"stateInitializeNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateInitializeNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if not _resourceContainer->initialize(statePtr->resources, sizeof(ResourceEntry), 1024, 32768*32768) then
-		_fault->throw(_
-			errors.resourceInitializationError, _
-			"stateInitializeresourceInitializationError", "Failed to initialize resource container", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateInitializeresourceInitializationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -186,11 +166,7 @@ end function
  '/
 sub setAllocator cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateSetAllocatorNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateSetAllocatorNullReferenceError(__FILE__, __LINE__)
 		exit sub
 	end if
 
@@ -213,11 +189,7 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateRequestNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateRequestNullReferenceError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -227,11 +199,7 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 		index = _resourceContainer->request(statePtr->resources)
 
 		if index = -1 then
-			_fault->throw( _
-				errors.resourceInitializationError, _
-				"stateRequestResourceInitializationError", "Failed to create resource", _
-				__FILE__, __LINE__ _
-			)
+			_throwStateRequestResourceInitializationError(__FILE__, __LINE__)
 			return -1
 		end if
 
@@ -240,11 +208,7 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 		if resPtr = null orelse not _map->assign(statePtr->mappings, id, index) then
 			_resourceContainer->release(statePtr->resources, index)
 
-			_fault->throw( _
-				errors.resourceInitializationError, _
-				"stateRequestMapInitializationError", "Failed to map identifier to resource", _
-				__FILE__, __LINE__ _
-			)
+			_throwStateRequestMapInitializationError(__FILE__, __LINE__)
 			return -1
 		end if
 
@@ -257,11 +221,7 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 		resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 
 		if resPtr = null then
-			_fault->throw( _
-				errors.resourceMissingError, _
-				"stateRequestResourceMissingError", "Resource pointer missing", _
-				__FILE__, __LINE__ _
-			)
+			_throwStateRequestResourceMissingError(__FILE__, __LINE__)
 			return -1
 		end if
 	end if
@@ -283,40 +243,24 @@ function release cdecl (statePtr as Instance ptr, index as long) as short
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateReleaseNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateReleaseNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 	if resPtr = NULL then
-		_fault->throw( _
-			errors.resourceMissingError, _
-			"stateReleaseResourceMissingError", "Resource not found", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateReleaseResourceMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resPtr->references -= 1
 
 	if not _map->unassign(statePtr->mappings, resPtr->identifier) then
-		_fault->throw( _
-			errors.releaseResourceError, _
-			"stateReleaseMapResourceError", "Failed to unassign mapping", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateReleaseMapResourceError(__FILE__, __LINE__)
 	end if
 
 	if not _resourceContainer->release(statePtr->resources, index) then
-		_fault->throw( _
-			errors.releaseResourceError, _
-			"stateReleaseResourceError", "Failed to unassign resource", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateReleaseResourceError(__FILE__, __LINE__)
 	end if
 	
 	return true
@@ -334,21 +278,13 @@ function assign cdecl (statePtr as Instance ptr, index as long, size as long) as
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateAssignNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 	if resPtr = NULL then
-		_fault->throw( _
-			errors.resourceMissingError, _
-			"stateAssignResourceMissingError", "Resource not found", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignResourceMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -371,31 +307,19 @@ function assignFromContainer cdecl (statePtr as Instance ptr, index as long, con
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateAssignContNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignContNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 	if resPtr = NULL then
-		_fault->throw( _
-			errors.resourceMissingError, _
-			"stateAssignContResourceMissingError", "Resource not found", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignContResourceMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resIndex = _resourceContainer->request(contPtr)
 	if resIndex = -1 then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"stateAssignContrAllocationError", "Request to provided resource container failed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignContrAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -403,11 +327,7 @@ function assignFromContainer cdecl (statePtr as Instance ptr, index as long, con
 	if resPtr->resourcePtr = NULL then
 		_resourceContainer->release(contPtr, resIndex)
 
-		_fault->throw( _
-			errors.resourceMissingError, _
-			"stateAssignContPointerMissingError", "Missing resource pointer", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateAssignContPointerMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -428,21 +348,13 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
-		_fault->throw( _
-			errors.nullReferenceError, _
-			"stateUnassignNullReferenceError", "Invalid state pointer passed", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateUnassignNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 	if resPtr = NULL then
-		_fault->throw( _
-			errors.resourceMissingError, _
-			"stateUnassignResourceMissingError", "Resource not found", _
-			__FILE__, __LINE__ _
-		)
+		_throwStateUnassignResourceMissingError(__FILE__, __LINE__)
 		return false
 	end if
 
