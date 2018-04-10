@@ -50,6 +50,7 @@
       <default>1024</default>
     </param>
     <param name='warnLimit' type='long' modifier='value' const='false'>
+      <description>By default, does not warn</description>
       <default>2147483647</default>
     </param>
     <returns type='short' modifier='value' />
