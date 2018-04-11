@@ -8,6 +8,7 @@
 #include once "headers/console_v0.1.0.bi"
 #include once "headers/fault_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
+#include once "headers/iterator_v0.1.0.bi"
 #include once "headers/list_v0.1.0.bi"
 #include once "headers/resource-container_v0.1.0.bi"
 #include once "headers/map_v0.1.0.bi"
@@ -20,6 +21,7 @@ dim shared _state as State.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _tester as Tester.Interface ptr
+dim shared _iterator as Iterator.Interface ptr
 dim shared _list as List.Interface ptr
 dim shared _resourceContainer as ResourceContainer.Interface ptr
 dim shared _map as Map.Interface ptr
