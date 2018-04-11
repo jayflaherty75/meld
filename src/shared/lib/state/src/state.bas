@@ -3,6 +3,7 @@
  ' @requires console_v0.*
  ' @requires fault_v0.*
  ' @requires tester_v0.*
+ ' @requires list_v0.*
  ' @requires resource-container_v0.*
  ' @requires map_v0.*
  '/
@@ -35,6 +36,7 @@ namespace State
  ' @class Instance
  ' @member {any ptr} mappings - Map pointer
  ' @member {any ptr} resources - ResourceContainer pointer
+ ' @member {any ptr} modifiers - List pointer
  ' @member {AllocatorFn} allocator
  '/
 
@@ -46,6 +48,7 @@ type ResourceEntry
 	resourcePtr as any ptr
 	references as long
 	modifier as ModifierFn
+	modifierNode as List.Node ptr
 end type
 
 /''
@@ -123,6 +126,11 @@ sub destruct cdecl (statePtr as Instance ptr)
 		statePtr->resources = NULL
 	end if
 
+	if statePtr->modifiers <> NULL then
+		_list->destruct(statePtr->modifiers)
+		statePtr->modifiers = NULL
+	end if
+
 	deallocate(statePtr)
 end sub
 
@@ -151,6 +159,13 @@ function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, 
 	if statePtr->resources = NULL then
 		destruct(statePtr)
 		_throwStateContainerAllocationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	statePtr->modifiers = _list->construct()
+	if statePtr->modifiers = NULL then
+		destruct(statePtr)
+		_throwStateModListAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -420,6 +435,8 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 		return false
 	end if
 
+	if not _state->setModifier(statePtr, index, NULL) then return false
+
 	if resPtr->typePtr = NULL then
 		statePtr->allocator(resPtr->resourcePtr, 0)
 	else
@@ -471,6 +488,7 @@ end function
  '/
 function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = NULL) as short
 	dim as ResourceEntry ptr resPtr
+	dim as List.Node ptr nodePtr = NULL
 
 	if statePtr = NULL then
 		_throwStateSetModNullReferenceError(__FILE__, __LINE__)
@@ -483,12 +501,27 @@ function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as
 		return false
 	end if
 
-	resPtr->modifier = modifier
+	if modifier <> NULL then
+		nodePtr = _list->insert(statePtr->modifiers, resPtr, NULL)
+		if nodePtr = NULL then return false
 
-	if not modifier(resPtr->resourcePtr, NULL) then
-		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
-		return false
+		'TODO: Should use an initialize message rather than NULL
+		if not modifier(resPtr->resourcePtr, NULL) then
+			_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
+			return false
+		end if
+	else
+		if resPtr->modifier <> NULL then
+			' TODO: Call modifier with unintialize message
+		end if
+
+		if resPtr->modifierNode <> NULL then
+			_list->remove(statePtr->modifiers, resPtr->modifierNode)
+		end if
 	end if
+
+	resPtr->modifier = modifier
+	resPtr->modifierNode = nodePtr
 
 	return true
 end function

@@ -13,6 +13,7 @@ type ModifierFn as function cdecl (dataPtr as any ptr, messagePtr as any ptr) as
 type Instance
 	mappings as any ptr
 	resources as any ptr
+	modifiers as any ptr
 	allocator as AllocatorFn
 end type
 

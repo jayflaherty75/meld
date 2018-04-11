@@ -65,6 +65,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_list = modulePtr->require("list_v0.1.0")
+		If _list = NULL then
+			print("**** State.load: Failed to load list dependency")
+			Return false
+		End If
+
 		_resourceContainer = modulePtr->require("resource-container_v0.1.0")
 		If _resourceContainer = NULL then
 			print("**** State.load: Failed to load resource-container dependency")

@@ -241,5 +241,13 @@ sub _throwStateSetModResourceInitializationError (byref filename as zstring, lin
 	)
 end sub
 
+sub _throwStateModListAllocationError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceAllocationError, _
+		"StateModListAllocationError", "Failed to State modifiers list", _
+		filename, lineNum _
+	)
+end sub
+
 end namespace
 
