@@ -227,7 +227,7 @@ function _defaultHandler cdecl (iter as Instance ptr, target as any ptr) as shor
 		iter->index = 0
 	else
 		if iter->index < iter->length then
-			*cptr(integer ptr, target) = cptr(integer ptr, iter->dataSet)[iter->index]
+			*cptr(long ptr, target) = cptr(long ptr, iter->dataSet)[iter->index]
 
 			iter->index += 1
 		else

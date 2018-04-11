@@ -10,7 +10,7 @@ declare sub test3 cdecl (done as Tester.doneFn)
 declare sub test4 cdecl (done as Tester.doneFn)
 declare sub test5 cdecl (done as Tester.doneFn)
 
-dim shared as integer testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
+dim shared as long testData(8-1) = { 1, 2, 3, 4, 5, 6, 7, 8 }
 dim shared as Instance ptr iter
 
 function testCreate cdecl (it as Tester.itCallback) as short
@@ -42,7 +42,7 @@ sub test2 cdecl (done as Tester.doneFn)
 end sub
 
 sub test3 cdecl (done as Tester.doneFn)
-	dim as integer value
+	dim as long value
 
 	_tester->expect(getNext(iter, @value), true, "Iteration ended prematurely at element 1")
 	_tester->expect(value, 1, "Invalid result from getNext() at element 1")
@@ -72,7 +72,7 @@ sub test3 cdecl (done as Tester.doneFn)
 end sub
 
 sub test4 cdecl (done as Tester.doneFn)
-	dim as integer value
+	dim as long value
 
 	reset(iter)
 

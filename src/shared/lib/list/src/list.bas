@@ -131,7 +131,7 @@ end sub
  ' @function insert
  ' @param {Instance ptr} listPtr
  ' @param {any ptr} element
- ' @param {Node ptr} prevPtr
+ ' @param {Node ptr} [prevPtr=0]
  ' @returns {Node ptr}
  ' @throws {NullReferenceError|InvalidArgumentError|ResourceAllocationError}
  '/

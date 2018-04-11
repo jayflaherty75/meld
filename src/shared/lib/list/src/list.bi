@@ -43,7 +43,7 @@ declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (listPtr as Instance ptr)
-declare function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr) as Node ptr
+declare function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr = 0) as Node ptr
 declare sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
 declare function getFirst cdecl (listPtr as Instance ptr) as Node ptr
 declare function getLast cdecl (listPtr as Instance ptr) as Node ptr
