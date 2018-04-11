@@ -27,15 +27,19 @@ declare sub test4 cdecl (done as Tester.doneFn)
 declare sub test5 cdecl (done as Tester.doneFn)
 declare sub test6 cdecl (done as Tester.doneFn)
 declare sub test7 cdecl (done as Tester.doneFn)
+declare sub test8 cdecl (done as Tester.doneFn)
 declare sub test28 cdecl (done as Tester.doneFn)
 declare sub test29 cdecl (done as Tester.doneFn)
 declare sub test30 cdecl (done as Tester.doneFn)
 
 declare function modifier1 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 declare function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+declare function modifierSet cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 declare function selectX cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
 declare function selectY cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
 declare function selectZ cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+declare function selectIterator cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+declare function selectIndexAt cdecl (statePtr as any ptr, dataPtr as any ptr, index as long) as long
 
 function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
@@ -61,6 +65,7 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	result = result andalso it("assigns multiple resources from container", @test5)
 	result = result andalso it("assigns modifiers to resources", @test6)
 	result = result andalso it("initializes resources with the correct state", @test7)
+	result = result andalso it("provides access and iteration of resource sets", @test8)
 	result = result andalso it("unassigns all resources", @test28)
 	result = result andalso it("releases and unmaps resource indices", @test29)
 	result = result andalso it("destroys instance successfully", @test30)
@@ -182,6 +187,61 @@ sub test7 cdecl (done as Tester.doneFn)
 	done()
 end sub
 
+sub test8 cdecl (done as Tester.doneFn)
+	dim as string setIdentity = "foo-bar-baz-bat"
+	dim as ubyte ptr setIdentityPtr = strptr(setIdentity)
+	dim as long setIndex = _state->request(testPtr, setIdentityPtr)
+	dim as Iterator.Instance ptr iterPtr
+	dim as long testResult
+
+	_tester->expectNot(setIndex, -1, "Request for set index failed")
+	_tester->expect(_state->assign(testPtr, setIndex, sizeof(long) * 7), true, "Failed to assign array set")
+	_tester->expect(_state->setModifier(testPtr, setIndex, @modifierSet), true, "Failed to assign modifier to resource set")
+
+	_tester->expect(_state->selectAt(testPtr, setIndex, 0, @selectIndexAt), 1, "Incorrect index returned from set at #0")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 1, @selectIndexAt), 2, "Incorrect index returned from set at #1")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 2, @selectIndexAt), 3, "Incorrect index returned from set at #2")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 3, @selectIndexAt), 4, "Incorrect index returned from set at #3")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 4, @selectIndexAt), 5, "Incorrect index returned from set at #4")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 5, @selectIndexAt), 6, "Incorrect index returned from set at #5")
+	_tester->expect(_state->selectAt(testPtr, setIndex, 6, @selectIndexAt), 7, "Incorrect index returned from set at #6")
+
+	_tester->expect(_state->selectFrom(testPtr, setIndex, @iterPtr, @selectIterator), true, "Failed to retrieve new iterator for resource set")
+	_tester->expectPtrNot(iterPtr, NULL, "Selector returned NULL iterator")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #1")
+	_tester->expect(testResult, 1, "Incorrect index returned from iterator at #1")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #2")
+	_tester->expect(testResult, 2, "Incorrect index returned from iterator at #2")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #3")
+	_tester->expect(testResult, 3, "Incorrect index returned from iterator at #3")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #4")
+	_tester->expect(testResult, 4, "Incorrect index returned from iterator at #4")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #5")
+	_tester->expect(testResult, 5, "Incorrect index returned from iterator at #5")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #6")
+	_tester->expect(testResult, 6, "Incorrect index returned from iterator at #6")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), true, "Iteration terminated early at #7")
+	_tester->expect(testResult, 7, "Incorrect index returned from iterator at #7")
+
+	_tester->expect(_iterator->getNext(iterPtr, @testResult), false, "Iteration Failed to terminate")
+	_tester->expect(testResult, 7, "Incorrect index returned from iterator at #8")
+
+	_iterator->destruct(iterPtr)
+
+	_tester->expect(_state->setModifier(testPtr, setIndex, NULL), true, "Failed to unassign modifier to resource set")
+	_tester->expect(_state->unassign(testPtr, setIndex), true, "Failed to unassign array set")
+	_tester->expect(_state->release(testPtr, setIndex), true, "Failed to release set index")
+
+	done()
+end sub
+
 sub test28 cdecl (done as Tester.doneFn)
 	_tester->expect(_state->unassign(testPtr, testResources(0)), true, "Failed to unassign singular resource")
 	_tester->expect(_state->unassign(testPtr, testResources(1)), true, "Failed to unassign resource at index #1")
@@ -265,6 +325,24 @@ function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 	return true
 end function
 
+function modifierSet cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+	dim as long ptr resPtr = dataPtr
+
+	if dataPtr = NULL then return false
+
+	if messagePtr = NULL then
+		resPtr[0] = testResources(1)
+		resPtr[1] = testResources(2)
+		resPtr[2] = testResources(3)
+		resPtr[3] = testResources(4)
+		resPtr[4] = testResources(5)
+		resPtr[5] = testResources(6)
+		resPtr[6] = testResources(7)
+	end if
+
+	return true
+end function
+
 function selectX cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
 	if resPtr = NULL orelse valuePtr = NULL then return false
 
@@ -287,6 +365,28 @@ function selectZ cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any 
 	*cptr(long ptr, valuePtr) = cptr(TestResource2 ptr, resPtr)->z
 
 	return true
+end function
+
+function selectIterator cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+	dim as Iterator.Instance ptr ptr iterPtrPtr = valuePtr
+
+	if resPtr = NULL orelse valuePtr = NULL then return false
+
+	*iterPtrPtr = _iterator->construct()
+
+	if *iterPtrPtr = NULL then return false
+
+	_iterator->setData(*iterPtrPtr, resPtr, 7)
+
+	return true
+end function
+
+function selectIndexAt cdecl (statePtr as any ptr, dataPtr as any ptr, index as long) as long
+	dim as long ptr resPtr = dataPtr
+
+	if resPtr = NULL orelse index < 0 then return -1
+
+	return resPtr[index]
 end function
 
 end namespace

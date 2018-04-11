@@ -27,7 +27,7 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
-	insert as function cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr) as Node ptr
+	insert as function cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as Node ptr = 0) as Node ptr
 	remove as sub cdecl (listPtr as Instance ptr, node as Node ptr)
 	getFirst as function cdecl (listPtr as Instance ptr) as Node ptr
 	getLast as function cdecl (listPtr as Instance ptr) as Node ptr

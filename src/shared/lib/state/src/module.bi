@@ -67,6 +67,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_iterator = modulePtr->require("iterator_v0.1.0")
+		If _iterator = NULL then
+			print("**** State.load: Failed to load iterator dependency")
+			Return false
+		End If
+
 		_list = modulePtr->require("list_v0.1.0")
 		If _list = NULL then
 			print("**** State.load: Failed to load list dependency")
