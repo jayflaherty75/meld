@@ -199,6 +199,10 @@ sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
 		exit sub
 	end if
 
+	if listPtr->length = 0 then
+		exit sub
+	end if
+
 	nextPtr = node->nextPtr
 	prevPtr = node->prevPtr
 
@@ -215,6 +219,14 @@ sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
 	end if
 
 	listPtr->length -= 1
+
+	' TODO: Next/prev pointers are not being removed in all cases and therefore
+	' not being removed from list on final removal.  The following is temporary
+	' and must be replaced with a permanent fix.
+	if listPtr->length = 0 then
+		listPtr->first = NULL
+		listPtr->last = NULL
+	end if
 
 	deallocate(node)
 end sub

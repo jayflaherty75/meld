@@ -3,6 +3,7 @@
   <requires module='console' version='0.1.0' />
   <requires module='fault' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
+  <requires module='list' version='0.1.0' />
   <requires module='resource-container' version='0.1.0' />
   <requires module='map' version='0.1.0' />
   <version>0.1.0</version>
@@ -22,6 +23,9 @@
     </property>
     <property name='resources' type='any' modifier='pointer' const='false'>
       <description>ResourceContainer pointer</description>
+    </property>
+    <property name='modifiers' type='any' modifier='pointer' const='false'>
+      <description>List pointer</description>
     </property>
     <property name='allocator' type='AllocatorFn' modifier='value' const='false' />
   </class>
