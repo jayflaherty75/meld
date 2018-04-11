@@ -33,6 +33,22 @@ namespace State
  '/
 
 /''
+ ' @typedef {function} SelectorFn
+ ' @param {any ptr} statePtr
+ ' @param {any ptr} resPtr
+ ' @param {any ptr} valuePtr
+ ' @returns {short}
+ '/
+
+/''
+ ' @typedef {function} SelectorAtFn
+ ' @param {any ptr} statePtr
+ ' @param {any ptr} resPtr
+ ' @param {long} index
+ ' @returns {long}
+ '/
+
+/''
  ' @class Instance
  ' @member {any ptr} mappings - Map pointer
  ' @member {any ptr} resources - ResourceContainer pointer
@@ -505,14 +521,13 @@ function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as
 		nodePtr = _list->insert(statePtr->modifiers, resPtr, NULL)
 		if nodePtr = NULL then return false
 
-		'TODO: Should use an initialize message rather than NULL
 		if not modifier(resPtr->resourcePtr, NULL) then
 			_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
 			return false
 		end if
 	else
 		if resPtr->modifier <> NULL then
-			' TODO: Call modifier with unintialize message
+			' TODO: Call modifier with uninitialize message
 		end if
 
 		if resPtr->modifierNode <> NULL then
@@ -524,6 +539,58 @@ function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as
 	resPtr->modifierNode = nodePtr
 
 	return true
+end function
+
+/''
+ ' @function selectFrom
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @param {any ptr} valuePtr
+ ' @param {SelectorFn} selector
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
+ '/
+function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
+	dim as ResourceEntry ptr resPtr
+
+	if statePtr = NULL then
+		_throwStateSelectFromNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
+	if resPtr = NULL then
+		_throwStateSelectFromResourceMissingError(__FILE__, __LINE__)
+		return false
+	end if
+
+	return selector (statePtr, resPtr->resourcePtr, valuePtr)
+end function
+
+/''
+ ' @function selectAt
+ ' @param {Instance ptr} statePtr
+ ' @param {long} stateIdx
+ ' @param {long} resIdx
+ ' @param {SelectorAtFn} selector
+ ' @returns {long}
+ ' @throws {NullReferenceError|ResourceMissingError}
+ '/
+function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
+	dim as ResourceEntry ptr resPtr
+
+	if statePtr = NULL then
+		_throwStateSelectAtNullReferenceError(__FILE__, __LINE__)
+		return -1
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, stateIdx)
+	if resPtr = NULL then
+		_throwStateSelectAtResourceMissingError(__FILE__, __LINE__)
+		return -1
+	end if
+
+	return selector (statePtr, resPtr->resourcePtr, resIdx)
 end function
 
 /''

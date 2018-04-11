@@ -33,6 +33,9 @@ declare sub test30 cdecl (done as Tester.doneFn)
 
 declare function modifier1 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 declare function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+declare function selectX cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+declare function selectY cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+declare function selectZ cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
 
 function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
@@ -159,6 +162,22 @@ sub test6 cdecl (done as Tester.doneFn)
 end sub
 
 sub test7 cdecl (done as Tester.doneFn)
+	dim as short i
+	dim as long x, y, z
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(0), @x, @selectX), true, "Failed to retrieve value X from resource #0")
+	_tester->expect(_state->selectFrom(testPtr, testResources(0), @y, @selectY), true, "Failed to retrieve value Y from resource #0")
+	_tester->expect(x, 10000, "Incorrect value X returned from resource #0")
+	_tester->expect(y, 20000, "Incorrect value Y returned from resource #0")
+
+	for i = 1 to 7
+		_tester->expect(_state->selectFrom(testPtr, testResources(i), @x, @selectX), true, "Failed to retrieve value X from resource #" & i)
+		_tester->expect(_state->selectFrom(testPtr, testResources(i), @y, @selectY), true, "Failed to retrieve value Y from resource #" & i)
+		_tester->expect(_state->selectFrom(testPtr, testResources(i), @z, @selectZ), true, "Failed to retrieve value Z from resource #" & i)
+		_tester->expect(x, 30000, "Incorrect value X returned from resource #" & i)
+		_tester->expect(y, 40000, "Incorrect value Y returned from resource #" & i)
+		_tester->expect(z, 50000, "Incorrect value Z returned from resource #" & i)
+	next
 
 	done()
 end sub
@@ -242,6 +261,30 @@ function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 		resPtr->y = 40000
 		resPtr->z = 50000
 	end if
+
+	return true
+end function
+
+function selectX cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+	if resPtr = NULL orelse valuePtr = NULL then return false
+
+	*cptr(long ptr, valuePtr) = cptr(TestResource1 ptr, resPtr)->x
+
+	return true
+end function
+
+function selectY cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+	if resPtr = NULL orelse valuePtr = NULL then return false
+
+	*cptr(long ptr, valuePtr) = cptr(TestResource1 ptr, resPtr)->y
+
+	return true
+end function
+
+function selectZ cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+	if resPtr = NULL orelse valuePtr = NULL then return false
+
+	*cptr(long ptr, valuePtr) = cptr(TestResource2 ptr, resPtr)->z
 
 	return true
 end function

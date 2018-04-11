@@ -28,6 +28,8 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.unassign = @State.unassign
 	moduleState.methods.isAssigned = @State.isAssigned
 	moduleState.methods.setModifier = @State.setModifier
+	moduleState.methods.selectFrom = @State.selectFrom
+	moduleState.methods.selectAt = @State.selectAt
 
 	return @moduleState.methods
 End Function

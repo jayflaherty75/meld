@@ -60,6 +60,8 @@ declare function assignFromContainer cdecl (statePtr as Instance ptr, index as l
 declare function unassign cdecl (statePtr as Instance ptr, index as long) as short
 declare function isAssigned cdecl (statePtr as Instance ptr, index as long) as short
 declare function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = 0) as short
+declare function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
+declare function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
 declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 
 end namespace

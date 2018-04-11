@@ -10,6 +10,10 @@ type AllocatorFn as function cdecl (memPtr as any ptr, size as long) as any ptr
 
 type ModifierFn as function cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 
+type SelectorFn as function cdecl (statePtr as any ptr, resPtr as any ptr, valuePtr as any ptr) as short
+
+type SelectorAtFn as function cdecl (statePtr as any ptr, resPtr as any ptr, index as long) as long
+
 type Instance
 	mappings as any ptr
 	resources as any ptr
@@ -35,6 +39,8 @@ type Interface
 	unassign as function cdecl (statePtr as Instance ptr, index as long) as short
 	isAssigned as function cdecl (statePtr as Instance ptr, index as long) as short
 	setModifier as function cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = 0) as short
+	selectFrom as function cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
+	selectAt as function cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
 end type
 
 end namespace
