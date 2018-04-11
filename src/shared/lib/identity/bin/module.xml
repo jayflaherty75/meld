@@ -10,7 +10,7 @@
     <description>Standard library instance.</description>
   </class>
   <class name='Unique'>
-    <property name='v(15-1)' type='ubyte' modifier='value' const='false' />
+    <property name='v(16-1)' type='ubyte' modifier='value' const='false' />
     <description>Represents a binary, non-serialized unique identifier.</description>
   </class>
   <typedef name='Encoded' type='zstring*21' modifier='value'>
