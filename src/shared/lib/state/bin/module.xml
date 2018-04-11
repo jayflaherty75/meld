@@ -11,6 +11,11 @@
     <param name='size' type='long' modifier='value' const='false' />
     <returns type='any' modifier='pointer' />
   </typedef>
+  <typedef name='ModifierFn' type='function' modifier='value'>
+    <param name='dataPtr' type='any' modifier='pointer' const='false' />
+    <param name='messagePtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
   <class name='Instance'>
     <property name='mappings' type='any' modifier='pointer' const='false'>
       <description>Map pointer</description>
@@ -78,6 +83,20 @@
     <throws type='ResourceMissingError' />
     <throws type='ReleaseResourceError' />
   </function>
+  <function name='getRefCount'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='isReferenced'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
   <function name='assign'>
     <param name='statePtr' type='Instance' modifier='pointer' const='false' />
     <param name='index' type='long' modifier='value' const='false' />
@@ -101,6 +120,22 @@
     <returns type='short' modifier='value' />
     <throws type='NullReferenceError' />
     <throws type='ResourceMissingError' />
+  </function>
+  <function name='isAssigned'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='setModifier'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <param name='modifier' type='ModifierFn' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+    <throws type='ResourceInitializationError' />
   </function>
   <function name='_defaultAllocator'>
     <param name='memPtr' type='any' modifier='pointer' const='false' />

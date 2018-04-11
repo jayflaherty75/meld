@@ -25,6 +25,13 @@ namespace State
  '/
 
 /''
+ ' @typedef {function} ModifierFn
+ ' @param {any ptr} dataPtr
+ ' @param {any ptr} messagePtr
+ ' @returns {short}
+ '/
+
+/''
  ' @class Instance
  ' @member {any ptr} mappings - Map pointer
  ' @member {any ptr} resources - ResourceContainer pointer
@@ -38,6 +45,7 @@ type ResourceEntry
 	resIndex as long
 	resourcePtr as any ptr
 	references as long
+	modifier as ModifierFn
 end type
 
 /''
@@ -151,7 +159,7 @@ function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, 
 	end if
 
 	if not _resourceContainer->initialize(statePtr->resources, sizeof(ResourceEntry), 1024, 32768*32768) then
-		_throwStateInitializeresourceInitializationError(__FILE__, __LINE__)
+		_throwStateInitializeResourceInitializationError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -217,6 +225,8 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 		resPtr->index = index
 		resPtr->resIndex = -1
 		resPtr->resourcePtr = NULL
+		resPtr->references = 0
+		resPtr->modifier = NULL
 	else
 		resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 
@@ -255,15 +265,68 @@ function release cdecl (statePtr as Instance ptr, index as long) as short
 
 	resPtr->references -= 1
 
-	if not _map->unassign(statePtr->mappings, resPtr->identifier) then
-		_throwStateReleaseMapResourceError(__FILE__, __LINE__)
-	end if
+	if resPtr->references <= 0 then
+		if _state->isAssigned(statePtr, index) then
+			_state->unassign(statePtr, index)
+		end if
 
-	if not _resourceContainer->release(statePtr->resources, index) then
-		_throwStateReleaseResourceError(__FILE__, __LINE__)
+		if not _map->unassign(statePtr->mappings, resPtr->identifier) then
+			_throwStateReleaseMapResourceError(__FILE__, __LINE__)
+		end if
+
+		if not _resourceContainer->release(statePtr->resources, index) then
+			_throwStateReleaseResourceError(__FILE__, __LINE__)
+		end if
+
+		resPtr->typePtr = NULL
+		resPtr->identifier = NULL
+		resPtr->index = -1
+		resPtr->resIndex = -1
+		resPtr->resourcePtr = NULL
+		resPtr->references = 0
+		resPtr->modifier = NULL
 	end if
 	
 	return true
+end function
+
+/''
+ ' @function getRefCount
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
+ '/
+function getRefCount cdecl (statePtr as Instance ptr, index as long) as short
+	dim as ResourceEntry ptr resPtr
+
+	if statePtr = NULL then
+		_throwStateGetRefCountNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
+	if resPtr = NULL then
+		_throwStateGetRefCountResourceMissingError(__FILE__, __LINE__)
+		return false
+	end if
+
+	return resPtr->references
+end function
+
+/''
+ ' @function isReferenced
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
+ '/
+function isReferenced cdecl (statePtr as Instance ptr, index as long) as short
+	if _state->getRefCount(statePtr, index) > 0 then
+		return true
+	end if
+
+	return false
 end function
 
 /''
@@ -367,6 +430,66 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 	resPtr->typePtr = NULL
 	resPtr->resourcePtr = NULL
 	resPtr->resIndex = -1
+
+	return true
+end function
+
+/''
+ ' @function isAssigned
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError}
+ '/
+function isAssigned cdecl (statePtr as Instance ptr, index as long) as short
+	dim as ResourceEntry ptr resPtr
+
+	if statePtr = NULL then
+		_throwStateIsAssignedNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
+	if resPtr = NULL then
+		_throwStateIsAssignedResourceMissingError(__FILE__, __LINE__)
+		return false
+	end if
+
+	if resPtr->resourcePtr = NULL then
+		return false
+	end if
+
+	return true
+end function
+
+/''
+ ' @function setModifier
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @param {ModifierFn} modifier
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError|ResourceInitializationError}
+ '/
+function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
+	dim as ResourceEntry ptr resPtr
+
+	if statePtr = NULL then
+		_throwStateSetModNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
+	if resPtr = NULL then
+		_throwStateSetModResourceMissingError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr->modifier = modifier
+
+	if not modifier(resPtr->resourcePtr, NULL) then
+		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
+		return false
+	end if
 
 	return true
 end function

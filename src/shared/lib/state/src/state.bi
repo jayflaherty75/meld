@@ -51,9 +51,13 @@ declare function initialize cdecl (statePtr as Instance ptr, pageLength as long 
 declare sub setAllocator cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
 declare function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 declare function release cdecl (statePtr as Instance ptr, index as long) as short
+declare function getRefCount cdecl (statePtr as Instance ptr, index as long) as short
+declare function isReferenced cdecl (statePtr as Instance ptr, index as long) as short
 declare function assign cdecl (statePtr as Instance ptr, index as long, size as long) as short
 declare function assignFromContainer cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
 declare function unassign cdecl (statePtr as Instance ptr, index as long) as short
+declare function isAssigned cdecl (statePtr as Instance ptr, index as long) as short
+declare function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
 declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 
 end namespace

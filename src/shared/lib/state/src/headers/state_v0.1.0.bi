@@ -8,6 +8,8 @@ namespace State
 
 type AllocatorFn as function cdecl (memPtr as any ptr, size as long) as any ptr
 
+type ModifierFn as function cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+
 type Instance
 	mappings as any ptr
 	resources as any ptr
@@ -25,9 +27,13 @@ type Interface
 	setAllocator as sub cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
 	request as function cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 	release as function cdecl (statePtr as Instance ptr, index as long) as short
+	getRefCount as function cdecl (statePtr as Instance ptr, index as long) as short
+	isReferenced as function cdecl (statePtr as Instance ptr, index as long) as short
 	assign as function cdecl (statePtr as Instance ptr, index as long, size as long) as short
 	assignFromContainer as function cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
 	unassign as function cdecl (statePtr as Instance ptr, index as long) as short
+	isAssigned as function cdecl (statePtr as Instance ptr, index as long) as short
+	setModifier as function cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
 end type
 
 end namespace
