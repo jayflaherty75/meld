@@ -47,7 +47,9 @@
   <function name='insert'>
     <param name='listPtr' type='Instance' modifier='pointer' const='false' />
     <param name='element' type='any' modifier='pointer' const='false' />
-    <param name='prevPtr' type='Node' modifier='pointer' const='false' />
+    <param name='prevPtr' type='Node' modifier='pointer' const='false'>
+      <default>0</default>
+    </param>
     <returns type='Node' modifier='pointer' />
     <throws type='NullReferenceError' />
     <throws type='InvalidArgumentError' />
