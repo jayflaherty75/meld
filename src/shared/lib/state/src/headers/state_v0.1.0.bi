@@ -33,7 +33,7 @@ type Interface
 	assignFromContainer as function cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
 	unassign as function cdecl (statePtr as Instance ptr, index as long) as short
 	isAssigned as function cdecl (statePtr as Instance ptr, index as long) as short
-	setModifier as function cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
+	setModifier as function cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = 0) as short
 end type
 
 end namespace

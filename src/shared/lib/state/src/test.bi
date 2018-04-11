@@ -25,9 +25,14 @@ declare sub test2 cdecl (done as Tester.doneFn)
 declare sub test3 cdecl (done as Tester.doneFn)
 declare sub test4 cdecl (done as Tester.doneFn)
 declare sub test5 cdecl (done as Tester.doneFn)
+declare sub test6 cdecl (done as Tester.doneFn)
+declare sub test7 cdecl (done as Tester.doneFn)
 declare sub test28 cdecl (done as Tester.doneFn)
 declare sub test29 cdecl (done as Tester.doneFn)
 declare sub test30 cdecl (done as Tester.doneFn)
+
+declare function modifier1 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+declare function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
 
 function testCreate cdecl (it as Tester.itCallback) as short
 	dim as short result = true
@@ -51,6 +56,8 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	result = result andalso it("returns the correct indices for existing identifiers", @test3)
 	result = result andalso it("assigns singular resource", @test4)
 	result = result andalso it("assigns multiple resources from container", @test5)
+	result = result andalso it("assigns modifiers to resources", @test6)
+	result = result andalso it("initializes resources with the correct state", @test7)
 	result = result andalso it("unassigns all resources", @test28)
 	result = result andalso it("releases and unmaps resource indices", @test29)
 	result = result andalso it("destroys instance successfully", @test30)
@@ -138,6 +145,24 @@ sub test5 cdecl (done as Tester.doneFn)
 	done()
 end sub
 
+sub test6 cdecl (done as Tester.doneFn)
+	_tester->expect(_state->setModifier(testPtr, testResources(0), @modifier1), true, "Resource #0 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(1), @modifier2), true, "Resource #1 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(2), @modifier2), true, "Resource #2 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(3), @modifier2), true, "Resource #3 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(4), @modifier2), true, "Resource #4 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(5), @modifier2), true, "Resource #5 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(6), @modifier2), true, "Resource #6 modifier not assigned")
+	_tester->expect(_state->setModifier(testPtr, testResources(7), @modifier2), true, "Resource #7 modifier not assigned")
+
+	done()
+end sub
+
+sub test7 cdecl (done as Tester.doneFn)
+
+	done()
+end sub
+
 sub test28 cdecl (done as Tester.doneFn)
 	_tester->expect(_state->unassign(testPtr, testResources(0)), true, "Failed to unassign singular resource")
 	_tester->expect(_state->unassign(testPtr, testResources(1)), true, "Failed to unassign resource at index #1")
@@ -197,6 +222,29 @@ sub test30 cdecl (done as Tester.doneFn)
 
 	done()
 end sub
+
+function modifier1 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+	dim as TestResource1 ptr resPtr = dataPtr
+
+	if messagePtr = NULL then
+		resPtr->x = 10000
+		resPtr->y = 20000
+	end if
+
+	return true
+end function
+
+function modifier2 cdecl (dataPtr as any ptr, messagePtr as any ptr) as short
+	dim as TestResource2 ptr resPtr = dataPtr
+
+	if messagePtr = NULL then
+		resPtr->x = 30000
+		resPtr->y = 40000
+		resPtr->z = 50000
+	end if
+
+	return true
+end function
 
 end namespace
 

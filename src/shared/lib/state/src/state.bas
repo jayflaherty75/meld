@@ -96,25 +96,7 @@ function construct cdecl () as Instance ptr
 
 	if statePtr = NULL then
 		_throwStateAllocationError(__FILE__, __LINE__)
-		return NULL
 	end if
-
-	statePtr->mappings = _map->construct()
-	if statePtr->mappings = NULL then
-		destruct(statePtr)
-		_throwStateMapperAllocationError(__FILE__, __LINE__)
-		return NULL
-	end if
-
-	statePtr->resources = _resourceContainer->construct()
-	if statePtr->resources = NULL then
-		destruct(statePtr)
-		_throwStateContainerAllocationError(__FILE__, __LINE__)
-		return NULL
-	end if
-
-	' Set to default allocator
-	setAllocator(statePtr, NULL)
 
 	return statePtr
 end function
@@ -158,7 +140,24 @@ function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, 
 		return false
 	end if
 
-	if not _resourceContainer->initialize(statePtr->resources, sizeof(ResourceEntry), 1024, 32768*32768) then
+	statePtr->mappings = _map->construct()
+	if statePtr->mappings = NULL then
+		destruct(statePtr)
+		_throwStateMapperAllocationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	statePtr->resources = _resourceContainer->construct()
+	if statePtr->resources = NULL then
+		destruct(statePtr)
+		_throwStateContainerAllocationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	' Set to default allocator
+	setAllocator(statePtr, NULL)
+
+	if not _resourceContainer->initialize(statePtr->resources, sizeof(ResourceEntry), pageLength, warnLimit) then
 		_throwStateInitializeResourceInitializationError(__FILE__, __LINE__)
 		return false
 	end if
@@ -466,11 +465,11 @@ end function
  ' @function setModifier
  ' @param {Instance ptr} statePtr
  ' @param {long} index
- ' @param {ModifierFn} modifier
+ ' @param {ModifierFn} [modifier=0]
  ' @returns {short}
  ' @throws {NullReferenceError|ResourceMissingError|ResourceInitializationError}
  '/
-function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
+function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = NULL) as short
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
