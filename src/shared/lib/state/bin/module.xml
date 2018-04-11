@@ -17,6 +17,18 @@
     <param name='messagePtr' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
   </typedef>
+  <typedef name='SelectorFn' type='function' modifier='value'>
+    <param name='statePtr' type='any' modifier='pointer' const='false' />
+    <param name='resPtr' type='any' modifier='pointer' const='false' />
+    <param name='valuePtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </typedef>
+  <typedef name='SelectorAtFn' type='function' modifier='value'>
+    <param name='statePtr' type='any' modifier='pointer' const='false' />
+    <param name='resPtr' type='any' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='long' modifier='value' />
+  </typedef>
   <class name='Instance'>
     <property name='mappings' type='any' modifier='pointer' const='false'>
       <description>Map pointer</description>
@@ -142,6 +154,24 @@
     <throws type='NullReferenceError' />
     <throws type='ResourceMissingError' />
     <throws type='ResourceInitializationError' />
+  </function>
+  <function name='selectFrom'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='index' type='long' modifier='value' const='false' />
+    <param name='valuePtr' type='any' modifier='pointer' const='false' />
+    <param name='selector' type='SelectorFn' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
+  </function>
+  <function name='selectAt'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='stateIdx' type='long' modifier='value' const='false' />
+    <param name='resIdx' type='long' modifier='value' const='false' />
+    <param name='selector' type='SelectorAtFn' modifier='value' const='false' />
+    <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='ResourceMissingError' />
   </function>
   <function name='_defaultAllocator'>
     <param name='memPtr' type='any' modifier='pointer' const='false' />

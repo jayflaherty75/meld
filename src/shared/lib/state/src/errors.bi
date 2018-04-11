@@ -249,5 +249,37 @@ sub _throwStateModListAllocationError (byref filename as zstring, lineNum as int
 	)
 end sub
 
+sub _throwStateSelectFromNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateSelectFromNullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSelectFromResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateSelectFromResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSelectAtNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateSelectAtNullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSelectAtResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateSelectAtResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
 end namespace
 
