@@ -13,7 +13,7 @@ type Instance
 end type
 
 type Unique
-	v(15-1) as ubyte
+	v(16-1) as ubyte
 end type
 
 type Interface

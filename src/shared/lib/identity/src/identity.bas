@@ -26,7 +26,7 @@ namespace Identity
 /''
  ' Represents a binary, non-serialized unique identifier.
  ' @class Unique
- ' @member {ubyte} v(15-1)
+ ' @member {ubyte} v(16-1)
  '/
 
 /''
@@ -158,6 +158,7 @@ function generate cdecl () as Unique
 	_copy(cptr(ubyte ptr, @idAutoinc), @result.v(0), 4)
 	_copy(cptr(ubyte ptr, @idTime), @result.v(4), 5)
 	_copy(cptr(ubyte ptr, @idMacAddress), @result.v(9), 6)
+	result.v(15) = 0
 
 	return result
 end function
@@ -170,7 +171,7 @@ end function
  '/
 sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
 	dim as short i
-	dim as short indexTo
+	dim as short indexTo = 0
 
 	for i = 0 to 12 step 3
 		dest[indexTo] = state.encodeMap((id->v(i) and &b11111100) shr 2)
@@ -180,6 +181,8 @@ sub encode cdecl (id as Unique ptr, dest as Encoded ptr)
 
 		indexTo += 4
 	next
+
+	dest[indexTo] = 0
 end sub
 
 /''
