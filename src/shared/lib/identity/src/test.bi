@@ -10,6 +10,7 @@ declare sub test3 cdecl (done as Tester.doneFn)
 declare sub test4 cdecl (done as Tester.doneFn)
 declare sub test5 cdecl (done as Tester.doneFn)
 declare sub test6 cdecl (done as Tester.doneFn)
+declare sub test7 cdecl (done as Tester.doneFn)
 
 dim shared as Identity.Instance ptr idPtr
 
@@ -24,6 +25,7 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	result = result andalso it("encodes and decodes binary identifiers to base64-like string", @test4)
 	result = result andalso it("converts MAC address into a long integer", @test5)
 	result = result andalso it("correctly converts hexidecimal characters", @test6)
+	result = result andalso it("generates identitifers that can behave like strings", @test7)
 
 	destruct(idPtr)
 
@@ -124,6 +126,20 @@ sub test6 cdecl (done as Tester.doneFn)
 	_tester->expect(_convertHex("d"), 13, "Failed to convert 'd' character")
 	_tester->expect(_convertHex("e"), 14, "Failed to convert 'e' character")
 	_tester->expect(_convertHex("f"), 15, "Failed to convert 'f' character")
+
+	done()
+end sub
+
+sub test7 cdecl (done as Tester.doneFn)
+	dim as Unique id = _identity->generate()
+	dim as zstring ptr testStr = cptr(zstring ptr, @id)
+	dim as zstring*25 encStr = ""
+
+	_identity->encode(@id, @encStr)
+
+	_tester->expect(len(testStr), 8, "Identifier 'string' length resulted in incorrect unicode length")
+	_tester->expect(len(encStr), 20, "Encoded identifier string length resulted in incorrect length: " & encStr)
+
 	done()
 end sub
 
