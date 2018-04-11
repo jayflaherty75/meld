@@ -1,34 +1,10 @@
 
 namespace State
 
-declare sub _throwStateAllocationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateMapperAllocationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateContainerAllocationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateDestructNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateInitializeNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateInitializeresourceInitializationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateSetAllocatorNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateRequestNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateRequestResourceInitializationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateRequestMapInitializationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateRequestResourceMissingError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateReleaseNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateReleaseResourceMissingError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateReleaseMapResourceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateReleaseResourceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignResourceMissingError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignContNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignContResourceMissingError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignContrAllocationError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateAssignContPointerMissingError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateUnassignNullReferenceError (byref filename as zstring, lineNum as integer)
-declare sub _throwStateUnassignResourceMissingError (byref filename as zstring, lineNum as integer)
-
 sub _throwStateAllocationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.allocationError, _
-		"AllocationError", "Failed to allocate State instance", _
+		"StateAllocationError", "Failed to allocate State instance", _
 		filename, lineNum _
 	)
 end sub
@@ -36,7 +12,7 @@ end sub
 sub _throwStateMapperAllocationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.resourceAllocationError, _
-		"stateMapperAllocationError", "Failed to allocate State mapper", _
+		"StateMapperAllocationError", "Failed to allocate State mapper", _
 		filename, lineNum _
 	)
 end sub
@@ -44,7 +20,7 @@ end sub
 sub _throwStateContainerAllocationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.resourceAllocationError, _
-		"stateContainerAllocationError", "Failed to allocate State resource container", _
+		"StateContainerAllocationError", "Failed to allocate State resource container", _
 		filename, lineNum _
 	)
 end sub
@@ -52,7 +28,7 @@ end sub
 sub _throwStateDestructNullReferenceError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.nullReferenceError, _
-		"NullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		"StateDestructNullReferenceError", "Attempt to call State destructor with NULL pointer", _
 		filename, lineNum _
 	)
 end sub
@@ -68,7 +44,7 @@ end sub
 sub _throwStateInitializeresourceInitializationError (byref filename as zstring, lineNum as integer)
 	_fault->throw(_
 		errors.resourceInitializationError, _
-		"stateInitializeresourceInitializationError", "Failed to initialize resource container", _
+		"stateInitializeResourceInitializationError", "Failed to initialize resource container", _
 		filename, lineNum _
 	)
 end sub
@@ -205,6 +181,62 @@ sub _throwStateUnassignResourceMissingError (byref filename as zstring, lineNum 
 	_fault->throw(_
 		errors.resourceMissingError, _
 		"stateUnassignResourceMissingError", "Resource not found", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateGetRefCountNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateGetRefCountNullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateGetRefCountResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateGetRefCountResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateIsAssignedNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateIsAssignedNullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateIsAssignedResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateIsAssignedResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSetModNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateSetModNullReferenceError", "Attempt to call State destructor with NULL pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSetModResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateSetModResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateSetModResourceInitializationError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceInitializationError, _
+		"StateSetModResourceInitializationError", "Modifier failed to set initial state", _
 		filename, lineNum _
 	)
 end sub

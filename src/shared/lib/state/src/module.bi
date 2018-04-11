@@ -21,9 +21,13 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.setAllocator = @State.setAllocator
 	moduleState.methods.request = @State.request
 	moduleState.methods.release = @State.release
+	moduleState.methods.getRefCount = @State.getRefCount
+	moduleState.methods.isReferenced = @State.isReferenced
 	moduleState.methods.assign = @State.assign
 	moduleState.methods.assignFromContainer = @State.assignFromContainer
 	moduleState.methods.unassign = @State.unassign
+	moduleState.methods.isAssigned = @State.isAssigned
+	moduleState.methods.setModifier = @State.setModifier
 
 	return @moduleState.methods
 End Function
