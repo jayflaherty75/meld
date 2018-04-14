@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="type-map">
+  <requires module='console' version='0.1.0' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='tester' version='0.1.0' />
+  <version>0.1.0</version>
+  <function name='startup'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='shutdown'>
+    <returns type='short' modifier='value' />
+    <description>Application main routine.</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
+  </function>
+  <namespace>TypeMap</namespace>
+</module>
