@@ -15,6 +15,13 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.startup = @TypeMap.startup
 	moduleState.methods.shutdown = @TypeMap.shutdown
 	moduleState.methods.test = @TypeMap.test
+	moduleState.methods.request = @TypeMap.request
+	moduleState.methods.getEntry = @TypeMap.getEntry
+	moduleState.methods.assign = @TypeMap.assign
+	moduleState.methods.isAssigned = @TypeMap.isAssigned
+	moduleState.methods.getSize = @TypeMap.getSize
+	moduleState.methods.getDestructor = @TypeMap.getDestructor
+	moduleState.methods.destroy = @TypeMap.destroy
 
 	return @moduleState.methods
 End Function
@@ -43,6 +50,18 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
 			print("**** TypeMap.load: Failed to load fault dependency")
+			Return false
+		End If
+
+		_map = modulePtr->require("map_v0.1.0")
+		If _map = NULL then
+			print("**** TypeMap.load: Failed to load map dependency")
+			Return false
+		End If
+
+		_resourceContainer = modulePtr->require("resource-container_v0.1.0")
+		If _resourceContainer = NULL then
+			print("**** TypeMap.load: Failed to load resource-container dependency")
 			Return false
 		End If
 
