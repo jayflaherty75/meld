@@ -72,6 +72,36 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		End If
 
 
+		errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
+		If errors.invalidArgumentError = NULL then
+			print("**** TypeMap.load: Missing error definition for InvalidArgumentError")
+			Return false
+		End If
+
+		errors.nullReferenceError = _fault->getCode("NullReferenceError")
+		If errors.nullReferenceError = NULL then
+			print("**** TypeMap.load: Missing error definition for NullReferenceError")
+			Return false
+		End If
+
+		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
+		If errors.resourceAllocationError = NULL then
+			print("**** TypeMap.load: Missing error definition for ResourceAllocationError")
+			Return false
+		End If
+
+		errors.resourceInitializationError = _fault->getCode("ResourceInitializationError")
+		If errors.resourceInitializationError = NULL then
+			print("**** TypeMap.load: Missing error definition for ResourceInitializationError")
+			Return false
+		End If
+
+		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
+		If errors.resourceMissingError = NULL then
+			print("**** TypeMap.load: Missing error definition for ResourceMissingError")
+			Return false
+		End If
+
 
 	End If
 

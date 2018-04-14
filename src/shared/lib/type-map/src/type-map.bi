@@ -28,7 +28,16 @@ type ModuleStateType
 	isStarted as short
 end type
 
+type ErrorCodes
+	invalidArgumentError as integer
+	nullReferenceError as integer
+	resourceAllocationError as integer
+	resourceInitializationError as integer
+	resourceMissingError as integer
+end type
+
 dim shared as ModuleStateType moduleState
+dim shared as ErrorCodes errors
 
 namespace TypeMap
 
