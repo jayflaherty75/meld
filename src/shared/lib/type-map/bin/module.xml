@@ -2,8 +2,19 @@
 <module name="type-map">
   <requires module='console' version='0.1.0' />
   <requires module='fault' version='0.1.0' />
+  <requires module='map' version='0.1.0' />
+  <requires module='resource-container' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
   <version>0.1.0</version>
+  <typedef name='DestructFn' type='function' modifier='value'>
+    <param name='instPtr' type='any' modifier='pointer' const='false' />
+  </typedef>
+  <class name='Entry'>
+    <property name='id' type='ubyte' modifier='pointer' const='false' />
+    <property name='index' type='long' modifier='value' const='false' />
+    <property name='size' type='long' modifier='value' const='false' />
+    <property name='destruct' type='DestructFn' modifier='value' const='false' />
+  </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
     <description>Application main routine.</description>
@@ -17,5 +28,39 @@
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>
+  <function name='request'>
+    <param name='id' type='ubyte' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+  </function>
+  <function name='getEntry'>
+    <param name='index' type='long' modifier='value' const='false' />
+    <returns type='Entry' modifier='pointer' />
+  </function>
+  <function name='assign'>
+    <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
+    <param name='size' type='long' modifier='value' const='false' />
+    <param name='destructFnPtr' type='DestructFn' modifier='value' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='isAssigned'>
+    <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
+  <function name='getSize'>
+    <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
+    <returns type='long' modifier='value' />
+  </function>
+  <function name='getDestructor'>
+    <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
+    <returns type='DestructFn' modifier='value' />
+  </function>
+  <function name='destroy'>
+    <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
+    <param name='instancePtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value'>
+      <description>Returns false on error or if no destructor was assigned</description>
+    </returns>
+  </function>
   <namespace>TypeMap</namespace>
+  <description>Global registry of data types.  Once created, a type cannot be destroyed. Provides modules with the ability to take over responsibility for the construction (allocation) or destruction of a resource instance.</description>
 </module>
