@@ -125,6 +125,8 @@ function request cdecl (id as ubyte ptr) as long
 		return -1
 	end if
 
+	if mutexPtr <> NULL then mutexLock(mutexPtr)
+
 	index = _map->request(mappings, id)
 
 	if index = -1 then
@@ -150,6 +152,8 @@ function request cdecl (id as ubyte ptr) as long
 		entryPtr->destruct = NULL
 	end if
 
+	if mutexPtr <> NULL then mutexUnlock(mutexPtr)
+
 	return index
 end function
 
@@ -159,7 +163,15 @@ end function
  ' @returns {Entry ptr}
  '/
 function getEntry cdecl (index as long) as Entry ptr
-	return _resourceContainer->getPtr(entries, index)
+	dim as Entry ptr entryPtr
+
+	if mutexPtr <> NULL then mutexLock(mutexPtr)
+
+	entryPtr = _resourceContainer->getPtr(entries, index)
+
+	if mutexPtr <> NULL then mutexUnlock(mutexPtr)
+
+	return entryPtr
 end function
 
 /''
