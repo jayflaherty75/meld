@@ -17,6 +17,9 @@
   </class>
   <function name='startup'>
     <returns type='short' modifier='value' />
+    <throws type='ResourceAllocationError' />
+    <throws type='ResourceInitializationError' />
+    <throws type='ResourceMissingError' />
     <description>Application main routine.</description>
   </function>
   <function name='shutdown'>
@@ -31,6 +34,9 @@
   <function name='request'>
     <param name='id' type='ubyte' modifier='pointer' const='false' />
     <returns type='long' modifier='value' />
+    <throws type='InvalidArgumentError' />
+    <throws type='ResourceAllocationError' />
+    <throws type='ResourceInitializationError' />
   </function>
   <function name='getEntry'>
     <param name='index' type='long' modifier='value' const='false' />
@@ -41,18 +47,23 @@
     <param name='size' type='long' modifier='value' const='false' />
     <param name='destructFnPtr' type='DestructFn' modifier='value' const='false' />
     <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='InvalidArgumentError' />
   </function>
   <function name='isAssigned'>
     <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
   </function>
   <function name='getSize'>
     <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
     <returns type='long' modifier='value' />
+    <throws type='NullReferenceError' />
   </function>
   <function name='getDestructor'>
     <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
     <returns type='DestructFn' modifier='value' />
+    <throws type='NullReferenceError' />
   </function>
   <function name='destroy'>
     <param name='entryPtr' type='Entry' modifier='pointer' const='false' />
@@ -60,6 +71,7 @@
     <returns type='short' modifier='value'>
       <description>Returns false on error or if no destructor was assigned</description>
     </returns>
+    <throws type='NullReferenceError' />
   </function>
   <namespace>TypeMap</namespace>
   <description>Global registry of data types.  Once created, a type cannot be destroyed. Provides modules with the ability to take over responsibility for the construction (allocation) or destruction of a resource instance.</description>
