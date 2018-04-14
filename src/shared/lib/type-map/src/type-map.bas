@@ -48,41 +48,25 @@ function startup cdecl () as short
 
 	mappings = _map->construct()
 	if mappings = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"TypeMapStartupMapAllocationError", "Failed to construct type mapper", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapStartupMapAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	entries = _resourceContainer->construct()
 	if entries = NULL then
-		_fault->throw(_
-			errors.resourceAllocationError, _
-			"TypeMapStartupContAllocationError", "Failed to construct type entry container", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapStartupContAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if not _resourceContainer->initialize(entries, sizeof(Entry), 256, 2147483647) then
-		_fault->throw(_
-			errors.resourceInitializationError, _
-			"TypeMapStartupContInitializationError", "Failed to initialize type entry container", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapStartupContInitializationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	mutexPtr = mutexCreate()
 	if mutexPtr = NULL then
 		' Warn multithreading not supported
-		_fault->throw(_
-			errors.resourceMissingError, _
-			"TypeMapStartupResourceMissingError", "Failed to create mutex, multithreading will not be supported", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapStartupResourceMissingError(__FILE__, __LINE__)
 	end if
 
 	return true
@@ -137,11 +121,7 @@ function request cdecl (id as ubyte ptr) as long
 	dim as Entry ptr entryPtr
 
 	if id = NULL then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"TypeMapRequestInvalidArgumentError", "Invalid id argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapRequestInvalidArgumentError(__FILE__, __LINE__)
 		return -1
 	end if
 
@@ -151,11 +131,7 @@ function request cdecl (id as ubyte ptr) as long
 		index = _resourceContainer->request(entries)
 
 		if index = -1 then
-			_fault->throw(_
-				errors.resourceAllocationError, _
-				"TypeMapRequestResourceAllocationError", "Container request failed for type entry", _
-				__FILE__, __LINE__ _
-			)
+			_throwTypeMapRequestResourceAllocationError(__FILE__, __LINE__)
 			return -1
 		end if
 
@@ -164,11 +140,7 @@ function request cdecl (id as ubyte ptr) as long
 		if entryPtr = null orelse not _map->assign(mappings, id, index) then
 			_resourceContainer->release(entries, index)
 
-			_fault->throw(_
-				errors.resourceInitializationError, _
-				"TypeMapRequestResourceInitializationError", "Failed to assign type entry", _
-				__FILE__, __LINE__ _
-			)
+			_throwTypeMapRequestResourceInitializationError(__FILE__, __LINE__)
 			return -1
 		end if
 
@@ -200,20 +172,12 @@ end function
  '/
 function assign cdecl (entryPtr as Entry ptr, size as long, destructFnPtr as DestructFn = 0) as short
 	if entryPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapAssignNullReferenceError", "Invalid entryPtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapAssignNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if size <= 0 then
-		_fault->throw(_
-			errors.invalidArgumentError, _
-			"TypeMapAssignInvalidArgumentError", "Invalid size argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapAssignInvalidArgumentError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -231,11 +195,7 @@ end function
  '/
 function isAssigned cdecl (entryPtr as Entry ptr) as short
 	if entryPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapIsAssignedNullReferenceError", "Invalid entryPtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapIsAssignedNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -254,11 +214,7 @@ end function
  '/
 function getSize cdecl (entryPtr as Entry ptr) as long
 	if entryPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapGetSizeNullReferenceError", "Invalid entryPtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapGetSizeNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -273,11 +229,7 @@ end function
  '/
 function getDestructor cdecl (entryPtr as Entry ptr) as DestructFn
 	if entryPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapGetDestructorNullReferenceError", "Invalid entryPtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapGetDestructorNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
@@ -293,20 +245,12 @@ end function
  '/
 function destroy cdecl (entryPtr as Entry ptr, instancePtr as any ptr) as short
 	if entryPtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapDestroyNullReferenceError", "Invalid entryPtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapDestroyNullReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if instancePtr = NULL then
-		_fault->throw(_
-			errors.nullReferenceError, _
-			"TypeMapDestroyNullReferenceError", "Invalid instancePtr argument", _
-			__FILE__, __LINE__ _
-		)
+		_throwTypeMapDestroyNullInstanceReferenceError(__FILE__, __LINE__)
 		return false
 	end if
 
