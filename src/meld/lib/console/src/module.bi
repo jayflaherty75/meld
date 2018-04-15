@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/console_v0.1.0.bi"
 #include once "console.bi"
 
@@ -24,7 +25,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Console.load: Invalid Module interface pointer")
+		printf(!"**** Console.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -39,13 +40,13 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** Console.load: Failed to load fault dependency")
+			printf("**** Console.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_sys = modulePtr->require("sys_v0.1.0")
 		If _sys = NULL then
-			print("**** Console.load: Failed to load sys dependency")
+			printf("**** Console.load: Failed to load sys dependency")
 			Return false
 		End If
 
@@ -61,7 +62,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Console.unload: Module shutdown handler failed")
+				printf(!"**** Console.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -80,7 +81,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Console.startup: Module startup handler failed")
+				printf(!"**** Console.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -95,7 +96,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Console.shutdown: Module shutdown handler failed")
+				printf(!"**** Console.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

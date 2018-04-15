@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/resource-container_v0.1.0.bi"
 #include once "resource-container.bi"
 
@@ -27,7 +28,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** ResourceContainer.load: Invalid Module interface pointer")
+		printf(!"**** ResourceContainer.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -42,56 +43,56 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** ResourceContainer.load: Failed to load console dependency")
+			printf("**** ResourceContainer.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** ResourceContainer.load: Failed to load fault dependency")
+			printf("**** ResourceContainer.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** ResourceContainer.load: Failed to load tester dependency")
+			printf("**** ResourceContainer.load: Failed to load tester dependency")
 			Return false
 		End If
 
 		_pagedArray = modulePtr->require("paged-array_v0.1.0")
 		If _pagedArray = NULL then
-			print("**** ResourceContainer.load: Failed to load paged-array dependency")
+			printf("**** ResourceContainer.load: Failed to load paged-array dependency")
 			Return false
 		End If
 
 
 		errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
 		If errors.invalidArgumentError = NULL then
-			print("**** ResourceContainer.load: Missing error definition for InvalidArgumentError")
+			printf(!"**** ResourceContainer.load: Missing error definition for InvalidArgumentError\n")
 			Return false
 		End If
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** ResourceContainer.load: Missing error definition for NullReferenceError")
+			printf(!"**** ResourceContainer.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
 		If errors.releaseResourceError = NULL then
-			print("**** ResourceContainer.load: Missing error definition for ReleaseResourceError")
+			printf(!"**** ResourceContainer.load: Missing error definition for ReleaseResourceError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** ResourceContainer.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** ResourceContainer.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
 		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
 		If errors.resourceMissingError = NULL then
-			print("**** ResourceContainer.load: Missing error definition for ResourceMissingError")
+			printf(!"**** ResourceContainer.load: Missing error definition for ResourceMissingError\n")
 			Return false
 		End If
 
@@ -106,7 +107,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** ResourceContainer.unload: Module shutdown handler failed")
+				printf(!"**** ResourceContainer.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -140,7 +141,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** ResourceContainer.startup: Module startup handler failed")
+				printf(!"**** ResourceContainer.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -155,7 +156,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** ResourceContainer.shutdown: Module shutdown handler failed")
+				printf(!"**** ResourceContainer.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

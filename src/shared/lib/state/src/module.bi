@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/state_v0.1.0.bi"
 #include once "state.bi"
 
@@ -38,7 +39,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** State.load: Invalid Module interface pointer")
+		printf(!"**** State.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -53,92 +54,92 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** State.load: Failed to load console dependency")
+			printf("**** State.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** State.load: Failed to load fault dependency")
+			printf("**** State.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** State.load: Failed to load tester dependency")
+			printf("**** State.load: Failed to load tester dependency")
 			Return false
 		End If
 
 		_iterator = modulePtr->require("iterator_v0.1.0")
 		If _iterator = NULL then
-			print("**** State.load: Failed to load iterator dependency")
+			printf("**** State.load: Failed to load iterator dependency")
 			Return false
 		End If
 
 		_list = modulePtr->require("list_v0.1.0")
 		If _list = NULL then
-			print("**** State.load: Failed to load list dependency")
+			printf("**** State.load: Failed to load list dependency")
 			Return false
 		End If
 
 		_resourceContainer = modulePtr->require("resource-container_v0.1.0")
 		If _resourceContainer = NULL then
-			print("**** State.load: Failed to load resource-container dependency")
+			printf("**** State.load: Failed to load resource-container dependency")
 			Return false
 		End If
 
 		_map = modulePtr->require("map_v0.1.0")
 		If _map = NULL then
-			print("**** State.load: Failed to load map dependency")
+			printf("**** State.load: Failed to load map dependency")
 			Return false
 		End If
 
 
 		errors.allocationError = _fault->getCode("AllocationError")
 		If errors.allocationError = NULL then
-			print("**** State.load: Missing error definition for AllocationError")
+			printf(!"**** State.load: Missing error definition for AllocationError\n")
 			Return false
 		End If
 
 		errors.generalError = _fault->getCode("GeneralError")
 		If errors.generalError = NULL then
-			print("**** State.load: Missing error definition for GeneralError")
+			printf(!"**** State.load: Missing error definition for GeneralError\n")
 			Return false
 		End If
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** State.load: Missing error definition for NullReferenceError")
+			printf(!"**** State.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.releaseResourceError = _fault->getCode("ReleaseResourceError")
 		If errors.releaseResourceError = NULL then
-			print("**** State.load: Missing error definition for ReleaseResourceError")
+			printf(!"**** State.load: Missing error definition for ReleaseResourceError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** State.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** State.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
 		errors.resourceInitializationError = _fault->getCode("ResourceInitializationError")
 		If errors.resourceInitializationError = NULL then
-			print("**** State.load: Missing error definition for ResourceInitializationError")
+			printf(!"**** State.load: Missing error definition for ResourceInitializationError\n")
 			Return false
 		End If
 
 		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
 		If errors.resourceMissingError = NULL then
-			print("**** State.load: Missing error definition for ResourceMissingError")
+			printf(!"**** State.load: Missing error definition for ResourceMissingError\n")
 			Return false
 		End If
 
 		errors.unexpectedBehaviorError = _fault->getCode("UnexpectedBehaviorError")
 		If errors.unexpectedBehaviorError = NULL then
-			print("**** State.load: Missing error definition for UnexpectedBehaviorError")
+			printf(!"**** State.load: Missing error definition for UnexpectedBehaviorError\n")
 			Return false
 		End If
 
@@ -153,7 +154,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** State.unload: Module shutdown handler failed")
+				printf(!"**** State.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -187,7 +188,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** State.startup: Module startup handler failed")
+				printf(!"**** State.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -202,7 +203,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** State.shutdown: Module shutdown handler failed")
+				printf(!"**** State.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

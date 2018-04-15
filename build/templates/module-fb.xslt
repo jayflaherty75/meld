@@ -14,6 +14,7 @@
 	<xsl:variable name="version" select="normalize-space(version)" />
 
 	<xsl:call-template name="warningMessage" />
+#include once "crt.bi"
 #include once "headers/<xsl:value-of select="$module" />_v<xsl:value-of select="$version" />.bi"
 #include once "<xsl:value-of select="$module" />.bi"
 
@@ -40,7 +41,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** <xsl:value-of select="$namespace" />.load: Invalid Module interface pointer")
+		printf(!"**** <xsl:value-of select="$namespace" />.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -90,11 +91,11 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 					<xsl:value-of select="$err-name" />
 					<xsl:text> = NULL then&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-					<xsl:text>print("**** </xsl:text>
+					<xsl:text>printf(!"**** </xsl:text>
 					<xsl:value-of select="$namespace" />
 					<xsl:text>.load: Missing error definition for </xsl:text>
 					<xsl:value-of select="@type" />
-					<xsl:text>")&#xa;</xsl:text>
+					<xsl:text>\n")&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 					<xsl:text>Return false&#xa;</xsl:text>
 					<xsl:text>&#x9;&#x9;</xsl:text>
@@ -112,7 +113,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown &lt;&gt; NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** <xsl:value-of select="$namespace" />.unload: Module shutdown handler failed")
+				printf(!"**** <xsl:value-of select="$namespace" />.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -146,7 +147,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup &lt;&gt; NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** <xsl:value-of select="$namespace" />.startup: Module startup handler failed")
+				printf(!"**** <xsl:value-of select="$namespace" />.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -161,7 +162,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown &lt;&gt; NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** <xsl:value-of select="$namespace" />.shutdown: Module shutdown handler failed")
+				printf(!"**** <xsl:value-of select="$namespace" />.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

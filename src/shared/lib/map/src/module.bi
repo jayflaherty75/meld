@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/map_v0.1.0.bi"
 #include once "map.bi"
 
@@ -31,7 +32,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Map.load: Invalid Module interface pointer")
+		printf(!"**** Map.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -46,68 +47,68 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** Map.load: Failed to load console dependency")
+			printf("**** Map.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** Map.load: Failed to load fault dependency")
+			printf("**** Map.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** Map.load: Failed to load tester dependency")
+			printf("**** Map.load: Failed to load tester dependency")
 			Return false
 		End If
 
 		_resourceContainer = modulePtr->require("resource-container_v0.1.0")
 		If _resourceContainer = NULL then
-			print("**** Map.load: Failed to load resource-container dependency")
+			printf("**** Map.load: Failed to load resource-container dependency")
 			Return false
 		End If
 
 		_bst = modulePtr->require("bst_v0.1.0")
 		If _bst = NULL then
-			print("**** Map.load: Failed to load bst dependency")
+			printf("**** Map.load: Failed to load bst dependency")
 			Return false
 		End If
 
 		_iterator = modulePtr->require("iterator_v0.1.0")
 		If _iterator = NULL then
-			print("**** Map.load: Failed to load iterator dependency")
+			printf("**** Map.load: Failed to load iterator dependency")
 			Return false
 		End If
 
 
 		errors.allocationError = _fault->getCode("AllocationError")
 		If errors.allocationError = NULL then
-			print("**** Map.load: Missing error definition for AllocationError")
+			printf(!"**** Map.load: Missing error definition for AllocationError\n")
 			Return false
 		End If
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** Map.load: Missing error definition for NullReferenceError")
+			printf(!"**** Map.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** Map.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** Map.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
 		errors.resourceInitializationError = _fault->getCode("ResourceInitializationError")
 		If errors.resourceInitializationError = NULL then
-			print("**** Map.load: Missing error definition for ResourceInitializationError")
+			printf(!"**** Map.load: Missing error definition for ResourceInitializationError\n")
 			Return false
 		End If
 
 		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
 		If errors.resourceMissingError = NULL then
-			print("**** Map.load: Missing error definition for ResourceMissingError")
+			printf(!"**** Map.load: Missing error definition for ResourceMissingError\n")
 			Return false
 		End If
 
@@ -122,7 +123,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Map.unload: Module shutdown handler failed")
+				printf(!"**** Map.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -156,7 +157,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Map.startup: Module startup handler failed")
+				printf(!"**** Map.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -171,7 +172,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Map.shutdown: Module shutdown handler failed")
+				printf(!"**** Map.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

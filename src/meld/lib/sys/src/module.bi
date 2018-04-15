@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/sys_v0.1.0.bi"
 #include once "sys.bi"
 
@@ -25,7 +26,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Sys.load: Invalid Module interface pointer")
+		printf(!"**** Sys.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -50,7 +51,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Sys.unload: Module shutdown handler failed")
+				printf(!"**** Sys.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -69,7 +70,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Sys.startup: Module startup handler failed")
+				printf(!"**** Sys.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -84,7 +85,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Sys.shutdown: Module shutdown handler failed")
+				printf(!"**** Sys.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/fault_v0.1.0.bi"
 #include once "fault.bi"
 
@@ -27,7 +28,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Fault.load: Invalid Module interface pointer")
+		printf(!"**** Fault.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -42,14 +43,14 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** Fault.load: Failed to load console dependency")
+			printf("**** Fault.load: Failed to load console dependency")
 			Return false
 		End If
 
 
 		errors.internalSystemError = _fault->getCode("InternalSystemError")
 		If errors.internalSystemError = NULL then
-			print("**** Fault.load: Missing error definition for InternalSystemError")
+			printf(!"**** Fault.load: Missing error definition for InternalSystemError\n")
 			Return false
 		End If
 
@@ -64,7 +65,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Fault.unload: Module shutdown handler failed")
+				printf(!"**** Fault.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -83,7 +84,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Fault.startup: Module startup handler failed")
+				printf(!"**** Fault.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -98,7 +99,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Fault.shutdown: Module shutdown handler failed")
+				printf(!"**** Fault.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

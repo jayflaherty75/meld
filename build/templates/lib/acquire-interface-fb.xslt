@@ -25,7 +25,7 @@
 	<xsl:value-of select="$var-name" />
 	<xsl:text> = NULL then&#xa;</xsl:text>
 	<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
-	<xsl:text>print("**** </xsl:text>
+	<xsl:text>printf("**** </xsl:text>
 	<xsl:value-of select="/module/namespace" />
 	<xsl:text>.load: Failed to load </xsl:text>
 	<xsl:value-of select="$module" />
