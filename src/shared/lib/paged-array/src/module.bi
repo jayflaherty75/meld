@@ -19,7 +19,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.destruct = @PagedArray.destruct
 	moduleState.methods.initialize = @PagedArray.initialize
 	moduleState.methods.createIndex = @PagedArray.createIndex
-	moduleState.methods.getIndex = @PagedArray.getIndex
+	moduleState.methods.getPtr = @PagedArray.getPtr
 	moduleState.methods.pop = @PagedArray.pop
 	moduleState.methods.isEmpty = @PagedArray.isEmpty
 

@@ -34,11 +34,13 @@ end type
 
 type ErrorCodes
 	allocationError as integer
+	generalError as integer
 	nullReferenceError as integer
 	releaseResourceError as integer
 	resourceAllocationError as integer
 	resourceInitializationError as integer
 	resourceMissingError as integer
+	unexpectedBehaviorError as integer
 end type
 
 dim shared as ModuleStateType moduleState
@@ -61,9 +63,11 @@ declare function assign cdecl (statePtr as Instance ptr, index as long, size as 
 declare function assignFromContainer cdecl (statePtr as Instance ptr, index as long, contPtr as any ptr) as short
 declare function unassign cdecl (statePtr as Instance ptr, index as long) as short
 declare function isAssigned cdecl (statePtr as Instance ptr, index as long) as short
-declare function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = 0) as short
+declare function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
+declare function unsetModifier cdecl (statePtr as Instance ptr, index as long) as short
 declare function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
 declare function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
+declare function dispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
 declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 
 end namespace
