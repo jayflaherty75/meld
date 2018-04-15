@@ -382,9 +382,12 @@ end function
  ' @private
  '/
 function _compare cdecl (criteria as any ptr, element as any ptr) as short
-	if cptr(Mapping ptr, criteria)->identifier > cptr(Mapping ptr, element)->identifier then
+	dim as zstring ptr strCriteria = cptr(zstring ptr, cptr(Mapping ptr, criteria)->identifier)
+	dim as zstring ptr strElement = cptr(zstring ptr, cptr(Mapping ptr, element)->identifier)
+
+	if *strCriteria < *strElement then
 		return 1
-	elseif cptr(Mapping ptr, criteria)->identifier < cptr(Mapping ptr, element)->identifier then
+	elseif *strCriteria > *strElement then
 		return -1
 	end if
 
