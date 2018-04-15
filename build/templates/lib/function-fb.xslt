@@ -29,9 +29,11 @@
 		<xsl:value-of select="@name" />
 		<xsl:text> as </xsl:text>
 		<xsl:value-of select="@type" />
-		<xsl:if test="@modifier='pointer'">
-			<xsl:text> ptr</xsl:text>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="@modifier='pointer'"> ptr</xsl:when>
+			<xsl:when test="@modifier='pointer2'"> ptr ptr</xsl:when>
+			<xsl:when test="@modifier='pointer3'"> ptr ptr ptr</xsl:when>
+		</xsl:choose>
 		<xsl:if test="default">
 			<xsl:text> = </xsl:text>
 			<xsl:value-of select="default" />

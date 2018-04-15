@@ -12,7 +12,7 @@
     <property name='currentPageMax' type='ulong' modifier='value' const='false' />
     <property name='currentMax' type='ulong' modifier='value' const='false' />
     <property name='currentPage' type='ulong' modifier='value' const='false' />
-    <property name='pages' type='any ptr' modifier='pointer' const='false' />
+    <property name='pages' type='any' modifier='pointer2' const='false' />
   </class>
   <function name='startup'>
     <returns type='short' modifier='value' />

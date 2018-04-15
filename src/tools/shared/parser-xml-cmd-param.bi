@@ -110,6 +110,8 @@ end function
 function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref paramType as string) as short
 	dim as short constPos = instr(paramType, parserPtr->config->constParam)
 	dim as short refPos = instr(paramType, parserPtr->config->refParam)
+	dim as short ptrptrptrPos = instrrev(paramType, parserPtr->config->ptrptrptrParam)
+	dim as short ptrptrPos = instrrev(paramType, parserPtr->config->ptrptrParam)
 	dim as short ptrPos = instrrev(paramType, parserPtr->config->ptrParam)
 
 	if constPos > 0 then
@@ -120,6 +122,12 @@ function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref paramType 
 	if refPos > 0 then
 		state.modifier = "reference"
 		mid(paramType, 1, refPos + len(parserPtr->config->refParam)) = space(len(parserPtr->config->refParam))
+	elseif ptrptrptrPos > 0 then
+		state.modifier = "pointer3"
+		mid(paramType, ptrptrptrPos) = space(len(parserPtr->config->ptrptrptrParam))
+	elseif ptrptrPos > 0 then
+		state.modifier = "pointer2"
+		mid(paramType, ptrptrPos) = space(len(parserPtr->config->ptrptrParam))
 	elseif ptrPos > 0 then
 		state.modifier = "pointer"
 		mid(paramType, ptrPos) = space(len(parserPtr->config->ptrParam))
