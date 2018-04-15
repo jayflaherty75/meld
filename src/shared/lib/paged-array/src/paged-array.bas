@@ -190,13 +190,13 @@ end function
 
 /''
  ' Returns the data pointer for the given index of the paged array.
- ' @function getIndex
+ ' @function getPtr
  ' @param {Instance ptr} arrayPtr
  ' @param {ulong} index
  ' @returns {any ptr}
  ' @throws {NullReferenceError|OutOfBoundsError}
  '/
-function getIndex cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
+function getPtr cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 	dim as byte ptr pagePtr
 	dim as ulong offset
 
@@ -245,7 +245,7 @@ function pop cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
 
 	index = arrayPtr->currentIndex - 1
 
-	result = PagedArray.getIndex(arrayPtr, index)
+	result = PagedArray.getPtr(arrayPtr, index)
 
 	'*cptr(integer ptr, dataPtr) = *cptr(integer ptr, result)
 	for i = 0 to arrayPtr->size \ 4 - 1

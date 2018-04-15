@@ -54,7 +54,7 @@
     <throws type='ResourceAllocationError' />
     <description>Creates and returns a new index available in the paged array.</description>
   </function>
-  <function name='getIndex'>
+  <function name='getPtr'>
     <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
     <param name='index' type='ulong' modifier='value' const='false' />
     <returns type='any' modifier='pointer' />

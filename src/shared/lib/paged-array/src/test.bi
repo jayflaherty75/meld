@@ -58,7 +58,7 @@ sub test2 cdecl (done as Tester.doneFn)
 
 	for i = 0 to PAGED_ARRAY_TEST_LENGTH
 		index = _pagedArray->createIndex(arrayPtr)
-		dataPtr = _pagedArray->getIndex(arrayPtr, index)
+		dataPtr = _pagedArray->getPtr(arrayPtr, index)
 
 		_tester->expectPtrNot(dataPtr, NULL, "Failed to add new element")
 
@@ -76,7 +76,7 @@ sub test3 cdecl (done as Tester.doneFn)
 	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for index = 0 to PAGED_ARRAY_TEST_LENGTH
-		dataPtr = _pagedArray->getIndex(arrayPtr, index)
+		dataPtr = _pagedArray->getPtr(arrayPtr, index)
 
 		_tester->expectPtrNot(dataPtr, NULL, "Failed to add new element")
 
@@ -115,7 +115,7 @@ sub test6 cdecl (done as Tester.doneFn)
 
 	for i = 0 to PAGED_ARRAY_TEST_LENGTH
 		index = _pagedArray->createIndex(arrayPtr)
-		dataPtr = _pagedArray->getIndex(arrayPtr, index)
+		dataPtr = _pagedArray->getPtr(arrayPtr, index)
 
 		_tester->expectPtrNot(dataPtr, NULL, "Returned NULL index")
 
@@ -133,7 +133,7 @@ sub test7 cdecl (done as Tester.doneFn)
 	dim as PAGED_ARRAY_TEST_DATATYPE ptr dataPtr
 
 	for index = 0 to PAGED_ARRAY_TEST_LENGTH
-		dataPtr = _pagedArray->getIndex(arrayPtr, index)
+		dataPtr = _pagedArray->getPtr(arrayPtr, index)
 
 		_tester->expectPtrNot(dataPtr, NULL, "Returned NULL index")
 

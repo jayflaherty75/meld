@@ -192,7 +192,7 @@ function release cdecl (contPtr as Instance ptr, resourceId as long) as short
 	end if
 
 	index = _pagedArray->createIndex(contPtr->stack)
-	stackPtr = _pagedArray->getIndex(contPtr->stack, index)
+	stackPtr = _pagedArray->getPtr(contPtr->stack, index)
 
 	if stackPtr = NULL then
 		_throwResContReleaseResourceError(__FILE__, __LINE__)
@@ -218,7 +218,7 @@ function getPtr cdecl (contPtr as Instance ptr, resourceId as long) as any ptr
 		return NULL
 	end if
 
-	return _pagedArray->getIndex(contPtr->resources, resourceId)
+	return _pagedArray->getPtr(contPtr->resources, resourceId)
 end function
 
 end namespace
