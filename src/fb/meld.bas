@@ -1,4 +1,5 @@
 
+#include once "crt.bi"
 #include once "meld/lib/module/module.bi"
 
 function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
@@ -10,30 +11,30 @@ function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
 	end if
 
 	if not Module.initialize(argc, argv) then
-		print("**** main: Failed to initialize Module")
+		printf(!"**** main: Failed to initialize Module\n")
 		return 1
 	end if
 
 	appPtr = Module.require(app)
 
 	if appPtr = NULL then
-		print("**** main: Failed to obtain " & app & " interface")
+		printf(!"**** main: Failed to obtain " & app & " interface\n")
 		return 1
 	end if
 
 	if not Module.testModule(app) then
-		print("**** main: " & app & " unit test failed")
+		printf(!"**** main: " & app & " unit test failed\n")
 		Module.uninitialize()
 		return 1
 	end if
 
 	if appPtr->update <> NULL andalso not appPtr->update(NULL) then
-		print("**** main: An error occurred while running " & app)
+		printf("**** main: An error occurred while running " & app & !"\n")
 		return 1
 	end if
 
 	if not Module.uninitialize() then
-		print("**** main: An error occurred while attempting to uninitialize Meld")
+		printf(!"**** main: An error occurred while attempting to uninitialize Meld\n")
 		return 1
 	end if
 

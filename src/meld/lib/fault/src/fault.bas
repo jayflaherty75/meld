@@ -3,6 +3,7 @@
  ' @requires console_v0.1.0
  '/
 
+#include once "crt.bi"
 #include once "module.bi"
 #include once "errors.bi"
 
@@ -59,12 +60,12 @@ function startup cdecl () as short
 
 	errState.errs.uncaughtError = registerType(uncaughtError)
 	if not assignHandler(errState.errs.uncaughtError, @defaultErrorHandler) then
-		print ("Fault.initialize: Failed to assign handler for uncaught error")
+		printf(!"Fault.initialize: Failed to assign handler for uncaught error\n")
 	end if
 
 	errState.errs.internalSystemError = registerType(internalSystemError)
 	if not assignHandler(errState.errs.internalSystemError, @defaultErrorHandler) then
-		print ("Fault.initialize: Failed to assign handler for internal system error")
+		printf(!"Fault.initialize: Failed to assign handler for internal system error\n")
 	end if
 
 	return true

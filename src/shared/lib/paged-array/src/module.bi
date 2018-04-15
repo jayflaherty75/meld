@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/paged-array_v0.1.0.bi"
 #include once "paged-array.bi"
 
@@ -28,7 +29,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** PagedArray.load: Invalid Module interface pointer")
+		printf(!"**** PagedArray.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -43,44 +44,44 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** PagedArray.load: Failed to load console dependency")
+			printf("**** PagedArray.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** PagedArray.load: Failed to load fault dependency")
+			printf("**** PagedArray.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** PagedArray.load: Failed to load tester dependency")
+			printf("**** PagedArray.load: Failed to load tester dependency")
 			Return false
 		End If
 
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** PagedArray.load: Missing error definition for NullReferenceError")
+			printf(!"**** PagedArray.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.outOfBoundsError = _fault->getCode("OutOfBoundsError")
 		If errors.outOfBoundsError = NULL then
-			print("**** PagedArray.load: Missing error definition for OutOfBoundsError")
+			printf(!"**** PagedArray.load: Missing error definition for OutOfBoundsError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** PagedArray.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** PagedArray.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
 		errors.resourceLimitSurpassed = _fault->getCode("ResourceLimitSurpassed")
 		If errors.resourceLimitSurpassed = NULL then
-			print("**** PagedArray.load: Missing error definition for ResourceLimitSurpassed")
+			printf(!"**** PagedArray.load: Missing error definition for ResourceLimitSurpassed\n")
 			Return false
 		End If
 
@@ -95,7 +96,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** PagedArray.unload: Module shutdown handler failed")
+				printf(!"**** PagedArray.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -129,7 +130,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** PagedArray.startup: Module startup handler failed")
+				printf(!"**** PagedArray.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -144,7 +145,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** PagedArray.shutdown: Module shutdown handler failed")
+				printf(!"**** PagedArray.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

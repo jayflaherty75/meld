@@ -7,6 +7,7 @@
 
 #include once "module.bi"
 #include once "errors.bi"
+#include once "crt.bi"
 
 /''
  ' @namespace Console
@@ -42,7 +43,7 @@ end function
  ' @param {byref zstring} message
  '/
 sub logMessage cdecl (byref message as zstring)
-	print(Time () & " - " & message)
+	printf(!"%s - %s\n", Time(), message)
 end sub
 
 /''
@@ -57,7 +58,7 @@ sub logWarning cdecl (byref id as zstring, byref message as zstring, byref sourc
 	dim as ulong oldcol = color()
 
 	color 6
-	print(_format(id, message, source, lineNum))
+	printf(_format(id, message, source, lineNum))
 	color (oldcol)
 end sub
 
@@ -73,7 +74,7 @@ sub logError cdecl (byref id as zstring, byref message as zstring, byref source 
 	dim as ulong oldcol = color()
 
 	color 4
-	print(_format(id, message, source, lineNum))
+	printf(_format(id, message, source, lineNum))
 	color (oldcol)
 end sub
 
@@ -89,7 +90,7 @@ sub logSuccess cdecl (byref id as zstring, byref message as zstring, byref sourc
 	dim as ulong oldcol = color()
 
 	color 2
-	print(_format(id, message, source, lineNum))
+	printf(_format(id, message, source, lineNum))
 	color (oldcol)
 end sub
 
@@ -104,7 +105,7 @@ end sub
  ' @private
  '/
 function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
-	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message
+	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message & !"\n"
 end function
 
 end namespace

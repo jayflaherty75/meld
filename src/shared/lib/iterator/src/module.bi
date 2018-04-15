@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/iterator_v0.1.0.bi"
 #include once "iterator.bi"
 
@@ -28,7 +29,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Iterator.load: Invalid Module interface pointer")
+		printf(!"**** Iterator.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -43,38 +44,38 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** Iterator.load: Failed to load console dependency")
+			printf("**** Iterator.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** Iterator.load: Failed to load fault dependency")
+			printf("**** Iterator.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** Iterator.load: Failed to load tester dependency")
+			printf("**** Iterator.load: Failed to load tester dependency")
 			Return false
 		End If
 
 
 		errors.invalidArgumentError = _fault->getCode("InvalidArgumentError")
 		If errors.invalidArgumentError = NULL then
-			print("**** Iterator.load: Missing error definition for InvalidArgumentError")
+			printf(!"**** Iterator.load: Missing error definition for InvalidArgumentError\n")
 			Return false
 		End If
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** Iterator.load: Missing error definition for NullReferenceError")
+			printf(!"**** Iterator.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** Iterator.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** Iterator.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
@@ -89,7 +90,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Iterator.unload: Module shutdown handler failed")
+				printf(!"**** Iterator.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -123,7 +124,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Iterator.startup: Module startup handler failed")
+				printf(!"**** Iterator.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -138,7 +139,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Iterator.shutdown: Module shutdown handler failed")
+				printf(!"**** Iterator.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 

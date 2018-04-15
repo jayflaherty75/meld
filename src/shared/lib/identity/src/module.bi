@@ -5,6 +5,7 @@
  '/
 
 
+#include once "crt.bi"
 #include once "headers/identity_v0.1.0.bi"
 #include once "identity.bi"
 
@@ -27,7 +28,7 @@ End Function
 
 Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short export
 	If modulePtr = NULL Then
-		print("**** Identity.load: Invalid Module interface pointer")
+		printf(!"**** Identity.load: Invalid Module interface pointer\n")
 		return false
 	End If
 
@@ -42,38 +43,38 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 
 		_console = modulePtr->require("console_v0.1.0")
 		If _console = NULL then
-			print("**** Identity.load: Failed to load console dependency")
+			printf("**** Identity.load: Failed to load console dependency")
 			Return false
 		End If
 
 		_fault = modulePtr->require("fault_v0.1.0")
 		If _fault = NULL then
-			print("**** Identity.load: Failed to load fault dependency")
+			printf("**** Identity.load: Failed to load fault dependency")
 			Return false
 		End If
 
 		_tester = modulePtr->require("tester_v0.1.0")
 		If _tester = NULL then
-			print("**** Identity.load: Failed to load tester dependency")
+			printf("**** Identity.load: Failed to load tester dependency")
 			Return false
 		End If
 
 		_sys = modulePtr->require("sys_v0.1.0")
 		If _sys = NULL then
-			print("**** Identity.load: Failed to load sys dependency")
+			printf("**** Identity.load: Failed to load sys dependency")
 			Return false
 		End If
 
 
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
-			print("**** Identity.load: Missing error definition for NullReferenceError")
+			printf(!"**** Identity.load: Missing error definition for NullReferenceError\n")
 			Return false
 		End If
 
 		errors.resourceAllocationError = _fault->getCode("ResourceAllocationError")
 		If errors.resourceAllocationError = NULL then
-			print("**** Identity.load: Missing error definition for ResourceAllocationError")
+			printf(!"**** Identity.load: Missing error definition for ResourceAllocationError\n")
 			Return false
 		End If
 
@@ -88,7 +89,7 @@ Function unload cdecl Alias "unload" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Identity.unload: Module shutdown handler failed")
+				printf(!"**** Identity.unload: Module shutdown handler failed\n")
 				return false
 			End If
 		End If
@@ -122,7 +123,7 @@ Function startup cdecl Alias "startup" () As short export
 	If not moduleState.isStarted Then
 		If moduleState.methods.startup <> NULL Then
 			If not moduleState.methods.startup() Then
-				print("**** Identity.startup: Module startup handler failed")
+				printf(!"**** Identity.startup: Module startup handler failed\n")
 				return false
 			End If
 		End If
@@ -137,7 +138,7 @@ Function shutdown cdecl Alias "shutdown" () As short export
 	If moduleState.isStarted Then
 		If moduleState.methods.shutdown <> NULL Then
 			If not moduleState.methods.shutdown() Then
-				print("**** Identity.shutdown: Module shutdown handler failed")
+				printf(!"**** Identity.shutdown: Module shutdown handler failed\n")
 			End If
 		End If
 
