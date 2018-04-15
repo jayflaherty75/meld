@@ -12,6 +12,8 @@
 	<xsl:value-of select="$type" />
 	<xsl:choose>
 		<xsl:when test="$modifier='pointer'"> ptr</xsl:when>
+		<xsl:when test="$modifier='pointer2'"> ptr ptr</xsl:when>
+		<xsl:when test="$modifier='pointer3'"> ptr ptr ptr</xsl:when>
 	</xsl:choose>
 	<xsl:text>&#xa;</xsl:text>
 </xsl:template>

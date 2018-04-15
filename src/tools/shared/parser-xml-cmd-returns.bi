@@ -79,9 +79,21 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 end function
 
 function _parseTypeModifiers(parserPtr as Parser.StateType ptr, byref returnType as string) as short
+	dim as short refPos = instr(returnType, parserPtr->config->refParam)
+	dim as short ptrptrptrPos = instrrev(returnType, parserPtr->config->ptrptrptrParam)
+	dim as short ptrptrPos = instrrev(returnType, parserPtr->config->ptrptrParam)
 	dim as short ptrPos = instrrev(returnType, parserPtr->config->ptrParam)
 
-	if ptrPos > 0 then
+	if refPos > 0 then
+		state.modifier = "reference"
+		mid(returnType, 1, refPos + len(parserPtr->config->refParam)) = space(len(parserPtr->config->refParam))
+	elseif ptrptrptrPos > 0 then
+		state.modifier = "pointer3"
+		mid(returnType, ptrptrptrPos) = space(len(parserPtr->config->ptrptrptrParam))
+	elseif ptrptrPos > 0 then
+		state.modifier = "pointer2"
+		mid(returnType, ptrptrPos) = space(len(parserPtr->config->ptrptrParam))
+	elseif ptrPos > 0 then
 		state.modifier = "pointer"
 		mid(returnType, ptrPos) = space(len(parserPtr->config->ptrParam))
 	end if

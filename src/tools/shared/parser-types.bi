@@ -16,6 +16,8 @@ Type ConfigType
 	typeEnd As String
 	constParam As String
 	refParam As String
+	ptrptrptrParam As String
+	ptrptrParam As String
 	ptrParam As String
 	newline as String
 End Type

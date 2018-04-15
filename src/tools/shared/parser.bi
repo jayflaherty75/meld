@@ -13,7 +13,7 @@ Declare Sub uninitialize(finish as function(parserState As StateType ptr) as sho
 Declare Sub setDocStart(ByRef token As ZString)
 Declare Sub setDocEnd(ByRef token As ZString)
 Declare Sub setLineStart(ByRef token As ZString)
-Declare Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString)
+Declare Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString, ByRef ptrptrParam As ZString, ByRef ptrptrptrParam As ZString)
 Declare Sub addCommand(handler as Function(ByRef cmd As String, ByRef definition As String, parserPtr As StateType Ptr) As Short)
 Declare Function process(ByVal srcLine As String) As Integer
 
@@ -33,6 +33,8 @@ Sub initialize(byref moduleName as string, startup as function(parserState As St
 	config.typeEnd = "}"
 	config.constParam = "const "
 	config.refParam = "&"
+	config.ptrptrptrParam = "***"
+	config.ptrptrParam = "**"
 	config.ptrParam = "*"
 
 	#IFDEF __FB_WIN32__
@@ -74,9 +76,11 @@ Sub setLineStart(ByRef token As ZString)
 	config.lineStart = token
 End Sub
 
-Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString)
+Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, ByRef ptrParam As ZString, ByRef ptrptrParam As ZString, ByRef ptrptrptrParam As ZString)
 	config.constParam = constParam
 	config.refParam = refParam
+	config.ptrptrptrParam = ptrptrptrParam
+	config.ptrptrParam = ptrptrParam
 	config.ptrParam = ptrParam
 End Sub
 
