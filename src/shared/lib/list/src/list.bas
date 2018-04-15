@@ -161,6 +161,10 @@ function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as N
 		nodePtr->prevPtr = NULL
 		nodePtr->nextPtr = listPtr->first
 		listPtr->first = nodePtr
+
+		if listPtr->last = NULL then
+			listPtr->last = nodePtr
+		end if
 	else
 		if prevPtr->nextPtr = NULL then
 			listPtr->last = nodePtr
@@ -171,6 +175,10 @@ function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as N
 		nodePtr->prevPtr = prevPtr
 		nodePtr->nextPtr = prevPtr->nextPtr
 		prevPtr->nextPtr = nodePtr
+
+		if listPtr->first = NULL then
+			listPtr->first = nodePtr
+		end if
 	end if
 
 	listPtr->length += 1
@@ -219,14 +227,6 @@ sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
 	end if
 
 	listPtr->length -= 1
-
-	' TODO: Next/prev pointers are not being removed in all cases and therefore
-	' not being removed from list on final removal.  The following is temporary
-	' and must be replaced with a permanent fix.
-	if listPtr->length = 0 then
-		listPtr->first = NULL
-		listPtr->last = NULL
-	end if
 
 	deallocate(node)
 end sub
