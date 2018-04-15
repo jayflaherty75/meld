@@ -28,8 +28,10 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.unassign = @State.unassign
 	moduleState.methods.isAssigned = @State.isAssigned
 	moduleState.methods.setModifier = @State.setModifier
+	moduleState.methods.unsetModifier = @State.unsetModifier
 	moduleState.methods.selectFrom = @State.selectFrom
 	moduleState.methods.selectAt = @State.selectAt
+	moduleState.methods.dispatch = @State.dispatch
 
 	return @moduleState.methods
 End Function
@@ -98,6 +100,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		errors.generalError = _fault->getCode("GeneralError")
+		If errors.generalError = NULL then
+			print("**** State.load: Missing error definition for GeneralError")
+			Return false
+		End If
+
 		errors.nullReferenceError = _fault->getCode("NullReferenceError")
 		If errors.nullReferenceError = NULL then
 			print("**** State.load: Missing error definition for NullReferenceError")
@@ -125,6 +133,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 		errors.resourceMissingError = _fault->getCode("ResourceMissingError")
 		If errors.resourceMissingError = NULL then
 			print("**** State.load: Missing error definition for ResourceMissingError")
+			Return false
+		End If
+
+		errors.unexpectedBehaviorError = _fault->getCode("UnexpectedBehaviorError")
+		If errors.unexpectedBehaviorError = NULL then
+			print("**** State.load: Missing error definition for UnexpectedBehaviorError")
 			Return false
 		End If
 

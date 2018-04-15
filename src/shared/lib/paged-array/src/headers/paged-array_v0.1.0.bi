@@ -26,7 +26,7 @@ type Interface
 	test as function cdecl (describeFn as any ptr) as short
 	initialize as function cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
 	createIndex as function cdecl (arrayPtr as Instance ptr) as ulong
-	getIndex as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
+	getPtr as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 	pop as function cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
 	isEmpty as function cdecl (arrayPtr as Instance ptr) as short
 end type

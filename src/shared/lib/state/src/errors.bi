@@ -281,5 +281,37 @@ sub _throwStateSelectAtResourceMissingError (byref filename as zstring, lineNum 
 	)
 end sub
 
+sub _throwStateDispatchNullReferenceError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.nullReferenceError, _
+		"StateDispatchNullReferenceError", "Invalid State pointer", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateDispatchResourceMissingError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.resourceMissingError, _
+		"StateDispatchResourceMissingError", "Resource pointer missing", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateDispatchGeneralError (byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.generalError, _
+		"StateDispatchGeneralError", "Modifier failed", _
+		filename, lineNum _
+	)
+end sub
+
+sub _throwStateDispatchUnexpectedBehaviorError(byref filename as zstring, lineNum as integer)
+	_fault->throw(_
+		errors.unexpectedBehaviorError, _
+		"StateDispatchUnexpectedBehaviorError", "Null modifier returned from iterator", _
+		filename, lineNum _
+	)
+end sub
+
 end namespace
 

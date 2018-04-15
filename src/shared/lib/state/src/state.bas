@@ -28,7 +28,7 @@ namespace State
 
 /''
  ' @typedef {function} ModifierFn
- ' @param {any ptr} dataPtr
+ ' @param {any ptr} resourcePtr
  ' @param {any ptr} messagePtr
  ' @returns {short}
  '/
@@ -258,6 +258,7 @@ function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 		resPtr->resourcePtr = NULL
 		resPtr->references = 0
 		resPtr->modifier = NULL
+		resPtr->modifierNode = NULL
 	else
 		resPtr = _resourceContainer->getPtr(statePtr->resources, index)
 
@@ -316,6 +317,7 @@ function release cdecl (statePtr as Instance ptr, index as long) as short
 		resPtr->resourcePtr = NULL
 		resPtr->references = 0
 		resPtr->modifier = NULL
+		resPtr->modifierNode = NULL
 	end if
 	
 	return true
@@ -452,7 +454,7 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 		return false
 	end if
 
-	if not _state->setModifier(statePtr, index, NULL) then return false
+	if not _state->unsetModifier(statePtr, index) then return false
 
 	if resPtr->typePtr = NULL then
 		statePtr->allocator(resPtr->resourcePtr, 0)
@@ -499,13 +501,60 @@ end function
  ' @function setModifier
  ' @param {Instance ptr} statePtr
  ' @param {long} index
- ' @param {ModifierFn} [modifier=0]
+ ' @param {ModifierFn} modifier
  ' @returns {short}
  ' @throws {NullReferenceError|ResourceMissingError|ResourceInitializationError}
  '/
-function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn = NULL) as short
+function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
 	dim as ResourceEntry ptr resPtr
 	dim as List.Node ptr nodePtr = NULL
+
+	if statePtr = NULL then
+		_throwStateSetModNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	if modifier = NULL then
+		_throwStateSetModNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr = _resourceContainer->getPtr(statePtr->resources, index)
+	if resPtr = NULL then
+		_throwStateSetModResourceMissingError(__FILE__, __LINE__)
+		return false
+	end if
+
+	if resPtr->modifier <> NULL then
+		_state->unsetModifier(statePtr, index)
+	end if
+
+	nodePtr = _list->insert(statePtr->modifiers, resPtr, NULL)
+	if nodePtr = NULL then
+		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	if not modifier(resPtr->resourcePtr, NULL) then
+		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	resPtr->modifier = modifier
+	resPtr->modifierNode = nodePtr
+
+	return true
+end function
+
+/''
+ ' @function unsetModifier
+ ' @param {Instance ptr} statePtr
+ ' @param {long} index
+ ' @returns {short}
+ ' @throws {NullReferenceError|ResourceMissingError|ResourceInitializationError}
+ '/
+function unsetModifier cdecl (statePtr as Instance ptr, index as long) as short
+	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
 		_throwStateSetModNullReferenceError(__FILE__, __LINE__)
@@ -518,26 +567,12 @@ function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as
 		return false
 	end if
 
-	if modifier <> NULL then
-		nodePtr = _list->insert(statePtr->modifiers, resPtr, NULL)
-		if nodePtr = NULL then return false
+	if resPtr->modifierNode <> NULL then
+		_list->remove(statePtr->modifiers, resPtr->modifierNode)
 
-		if not modifier(resPtr->resourcePtr, NULL) then
-			_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
-			return false
-		end if
-	else
-		if resPtr->modifier <> NULL then
-			' TODO: Call modifier with uninitialize message
-		end if
-
-		if resPtr->modifierNode <> NULL then
-			_list->remove(statePtr->modifiers, resPtr->modifierNode)
-		end if
+		resPtr->modifier = NULL
+		resPtr->modifierNode = NULL
 	end if
-
-	resPtr->modifier = modifier
-	resPtr->modifierNode = nodePtr
 
 	return true
 end function
@@ -592,6 +627,42 @@ function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as l
 	end if
 
 	return selector (statePtr, resPtr->resourcePtr, resIdx)
+end function
+
+/''
+ ' @function dispatch
+ ' @param {Instance ptr} statePtr
+ ' @param {any ptr} message
+ ' @returns {short}
+ ' @throws {NullReferenceError|GeneralError|UnexpectedBehaviorError}
+ '/
+function dispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
+	dim as ResourceEntry ptr resPtr
+	dim as Iterator.Instance ptr iterPtr
+	dim as ModifierFn modifier
+
+	if statePtr = NULL then
+		_throwStateDispatchNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	iterPtr = _list->getIterator(statePtr->modifiers)
+
+	do while _iterator->getNext(iterPtr, @resPtr)
+		if resPtr <> NULL then
+			if resPtr->modifier andalso resPtr->resourcePtr andalso not resPtr->modifier(resPtr->resourcePtr, message) then
+				_throwStateDispatchGeneralError(__FILE__, __LINE__)
+				_iterator->destruct(iterPtr)
+				return false
+			end if
+		else
+			_throwStateDispatchUnexpectedBehaviorError(__FILE__, __LINE__)
+		end if
+	loop
+
+	_iterator->destruct(iterPtr)
+
+	return true
 end function
 
 /''

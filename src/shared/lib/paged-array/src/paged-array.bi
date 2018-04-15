@@ -43,7 +43,7 @@ declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (arrayPtr as Instance ptr)
 declare function initialize cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
 declare function createIndex cdecl (arrayPtr as Instance ptr) as ulong
-declare function getIndex cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
+declare function getPtr cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 declare function pop cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short
 declare function isEmpty cdecl (arrayPtr as Instance ptr) as short
 declare function _createPage cdecl (arrayPtr as Instance ptr) as short

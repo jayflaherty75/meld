@@ -26,6 +26,7 @@ type Codes
 	invalidArgumentError as integer
 	outOfBoundsError as integer
 	resourceLimitSurpassed as integer
+	unexpectedBehaviorError as integer
 	generalError as integer
 end type
 
@@ -57,6 +58,7 @@ function startup cdecl () as short
 	_assignHandler(_fault, @state.errs.invalidArgumentError, "InvalidArgumentError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.outOfBoundsError, "OutOfBoundsError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.resourceLimitSurpassed, "ResourceLimitSurpassed", _fault->defaultWarningHandler)
+	_assignHandler(_fault, @state.errs.unexpectedBehaviorError, "UnexpectedBehaviorError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.generalError, "GeneralError", _fault->defaultWarningHandler)
 
 	return true
