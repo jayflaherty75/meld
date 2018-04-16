@@ -303,13 +303,11 @@ function release cdecl (statePtr as Instance ptr, index as long) as short
 			_state->unassign(statePtr, index)
 		end if
 
-		if not _map->unassign(statePtr->mappings, resPtr->identifier) then
-			_throwStateReleaseMapResourceError(__FILE__, __LINE__)
-		end if
-
 		if not _resourceContainer->release(statePtr->resources, index) then
 			_throwStateReleaseResourceError(__FILE__, __LINE__)
 		end if
+
+		_map->unassign(statePtr->mappings, resPtr->identifier)
 
 		resPtr->typePtr = NULL
 		resPtr->identifier = NULL
@@ -456,7 +454,7 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 	end if
 
 	if resPtr->modifierNode <> NULL andalso not _state->unsetModifier(statePtr, index) then
-		' TODO: Throw a warning here
+		_throwStateUnassignResourceMissingError(__FILE__, __LINE__)
 	end if
 
 	if resPtr->typePtr = NULL then
