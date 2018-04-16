@@ -529,13 +529,17 @@ function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as
 		_state->unsetModifier(statePtr, index)
 	end if
 
-	nodePtr = _list->insert(statePtr->modifiers, resPtr, NULL)
+	nodePtr = _list->insert(statePtr->modifiers, resPtr, _
+		_list->getLast(statePtr->modifiers) _
+	)
 	if nodePtr = NULL then
+		_list->remove(statePtr->modifiers, nodePtr)
 		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	if not modifier(resPtr->resourcePtr, NULL) then
+		_list->remove(statePtr->modifiers, nodePtr)
 		_throwStateSetModResourceInitializationError(__FILE__, __LINE__)
 		return false
 	end if

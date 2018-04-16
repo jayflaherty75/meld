@@ -52,6 +52,7 @@ declare function getLength cdecl (listPtr as Instance ptr) as long
 declare function search cdecl (listPtr as Instance ptr, element as any ptr, compare as CompareFn) as Node ptr
 declare function defaultCompare cdecl (criteria as any ptr, current as any ptr) as short
 declare function getIterator cdecl (listPtr as Instance ptr) as any ptr
+declare function isValid cdecl (listPtr as Instance ptr) as short
 declare function _iterationHandler cdecl (iter as Iterator.Instance ptr, target as any ptr) as short
 
 end namespace

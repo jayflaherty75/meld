@@ -27,6 +27,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.search = @List.search
 	moduleState.methods.defaultCompare = @List.defaultCompare
 	moduleState.methods.getIterator = @List.getIterator
+	moduleState.methods.isValid = @List.isValid
 
 	return @moduleState.methods
 End Function

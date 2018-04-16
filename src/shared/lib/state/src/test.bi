@@ -33,6 +33,8 @@ declare sub test4 cdecl (done as Tester.doneFn)
 declare sub test5 cdecl (done as Tester.doneFn)
 declare sub test6 cdecl (done as Tester.doneFn)
 declare sub test7 cdecl (done as Tester.doneFn)
+declare sub test7_3 cdecl (done as Tester.doneFn)
+declare sub test7_5 cdecl (done as Tester.doneFn)
 declare sub test8 cdecl (done as Tester.doneFn)
 declare sub test9 cdecl (done as Tester.doneFn)
 declare sub test28 cdecl (done as Tester.doneFn)
@@ -72,7 +74,9 @@ function testCreate cdecl (it as Tester.itCallback) as short
 	result = result andalso it("assigns multiple resources from container", @test5)
 	result = result andalso it("assigns modifiers to resources", @test6)
 	result = result andalso it("initializes resources with the correct state", @test7)
-	result = result andalso it("accepts dispatched change event messages", @test8)
+	result = result andalso it("accepts dispatched change event messages", @test7_3)
+	result = result andalso it("successfuly detaches modifiers", @test7_5)
+	result = result andalso it("accepts dispatched change event messages after detaching modifiers", @test8)
 	result = result andalso it("provides access and iteration of resource sets", @test9)
 	result = result andalso it("unassigns all resources", @test28)
 	result = result andalso it("releases and unmaps resource indices", @test29)
@@ -195,7 +199,7 @@ sub test7 cdecl (done as Tester.doneFn)
 	done()
 end sub
 
-sub test8 cdecl (done as Tester.doneFn)
+sub test7_3 cdecl (done as Tester.doneFn)
 	dim as TestMessage msg
 	dim as long x, y, z
 
@@ -203,17 +207,13 @@ sub test8 cdecl (done as Tester.doneFn)
 	msg.x = 5000
 	msg.y = 10000
 
-	' TODO: On hold until fix for RM-125
-	'_tester->expect(_state->unsetModifier(testPtr, testResources(2)), true, "Failed to unassign modifier to resource #2")
-	'_tester->expect(_state->unsetModifier(testPtr, testResources(3)), true, "Failed to unassign modifier to resource #3")
-
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "A problem occurred dispatching a message to type #1")
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #1")
 
 	msg.typeId = 2
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "A problem occurred dispatching a message to type #2")
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #2")
 
 	msg.typeId = 3
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "A problem occurred dispatching a message to type #3")
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #3")
 
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @x, @selectX), true, "Failed to retrieve value X from resource #1")
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @y, @selectY), true, "Failed to retrieve value Y from resource #1")
@@ -262,6 +262,85 @@ sub test8 cdecl (done as Tester.doneFn)
 	_tester->expect(_state->selectFrom(testPtr, testResources(7), @z, @selectZ), true, "Failed to retrieve value Z from resource #7")
 	_tester->expect(x, 25000, "Incorrect value X returned from resource #7")
 	_tester->expect(y, 50000, "Incorrect value Y returned from resource #7")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #7")
+
+	done()
+end sub
+
+sub test7_5 cdecl (done as Tester.doneFn)
+	' TODO: On hold until fix for RM-125
+	_tester->expect(_state->unsetModifier(testPtr, testResources(3)), true, "Failed to unassign modifier to resource #5")
+	_tester->expect(_list->isValid(testPtr->modifiers), true, "List validation failed at index #5")
+
+	_tester->expect(_state->unsetModifier(testPtr, testResources(6)), true, "Failed to unassign modifier to resource #6")
+	_tester->expect(_list->isValid(testPtr->modifiers), true, "List validation failed at index #6")
+
+	done()
+end sub
+
+sub test8 cdecl (done as Tester.doneFn)
+	dim as TestMessage msg
+	dim as long x, y, z
+
+	msg.typeId = 1
+	msg.x = 5000
+	msg.y = 10000
+
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #1")
+
+	msg.typeId = 2
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #2")
+
+	msg.typeId = 3
+	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #3")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(1), @x, @selectX), true, "Failed to retrieve value X from resource #1")
+	_tester->expect(_state->selectFrom(testPtr, testResources(1), @y, @selectY), true, "Failed to retrieve value Y from resource #1")
+	_tester->expect(_state->selectFrom(testPtr, testResources(1), @z, @selectZ), true, "Failed to retrieve value Z from resource #1")
+	_tester->expect(x, 20000, "Incorrect value X returned from resource #1")
+	_tester->expect(y, 60000, "Incorrect value Y returned from resource #1")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #1")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(2), @x, @selectX), true, "Failed to retrieve value X from resource #2")
+	_tester->expect(_state->selectFrom(testPtr, testResources(2), @y, @selectY), true, "Failed to retrieve value Y from resource #2")
+	_tester->expect(_state->selectFrom(testPtr, testResources(2), @z, @selectZ), true, "Failed to retrieve value Z from resource #2")
+	_tester->expect(x, 20000, "Incorrect value X returned from resource #2")
+	_tester->expect(y, 60000, "Incorrect value Y returned from resource #2")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #2")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(3), @x, @selectX), true, "Failed to retrieve value X from resource #3")
+	_tester->expect(_state->selectFrom(testPtr, testResources(3), @y, @selectY), true, "Failed to retrieve value Y from resource #3")
+	_tester->expect(_state->selectFrom(testPtr, testResources(3), @z, @selectZ), true, "Failed to retrieve value Z from resource #3")
+	_tester->expect(x, 25000, "Incorrect value X returned from resource #3")
+	_tester->expect(y, 50000, "Incorrect value Y returned from resource #3")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #3")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(4), @x, @selectX), true, "Failed to retrieve value X from resource #4")
+	_tester->expect(_state->selectFrom(testPtr, testResources(4), @y, @selectY), true, "Failed to retrieve value Y from resource #4")
+	_tester->expect(_state->selectFrom(testPtr, testResources(4), @z, @selectZ), true, "Failed to retrieve value Z from resource #4")
+	_tester->expect(x, 20000, "Incorrect value X returned from resource #4")
+	_tester->expect(y, 60000, "Incorrect value Y returned from resource #4")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #4")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(5), @x, @selectX), true, "Failed to retrieve value X from resource #5")
+	_tester->expect(_state->selectFrom(testPtr, testResources(5), @y, @selectY), true, "Failed to retrieve value Y from resource #5")
+	_tester->expect(_state->selectFrom(testPtr, testResources(5), @z, @selectZ), true, "Failed to retrieve value Z from resource #5")
+	_tester->expect(x, 20000, "Incorrect value X returned from resource #5")
+	_tester->expect(y, 60000, "Incorrect value Y returned from resource #5")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #5")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(6), @x, @selectX), true, "Failed to retrieve value X from resource #6")
+	_tester->expect(_state->selectFrom(testPtr, testResources(6), @y, @selectY), true, "Failed to retrieve value Y from resource #6")
+	_tester->expect(_state->selectFrom(testPtr, testResources(6), @z, @selectZ), true, "Failed to retrieve value Z from resource #6")
+	_tester->expect(x, 25000, "Incorrect value X returned from resource #6")
+	_tester->expect(y, 50000, "Incorrect value Y returned from resource #6")
+	_tester->expect(z, 50000, "Incorrect value Z returned from resource #6")
+
+	_tester->expect(_state->selectFrom(testPtr, testResources(7), @x, @selectX), true, "Failed to retrieve value X from resource #7")
+	_tester->expect(_state->selectFrom(testPtr, testResources(7), @y, @selectY), true, "Failed to retrieve value Y from resource #7")
+	_tester->expect(_state->selectFrom(testPtr, testResources(7), @z, @selectZ), true, "Failed to retrieve value Z from resource #7")
+	_tester->expect(x, 20000, "Incorrect value X returned from resource #7")
+	_tester->expect(y, 60000, "Incorrect value Y returned from resource #7")
 	_tester->expect(z, 50000, "Incorrect value Z returned from resource #7")
 
 	done()
