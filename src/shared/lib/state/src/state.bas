@@ -2,6 +2,7 @@
 /''
  ' @requires console_v0.*
  ' @requires fault_v0.*
+ ' @requires error-handling_v0.*
  ' @requires tester_v0.*
  ' @requires iterator_v0.*
  ' @requires list_v0.*
@@ -454,7 +455,9 @@ function unassign cdecl (statePtr as Instance ptr, index as long) as short
 		return false
 	end if
 
-	if not _state->unsetModifier(statePtr, index) then return false
+	if resPtr->modifierNode <> NULL andalso not _state->unsetModifier(statePtr, index) then
+		' TODO: Throw a warning here
+	end if
 
 	if resPtr->typePtr = NULL then
 		statePtr->allocator(resPtr->resourcePtr, 0)

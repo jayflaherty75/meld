@@ -2,6 +2,7 @@
 /''
  ' @requires console_v0.*
  ' @requires fault_v0.*
+ ' @requires error-handling_v0.*
  ' @requires tester_v0.*
  ' @requires resource-container_v0.*
  ' @requires bst_v0.*
@@ -221,7 +222,7 @@ function unassign cdecl (mapPtr as Instance ptr, idPtr as ubyte ptr) as short
 
 	if mapPtr = NULL then
 		_throwMapUnassignNullReferenceError(__FILE__, __LINE__)
-		return NULL
+		return false
 	end if
 
 	criteria.identifier = idPtr

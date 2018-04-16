@@ -7,6 +7,7 @@
 #include once "headers/module_v0.1.0.bi"
 #include once "headers/console_v0.1.0.bi"
 #include once "headers/fault_v0.1.0.bi"
+#include once "headers/error-handling_v0.1.0.bi"
 #include once "headers/map_v0.1.0.bi"
 #include once "headers/resource-container_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
@@ -18,6 +19,7 @@ dim shared _module as Module.Interface ptr
 dim shared _typemap as Typemap.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
+dim shared _errorHandling as ErrorHandling.Interface ptr
 dim shared _map as Map.Interface ptr
 dim shared _resourceContainer as ResourceContainer.Interface ptr
 dim shared _tester as Tester.Interface ptr

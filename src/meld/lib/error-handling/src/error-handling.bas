@@ -52,7 +52,7 @@ function startup cdecl () as short
 	_assignHandler(_fault, @state.errs.moduleLoadingError, "ModuleLoadingError", _fault->defaultErrorHandler)
 	_assignHandler(_fault, @state.errs.resourceAllocationError, "ResourceAllocationError", _fault->defaultErrorHandler)
 	_assignHandler(_fault, @state.errs.resourceInitializationError, "ResourceInitializationError", _fault->defaultErrorHandler)
-	_assignHandler(_fault, @state.errs.releaseResourceError, "ReleaseResourceError", _fault->defaultErrorHandler)
+	_assignHandler(_fault, @state.errs.releaseResourceError, "ReleaseResourceError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.nullReferenceError, "NullReferenceError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.resourceMissingError, "ResourceMissingError", _fault->defaultWarningHandler)
 	_assignHandler(_fault, @state.errs.invalidArgumentError, "InvalidArgumentError", _fault->defaultWarningHandler)

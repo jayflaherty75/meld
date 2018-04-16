@@ -268,7 +268,6 @@ sub test7_3 cdecl (done as Tester.doneFn)
 end sub
 
 sub test7_5 cdecl (done as Tester.doneFn)
-	' TODO: On hold until fix for RM-125
 	_tester->expect(_state->unsetModifier(testPtr, testResources(3)), true, "Failed to unassign modifier to resource #5")
 	_tester->expect(_list->isValid(testPtr->modifiers), true, "List validation failed at index #5")
 

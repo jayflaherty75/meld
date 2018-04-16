@@ -2,6 +2,7 @@
 <module name="resource-container">
   <requires module='console' version='0.1.0' />
   <requires module='fault' version='0.1.0' />
+  <requires module='error-handling' version='0.1.0' />
   <requires module='tester' version='0.1.0' />
   <requires module='paged-array' version='0.1.0' />
   <version>0.1.0</version>
