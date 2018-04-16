@@ -109,6 +109,11 @@
     <throws type='NullReferenceError' />
     <description>Provides an Iterator instance that will return the element pointers of each node in the given list.</description>
   </function>
+  <function name='isValid'>
+    <param name='listPtr' type='Instance' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Rigorously validates the entire structure of a list.</description>
+  </function>
   <function name='_iterationHandler'>
     <param name='iter' type='Iterator.Instance' modifier='pointer' const='false' />
     <param name='target' type='any' modifier='pointer' const='false' />

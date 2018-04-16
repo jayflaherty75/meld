@@ -36,6 +36,7 @@ type Interface
 	search as function cdecl (listPtr as Instance ptr, element as any ptr, compare as CompareFn) as Node ptr
 	defaultCompare as function cdecl (criteria as any ptr, current as any ptr) as short
 	getIterator as function cdecl (listPtr as Instance ptr) as any ptr
+	isValid as function cdecl (listPtr as Instance ptr) as short
 end type
 
 end namespace

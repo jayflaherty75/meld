@@ -377,6 +377,97 @@ function getIterator cdecl (listPtr as Instance ptr) as any ptr
 end function
 
 /''
+ ' Rigorously validates the entire structure of a list.
+ ' @function isValid
+ ' @param {Instance ptr} listPtr
+ ' @returns {short}
+ '/
+function isValid cdecl (listPtr as Instance ptr) as short
+	dim as long length = 0
+	dim as Node ptr first = NULL
+	dim as Node ptr last = NULL
+	dim as short result = true
+	dim as Node ptr current = listPtr->first
+
+	if listPtr = NULL then
+		return false
+	end if
+
+	do while current <> NULL
+		if first = NULL then
+			if current->prevPtr <> NULL then
+				_console->logWarning("ValidationError", "Forward iteration: First node has a non-null prevPtr", __FILE__, __LINE__)
+				result = false
+			end if
+
+			first = current
+		end if
+
+		if current->element = NULL then
+			_console->logWarning("ValidationError", "Forward iteration: Empty list node found at node #" & length, __FILE__, __LINE__)
+			result = false
+		end if
+
+		if current->nextPtr = NULL andalso current <> listPtr->last then
+			_console->logWarning("ValidationError", "Forward iteration: Last node does not match last node in list", __FILE__, __LINE__)
+			result = false
+		end if
+
+		current = current->nextPtr
+		length += 1
+	loop
+
+	if length <> _list->getLength(listPtr) then
+		_console->logWarning("ValidationError", "Forward iteration: Resulting length does not match list length: " & length & " != " & _list->getLength(listPtr), __FILE__, __LINE__)
+		result = false
+	end if
+
+	current = listPtr->last
+	length = 0
+
+	do while current <> NULL
+		if last = NULL then
+			if current->nextPtr <> NULL then
+				_console->logWarning("ValidationError", "Reverse iteration: Last node has a non-null nextPtr", __FILE__, __LINE__)
+				result = false
+			end if
+
+			last = current
+		end if
+
+		if current->element = NULL then
+			_console->logWarning("ValidationError", "Reverse iteration: Empty list node found at node #" & length, __FILE__, __LINE__)
+			result = false
+		end if
+
+		if current->prevPtr = NULL andalso current <> listPtr->first then
+			_console->logWarning("ValidationError", "Reverse iteration: First node does not match first node in list", __FILE__, __LINE__)
+			result = false
+		end if
+
+		current = current->prevPtr
+		length += 1
+	loop
+
+	if length <> _list->getLength(listPtr) then
+		_console->logWarning("ValidationError", "Reverse iteration: Resulting length does not match list length: " & length & " != " & _list->getLength(listPtr), __FILE__, __LINE__)
+		result = false
+	end if
+
+	if first <> listPtr->first then
+		_console->logWarning("ValidationError", "First node does not match", __FILE__, __LINE__)
+		result = false
+	end if
+
+	if last <> listPtr->last then
+		_console->logWarning("ValidationError", "Last node does not match", __FILE__, __LINE__)
+		result = false
+	end if
+
+	return result
+end function
+
+/''
  ' Iteration handler for lists.
  ' @function _iterationHandler
  ' @param {Iterator.Instance ptr} iter
