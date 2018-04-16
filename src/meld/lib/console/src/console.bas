@@ -57,7 +57,7 @@ end sub
 sub logWarning cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
 	dim as ulong oldcol = color()
 
-	color 6
+	color 14
 	printf(_format(id, message, source, lineNum))
 	color (oldcol)
 end sub

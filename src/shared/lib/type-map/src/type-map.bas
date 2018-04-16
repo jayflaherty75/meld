@@ -2,6 +2,7 @@
 /''
  ' @requires console_v0.*
  ' @requires fault_v0.*
+ ' @requires error-handling_v0.*
  ' @requires map_v0.*
  ' @requires resource-container_v0.*
  ' @requires tester_v0.*
