@@ -41,6 +41,9 @@
     <property name='modifiers' type='any' modifier='pointer' const='false'>
       <description>List pointer</description>
     </property>
+    <property name='messages' type='any' modifier='pointer' const='false'>
+      <description>List pointer</description>
+    </property>
     <property name='allocator' type='AllocatorFn' modifier='value' const='false' />
   </class>
   <function name='startup'>
@@ -50,11 +53,6 @@
   <function name='shutdown'>
     <returns type='short' modifier='value' />
     <description>Application main routine.</description>
-  </function>
-  <function name='test'>
-    <param name='describeFn' type='any' modifier='pointer' const='false' />
-    <returns type='short' modifier='value' />
-    <description>Standard test runner for modules.</description>
   </function>
   <function name='construct'>
     <returns type='Instance' modifier='pointer' />
@@ -66,6 +64,11 @@
     <param name='instancePtr' type='Instance' modifier='pointer' const='false' />
     <throws type='NullReferenceError' />
     <description>Destructor</description>
+  </function>
+  <function name='test'>
+    <param name='describeFn' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <description>Standard test runner for modules.</description>
   </function>
   <function name='initialize'>
     <param name='statePtr' type='Instance' modifier='pointer' const='false' />
@@ -79,6 +82,12 @@
     <returns type='short' modifier='value' />
     <throws type='NullReferenceError' />
     <throws type='ResourceInitializationError' />
+  </function>
+  <function name='update'>
+    <param name='instancePtr' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <description>Run or update an instance or pass NULL to run statically.</description>
   </function>
   <function name='setAllocator'>
     <param name='statePtr' type='Instance' modifier='pointer' const='false' />
@@ -182,6 +191,17 @@
     <throws type='ResourceMissingError' />
   </function>
   <function name='dispatch'>
+    <param name='statePtr' type='Instance' modifier='pointer' const='false' />
+    <param name='message' type='any' modifier='pointer' const='false' />
+    <param name='isPrioritized' type='short' modifier='value' const='false'>
+      <default>0</default>
+    </param>
+    <returns type='short' modifier='value' />
+    <throws type='NullReferenceError' />
+    <throws type='GeneralError' />
+    <throws type='UnexpectedBehaviorError' />
+  </function>
+  <function name='_directDispatch'>
     <param name='statePtr' type='Instance' modifier='pointer' const='false' />
     <param name='message' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />

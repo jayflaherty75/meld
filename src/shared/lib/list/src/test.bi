@@ -72,7 +72,16 @@ sub test2 cdecl (done as Tester.doneFn)
 
 	nodePtr = NULL
 
-	for i = 0 to 7
+	for i = 3 to 0 step -1
+		nodePtr = _list->insert(listPtr, @testData(i), NULL)
+		_tester->expectPtrNot(nodePtr, NULL, "List insert returned NULL at index " & i)
+		_tester->expect(_list->isValid(listPtr), true, "List validation at index " & i)
+	next
+
+	nodePtr = _list->getLast(listPtr)
+	_tester->expectPtrNot(nodePtr, NULL, "Last node is NULL")
+
+	for i = 4 to 7
 		nodePtr = _list->insert(listPtr, @testData(i), nodePtr)
 		_tester->expectPtrNot(nodePtr, NULL, "List insert returned NULL at index " & i)
 		_tester->expect(_list->isValid(listPtr), true, "List validation at index " & i)

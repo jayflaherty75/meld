@@ -200,20 +200,28 @@ sub test7 cdecl (done as Tester.doneFn)
 end sub
 
 sub test7_3 cdecl (done as Tester.doneFn)
-	dim as TestMessage msg
+	dim as TestMessage msg1
+	dim as TestMessage msg2
+	dim as TestMessage msg3
 	dim as long x, y, z
 
-	msg.typeId = 1
-	msg.x = 5000
-	msg.y = 10000
+	msg1.typeId = 1
+	msg1.x = 5000
+	msg1.y = 10000
 
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #1")
+	msg2.typeId = 2
+	msg2.x = 5000
+	msg2.y = 10000
 
-	msg.typeId = 2
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #2")
+	msg3.typeId = 3
+	msg3.x = 5000
+	msg3.y = 10000
 
-	msg.typeId = 3
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #3")
+	_tester->expect(_state->dispatch(testPtr, @msg1), true, "Encountered problem dispatching message of type #1")
+	_tester->expect(_state->dispatch(testPtr, @msg2), true, "Encountered problem dispatching message of type #2")
+	_tester->expect(_state->dispatch(testPtr, @msg3), true, "Encountered problem dispatching message of type #3")
+
+	_tester->expect(_state->update(testPtr), true, "Update failed")
 
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @x, @selectX), true, "Failed to retrieve value X from resource #1")
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @y, @selectY), true, "Failed to retrieve value Y from resource #1")
@@ -278,20 +286,28 @@ sub test7_5 cdecl (done as Tester.doneFn)
 end sub
 
 sub test8 cdecl (done as Tester.doneFn)
-	dim as TestMessage msg
+	dim as TestMessage msg1
+	dim as TestMessage msg2
+	dim as TestMessage msg3
 	dim as long x, y, z
 
-	msg.typeId = 1
-	msg.x = 5000
-	msg.y = 10000
+	msg1.typeId = 1
+	msg1.x = 5000
+	msg1.y = 10000
 
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #1")
+	msg2.typeId = 2
+	msg2.x = 5000
+	msg2.y = 10000
 
-	msg.typeId = 2
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #2")
+	msg3.typeId = 3
+	msg3.x = 5000
+	msg3.y = 10000
 
-	msg.typeId = 3
-	_tester->expect(_state->dispatch(testPtr, @msg), true, "Encountered problem dispatching message of type #3")
+	_tester->expect(_state->dispatch(testPtr, @msg1), true, "Encountered problem dispatching message of type #1")
+	_tester->expect(_state->dispatch(testPtr, @msg2), true, "Encountered problem dispatching message of type #2")
+	_tester->expect(_state->dispatch(testPtr, @msg3), true, "Encountered problem dispatching message of type #3")
+
+	_tester->expect(_state->update(testPtr), true, "Update failed")
 
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @x, @selectX), true, "Failed to retrieve value X from resource #1")
 	_tester->expect(_state->selectFrom(testPtr, testResources(1), @y, @selectY), true, "Failed to retrieve value Y from resource #1")

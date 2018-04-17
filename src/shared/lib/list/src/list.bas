@@ -161,10 +161,15 @@ function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as N
 	if prevPtr = NULL then
 		nodePtr->prevPtr = NULL
 		nodePtr->nextPtr = listPtr->first
+
 		listPtr->first = nodePtr
 
 		if listPtr->last = NULL then
 			listPtr->last = nodePtr
+		end if
+
+		if nodePtr->nextPtr <> NULL then
+			nodePtr->nextPtr->prevPtr = nodePtr
 		end if
 	else
 		if prevPtr->nextPtr = NULL then
@@ -179,6 +184,10 @@ function insert cdecl (listPtr as Instance ptr, element as any ptr, prevPtr as N
 
 		if listPtr->first = NULL then
 			listPtr->first = nodePtr
+		end if
+
+		if nodePtr->prevPtr <> NULL then
+			nodePtr->prevPtr->nextPtr = nodePtr
 		end if
 	end if
 
@@ -219,12 +228,20 @@ sub remove cdecl (listPtr as Instance ptr, node as Node ptr)
 		nextPtr->prevPtr = prevPtr
 	else
 		listPtr->last = prevPtr
+
+		if prevPtr <> NULL then
+			prevPtr->nextPtr = NULL
+		end if
 	end if
 
 	if prevPtr <> NULL then
 		prevPtr->nextPtr = nextPtr
 	else
 		listPtr->first = nextPtr
+
+		if nextPtr <> NULL then
+			nextPtr->prevPtr = NULL
+		end if
 	end if
 
 	listPtr->length -= 1
@@ -295,7 +312,7 @@ end function
 function getLength cdecl (listPtr as Instance ptr) as long
 	if listPtr = NULL then
 		_throwListGetLengthNullReferenceError(__FILE__, __LINE__)
-		return NULL
+		return -1
 	end if
 
 	return listPtr->length
@@ -394,7 +411,7 @@ function isValid cdecl (listPtr as Instance ptr) as short
 		return false
 	end if
 
-	do while current <> NULL
+	do while current <> NULL andalso length < _list->getLength(listPtr) + 4
 		if first = NULL then
 			if current->prevPtr <> NULL then
 				_console->logWarning("ValidationError", "Forward iteration: First node has a non-null prevPtr", __FILE__, __LINE__)
@@ -426,7 +443,7 @@ function isValid cdecl (listPtr as Instance ptr) as short
 	current = listPtr->last
 	length = 0
 
-	do while current <> NULL
+	do while current <> NULL andalso length < _list->getLength(listPtr) + 4
 		if last = NULL then
 			if current->nextPtr <> NULL then
 				_console->logWarning("ValidationError", "Reverse iteration: Last node has a non-null nextPtr", __FILE__, __LINE__)

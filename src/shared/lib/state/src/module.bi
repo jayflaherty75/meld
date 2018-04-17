@@ -15,10 +15,11 @@ Function exports cdecl Alias "exports" () As any ptr export
 	
 	moduleState.methods.startup = @State.startup
 	moduleState.methods.shutdown = @State.shutdown
-	moduleState.methods.test = @State.test
 	moduleState.methods.construct = @State.construct
 	moduleState.methods.destruct = @State.destruct
+	moduleState.methods.test = @State.test
 	moduleState.methods.initialize = @State.initialize
+	moduleState.methods.update = @State.update
 	moduleState.methods.setAllocator = @State.setAllocator
 	moduleState.methods.request = @State.request
 	moduleState.methods.release = @State.release
@@ -33,6 +34,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.selectFrom = @State.selectFrom
 	moduleState.methods.selectAt = @State.selectAt
 	moduleState.methods.dispatch = @State.dispatch
+	moduleState.methods._directDispatch = @State._directDispatch
 
 	return @moduleState.methods
 End Function

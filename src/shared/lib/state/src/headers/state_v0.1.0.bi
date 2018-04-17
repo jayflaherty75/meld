@@ -18,6 +18,7 @@ type Instance
 	mappings as any ptr
 	resources as any ptr
 	modifiers as any ptr
+	messages as any ptr
 	allocator as AllocatorFn
 end type
 
@@ -26,7 +27,7 @@ type Interface
 	shutdown as function cdecl () as short
 	construct as function cdecl () as Instance ptr
 	destruct as sub cdecl (instancePtr as Instance ptr)
-	update as any ptr
+	update as function cdecl (instancePtr as any ptr) as short
 	test as function cdecl (describeFn as any ptr) as short
 	initialize as function cdecl (statePtr as Instance ptr, pageLength as long = 1024, warnLimit as long = 2147483647) as short
 	setAllocator as sub cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
@@ -42,7 +43,8 @@ type Interface
 	unsetModifier as function cdecl (statePtr as Instance ptr, index as long) as short
 	selectFrom as function cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
 	selectAt as function cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
-	dispatch as function cdecl (statePtr as Instance ptr, message as any ptr) as short
+	dispatch as function cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
+	_directDispatch as function cdecl (statePtr as Instance ptr, message as any ptr) as short
 end type
 
 end namespace
