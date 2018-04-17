@@ -45,6 +45,7 @@ type Interface
 	selectAt as function cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
 	dispatch as function cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
 	_directDispatch as function cdecl (statePtr as Instance ptr, message as any ptr) as short
+	_getIterator as function cdecl (middlewareIterator as any ptr) as any ptr
 end type
 
 end namespace

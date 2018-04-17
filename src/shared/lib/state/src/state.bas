@@ -225,6 +225,20 @@ function update cdecl (instancePtr as any ptr) as short
 		return true
 	end if
 
+	' !!!!!!!!!!!!! TEMPORARY !!!!!!!!!!!!!
+	dim as Iterator.Instance ptr msgIter = _list->getIterator(statePtr->messages)
+	dim as Iterator.Instance ptr mwIter = _getIterator(msgIter)
+	dim as long ptr valuePtr
+
+	do while _iterator->getNext(mwIter, @valuePtr)
+		print("Value: " & *valuePtr)
+	loop
+
+	_iterator->destruct(mwIter)
+	_iterator->destruct(msgIter)
+	' !!!!!!!!!!!!! TEMPORARY !!!!!!!!!!!!!
+
+
 	messageCount = _list->getLength(statePtr->messages)
 	currentPtr = _list->getFirst(statePtr->messages)
 
@@ -763,6 +777,54 @@ function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 	end if
 
 	return NULL
+end function
+
+/''
+ ' @function _getIterator
+ ' @param {any ptr} middlewareIterator
+ ' @returns {any ptr}
+ ' @throws {NullReferenceError}
+ '/
+function _getIterator cdecl (middlewareIterator as any ptr) as any ptr
+	dim as Iterator.Instance ptr iterPtr = _iterator->construct()
+
+	if middlewareIterator = NULL then
+		'_throwListGetIteratorNullReferenceError(__FILE__, __LINE__)
+		return NULL
+	end if
+
+	iterPtr->handler = @_iterationHandler
+
+	_iterator->setData(iterPtr, middlewareIterator)
+
+	return iterPtr
+end function
+
+/''
+ ' @function _iterationHandler
+ ' @param {any ptr} iter
+ ' @param {any ptr} target
+ ' @returns {short}
+ ' @private
+ '/
+function _iterationHandler cdecl (iter as any ptr, target as any ptr) as short
+	dim as Iterator.Instance ptr iterPtr = iter
+	dim as Iterator.Instance ptr middlewareIterator = iterPtr->dataSet
+	dim as short result
+
+	if target = NULL then
+		iterPtr->index = 0
+		iterPtr->length = middlewareIterator->length
+	else
+		result = _iterator->getNext(middlewareIterator, @iterPtr->current)
+		iterPtr->index += 1
+
+		*cptr(any ptr ptr, target) = iterPtr->current
+
+		return result
+	end if
+
+	return true
 end function
 
 end namespace

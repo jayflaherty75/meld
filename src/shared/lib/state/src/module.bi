@@ -35,6 +35,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.selectAt = @State.selectAt
 	moduleState.methods.dispatch = @State.dispatch
 	moduleState.methods._directDispatch = @State._directDispatch
+	moduleState.methods._getIterator = @State._getIterator
 
 	return @moduleState.methods
 End Function
