@@ -73,6 +73,8 @@ declare function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, res
 declare function dispatch cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
 declare function _directDispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
 declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
+declare function _getIterator cdecl (middlewareIterator as any ptr) as any ptr
+declare function _iterationHandler cdecl (iter as any ptr, target as any ptr) as short
 
 end namespace
 

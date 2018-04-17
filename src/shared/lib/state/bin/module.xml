@@ -215,5 +215,16 @@
     <returns type='any' modifier='pointer' />
     <private />
   </function>
+  <function name='_getIterator'>
+    <param name='middlewareIterator' type='any' modifier='pointer' const='false' />
+    <returns type='any' modifier='pointer' />
+    <throws type='NullReferenceError' />
+  </function>
+  <function name='_iterationHandler'>
+    <param name='iter' type='any' modifier='pointer' const='false' />
+    <param name='target' type='any' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+    <private />
+  </function>
   <namespace>State</namespace>
 </module>
