@@ -52,10 +52,11 @@ namespace State
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (instancePtr as Instance ptr)
+declare function test cdecl (describeFn as any ptr) as short
 declare function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, warnLimit as long = 2147483647) as short
+declare function update cdecl (instancePtr as any ptr) as short
 declare sub setAllocator cdecl (statePtr as Instance ptr, allocator as AllocatorFn)
 declare function request cdecl (statePtr as Instance ptr, id as ubyte ptr) as long
 declare function release cdecl (statePtr as Instance ptr, index as long) as short
@@ -69,7 +70,8 @@ declare function setModifier cdecl (statePtr as Instance ptr, index as long, mod
 declare function unsetModifier cdecl (statePtr as Instance ptr, index as long) as short
 declare function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
 declare function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
-declare function dispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
+declare function dispatch cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
+declare function _directDispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
 declare function _defaultAllocator cdecl (memPtr as any ptr, size as long) as any ptr
 
 end namespace

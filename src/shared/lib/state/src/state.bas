@@ -55,6 +55,7 @@ namespace State
  ' @member {any ptr} mappings - Map pointer
  ' @member {any ptr} resources - ResourceContainer pointer
  ' @member {any ptr} modifiers - List pointer
+ ' @member {any ptr} messages - List pointer
  ' @member {AllocatorFn} allocator
  '/
 
@@ -89,21 +90,6 @@ function shutdown cdecl () as short
 	_console->logMessage("Shutting down state module")
 
 	return true
-end function
-
-/''
- ' Standard test runner for modules.
- ' @function test
- ' @param {any ptr} describeFn
- ' @returns {short}
- '/
-function test cdecl (describeFn as any ptr) as short
-	dim as Tester.describeCallback describePtr = describeFn
-	dim as short result = true
-
-	result = result andalso describePtr ("The State module", @testCreate)
-
-	return result
 end function
 
 /''
@@ -149,8 +135,28 @@ sub destruct cdecl (statePtr as Instance ptr)
 		statePtr->modifiers = NULL
 	end if
 
+	if statePtr->messages <> NULL then
+		_list->destruct(statePtr->messages)
+		statePtr->messages = NULL
+	end if
+
 	deallocate(statePtr)
 end sub
+
+/''
+ ' Standard test runner for modules.
+ ' @function test
+ ' @param {any ptr} describeFn
+ ' @returns {short}
+ '/
+function test cdecl (describeFn as any ptr) as short
+	dim as Tester.describeCallback describePtr = describeFn
+	dim as short result = true
+
+	result = result andalso describePtr ("The State module", @testCreate)
+
+	return result
+end function
 
 /''
  ' @function initialize
@@ -168,21 +174,24 @@ function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, 
 
 	statePtr->mappings = _map->construct()
 	if statePtr->mappings = NULL then
-		destruct(statePtr)
 		_throwStateMapperAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	statePtr->resources = _resourceContainer->construct()
 	if statePtr->resources = NULL then
-		destruct(statePtr)
 		_throwStateContainerAllocationError(__FILE__, __LINE__)
 		return false
 	end if
 
 	statePtr->modifiers = _list->construct()
 	if statePtr->modifiers = NULL then
-		destruct(statePtr)
+		_throwStateModListAllocationError(__FILE__, __LINE__)
+		return false
+	end if
+
+	statePtr->messages = _list->construct()
+	if statePtr->messages = NULL then
 		_throwStateModListAllocationError(__FILE__, __LINE__)
 		return false
 	end if
@@ -193,6 +202,41 @@ function initialize cdecl (statePtr as Instance ptr, pageLength as long = 1024, 
 	if not _resourceContainer->initialize(statePtr->resources, sizeof(ResourceEntry), pageLength, warnLimit) then
 		_throwStateInitializeResourceInitializationError(__FILE__, __LINE__)
 		return false
+	end if
+
+	return true
+end function
+
+/''
+ ' Run or update an instance or pass NULL to run statically.
+ ' @function update
+ ' @param {any ptr} instancePtr
+ ' @returns {short}
+ ' @throws {NullReferenceError}
+ '/
+function update cdecl (instancePtr as any ptr) as short
+	dim as Instance ptr statePtr = instancePtr
+	dim as long messageCount
+	dim as List.Node ptr currentPtr
+	dim as List.Node ptr nextPtr
+	dim as long index = 0
+
+	if statePtr = NULL then
+		return true
+	end if
+
+	messageCount = _list->getLength(statePtr->messages)
+	currentPtr = _list->getFirst(statePtr->messages)
+
+	if messageCount > 0 andalso currentPtr <> NULL then
+		for index = 0 to messageCount - 1
+			nextPtr = _list->getNext(statePtr->messages, currentPtr)
+
+			_directDispatch(statePtr, currentPtr->element)
+			_list->remove(statePtr->messages, currentPtr)
+
+			currentPtr = nextPtr
+		next
 	end if
 
 	return true
@@ -638,10 +682,41 @@ end function
  ' @function dispatch
  ' @param {Instance ptr} statePtr
  ' @param {any ptr} message
+ ' @param {short} [isPrioritized = 0]
  ' @returns {short}
  ' @throws {NullReferenceError|GeneralError|UnexpectedBehaviorError}
  '/
-function dispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
+function dispatch cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
+	dim as List.Node ptr nodePtr
+	dim as List.Node ptr afterPtr = NULL
+
+	if statePtr = NULL then
+		_throwStateDispatchNullReferenceError(__FILE__, __LINE__)
+		return false
+	end if
+
+	if not isPrioritized then
+		afterPtr = _list->getLast(statePtr->messages)
+	end if
+
+	nodePtr = _list->insert(statePtr->messages, message, afterPtr)
+
+	if nodePtr = NULL then
+		_throwStateDispatchUnexpectedBehaviorError(__FILE__, __LINE__)
+		return false
+	end if
+
+	return true
+end function
+
+/''
+ ' @function _directDispatch
+ ' @param {Instance ptr} statePtr
+ ' @param {any ptr} message
+ ' @returns {short}
+ ' @throws {NullReferenceError|GeneralError|UnexpectedBehaviorError}
+ '/
+function _directDispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
 	dim as ResourceEntry ptr resPtr
 	dim as Iterator.Instance ptr iterPtr
 	dim as ModifierFn modifier
