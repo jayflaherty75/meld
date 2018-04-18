@@ -226,16 +226,16 @@ function update cdecl (instancePtr as any ptr) as short
 	end if
 
 	' !!!!!!!!!!!!! TEMPORARY !!!!!!!!!!!!!
-	dim as Iterator.Instance ptr msgIter = _list->getIterator(statePtr->messages)
-	dim as Iterator.Instance ptr mwIter = _getIterator(msgIter)
-	dim as long ptr valuePtr
+	'dim as Iterator.Instance ptr msgIter = _list->getIterator(statePtr->messages)
+	'dim as Iterator.Instance ptr mwIter = _getIterator(msgIter)
+	'dim as long ptr valuePtr
 
-	do while _iterator->getNext(mwIter, @valuePtr)
-		print("Value: " & *valuePtr)
-	loop
+	'do while _iterator->getNext(mwIter, @valuePtr)
+	'	print("Value: " & *valuePtr)
+	'loop
 
-	_iterator->destruct(mwIter)
-	_iterator->destruct(msgIter)
+	'_iterator->destruct(mwIter)
+	'_iterator->destruct(msgIter)
 	' !!!!!!!!!!!!! TEMPORARY !!!!!!!!!!!!!
 
 
