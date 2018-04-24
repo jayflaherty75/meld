@@ -76,9 +76,21 @@ Function parseType(ByRef source As String, ByRef result As String, start as shor
 	typeEnd = instr(start, source, config->typeEnd)
 	if typeEnd = 0 then return -1
 
-	result = trim(mid(source, typeStart + 1, typeEnd - typeStart - 1))
+	result = lcase(trim(mid(source, typeStart + 1, typeEnd - typeStart - 1)))
 
 	return typeEnd
+End Function
+
+Function transformType (mappings as Parser.DataTypeMapping ptr, ByRef source as String) As String
+	do while mappings->source <> ""
+		if mappings->source = source then
+			return mappings->dest
+		end if
+
+		mappings += 1
+	loop
+
+	return source
 End Function
 
 Function parseName(ByRef source As String, ByRef result As String, ByRef defaultValue As String, start as short = 1) As Short

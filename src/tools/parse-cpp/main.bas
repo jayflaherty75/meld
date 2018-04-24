@@ -8,6 +8,17 @@ Function main() As Integer
 	Dim as long lineNum = 1
 
 	Parser.Initialize(moduleName, @ParserXmlWriter.startup)
+	Parser.addTypeMapping("void", "any")
+	Parser.addTypeMapping("char", "byte")
+	Parser.addTypeMapping("unsigned char", "ubyte")
+	Parser.addTypeMapping("unsigned short", "ushort")
+	Parser.addTypeMapping("unsigned long", "ulong")
+	Parser.addTypeMapping("int", "integer")
+	Parser.addTypeMapping("unsigned int", "uinteger")
+	Parser.addTypeMapping("long long", "longint")
+	Parser.addTypeMapping("unsigned long long", "ulongint")
+	Parser.addTypeMapping("float", "single")
+	Parser.addTypeMapping("bool", "boolean")
 
 	parserSetup()
 

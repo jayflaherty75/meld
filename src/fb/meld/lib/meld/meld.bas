@@ -1,9 +1,5 @@
 
 /''
- ' @requires tester
- '/
- 
-/''
  ' @namespace Meld
  ' @version 0.1.0
  '/
