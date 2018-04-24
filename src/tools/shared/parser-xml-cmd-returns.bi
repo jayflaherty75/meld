@@ -73,6 +73,8 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 
 	_parseTypeModifiers(parserPtr, state.returnType)
 
+	state.returnType = ParserLib.transformType(@parserPtr->config->typeMappings(0), state.returnType)
+
 	ParserLib.parseDescription(source, state.description, typeEnd)
 
 	return true

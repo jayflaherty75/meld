@@ -3,6 +3,11 @@
 
 Namespace Parser
 
+Type DataTypeMapping
+	source as String
+	dest as String
+End Type
+
 Type ConfigType
 	docStart As String
 	docEnd As String
@@ -20,6 +25,8 @@ Type ConfigType
 	ptrptrParam As String
 	ptrParam As String
 	newline as String
+	typeMappings(32) as DataTypeMapping
+	typeMappingCount as short
 End Type
 
 Type StateType

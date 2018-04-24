@@ -74,6 +74,8 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 		return false
 	end if
 
+	state.constType = ParserLib.transformType(@parserPtr->config->typeMappings(0), state.constType)
+
 	nameEnd = ParserLib.parseName(source, state.constName, state.defaultValue, typeEnd - 1)
 	if nameEnd = -1 then
 		logError("Error: Missing name delimiter in @const")

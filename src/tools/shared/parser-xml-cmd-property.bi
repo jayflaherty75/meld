@@ -91,6 +91,8 @@ function _parseDescription(parserPtr as Parser.StateType ptr, byref source as st
 
 	_parseTypeModifiers(parserPtr, state.propertyType)
 
+	state.propertyType = ParserLib.transformType(@parserPtr->config->typeMappings(0), state.propertyType)
+
 	nameEnd = ParserLib.parseName(source, state.propertyName, state.defaultValue, typeEnd - 1)
 	if nameEnd = -1 then
 		logError("Error: Missing name delimiter in @property")

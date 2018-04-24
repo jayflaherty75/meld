@@ -36,6 +36,7 @@ Sub initialize(byref moduleName as string, startup as function(parserState As St
 	config.ptrptrptrParam = "***"
 	config.ptrptrParam = "**"
 	config.ptrParam = "*"
+	config.typeMappingCount = 0
 
 	#IFDEF __FB_WIN32__
 	config.newline = !"\r\n"
@@ -82,6 +83,15 @@ Sub setParamModifiers(ByRef constParam As ZString, ByRef refParam As ZString, By
 	config.ptrptrptrParam = ptrptrptrParam
 	config.ptrptrParam = ptrptrParam
 	config.ptrParam = ptrParam
+End Sub
+
+Sub addTypeMapping(byref source as String, byref dest as String)
+	dim as DataTypeMapping ptr mapPtr = @config.typeMappings(config.typeMappingCount)
+
+	mapPtr->source = source
+	mapPtr->dest = dest
+
+	config.typeMappingCount += 1
 End Sub
 
 Sub addCommand(handler as Function(ByRef cmd As String, ByRef definition As String, parserPtr As StateType Ptr) As Short)
