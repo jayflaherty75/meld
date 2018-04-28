@@ -8,7 +8,6 @@
   <version>0.1.0</version>
   <function name='startup'>
     <returns type='short' modifier='value' />
-    <throws type='GeneralError' />
     <description>Application main routine.</description>
   </function>
   <function name='shutdown'>
@@ -18,6 +17,7 @@
   <function name='update'>
     <param name='instancePtr' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
+    <throws type='GeneralError' />
     <description>Run or update an instance or pass NULL to run statically.</description>
   </function>
   <function name='test'>

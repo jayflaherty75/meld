@@ -76,7 +76,7 @@ Function parseType(ByRef source As String, ByRef result As String, start as shor
 	typeEnd = instr(start, source, config->typeEnd)
 	if typeEnd = 0 then return -1
 
-	result = lcase(trim(mid(source, typeStart + 1, typeEnd - typeStart - 1)))
+	result = trim(mid(source, typeStart + 1, typeEnd - typeStart - 1))
 
 	return typeEnd
 End Function
