@@ -40,21 +40,21 @@ end function
 /''
  ' Log a message to the console.
  ' @function logMessage
- ' @param {byref zstring} message
+ ' @param {zstring ptr} message
  '/
-sub logMessage cdecl (byref message as zstring)
+sub logMessage cdecl (message as zstring ptr)
 	printf(!"%s - %s\n", Time(), message)
 end sub
 
 /''
  ' Log a warning to the console.
  ' @function logWarning
- ' @param {byref zstring} id
- ' @param {byref zstring} message
- ' @param {byref zstring} source
+ ' @param {zstring ptr} id
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} source
  ' @param {integer} lineNum
  '/
-sub logWarning cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+sub logWarning cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 14
@@ -65,12 +65,12 @@ end sub
 /''
  ' Log an error to the console.
  ' @function logError
- ' @param {byref zstring} id
- ' @param {byref zstring} message
- ' @param {byref zstring} source
+ ' @param {zstring ptr} id
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} source
  ' @param {integer} lineNum
  '/
-sub logError cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+sub logError cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 4
@@ -81,12 +81,12 @@ end sub
 /''
  ' Log a success message to the console.
  ' @function logSuccess
- ' @param {byref zstring} id
- ' @param {byref zstring} message
- ' @param {byref zstring} source
+ ' @param {zstring ptr} id
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} source
  ' @param {integer} lineNum
  '/
-sub logSuccess cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+sub logSuccess cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
 	dim as ulong oldcol = color()
 
 	color 2
@@ -97,15 +97,15 @@ end sub
 /''
  ' Write all messages to a standard format.
  ' @function _format
- ' @param {byref zstring} id
- ' @param {byref zstring} message
- ' @param {byref zstring} source
+ ' @param {zstring ptr} id
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} source
  ' @param {integer} lineNum
  ' @returns {string}
  ' @private
  '/
-function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
-	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message & !"\n"
+function _format cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer) as string
+	return Time () & " - " & *source & "(" & lineNum & ") " & *_sys->getNewline() & *id & ": " & *message & !"\n"
 end function
 
 end namespace

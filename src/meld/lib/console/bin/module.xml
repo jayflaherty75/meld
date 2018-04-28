@@ -12,34 +12,34 @@
     <description>Application main routine.</description>
   </function>
   <function name='logMessage'>
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
     <description>Log a message to the console.</description>
   </function>
   <function name='logWarning'>
-    <param name='id' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='source' type='zstring' modifier='reference' const='false' />
+    <param name='id' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Log a warning to the console.</description>
   </function>
   <function name='logError'>
-    <param name='id' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='source' type='zstring' modifier='reference' const='false' />
+    <param name='id' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Log an error to the console.</description>
   </function>
   <function name='logSuccess'>
-    <param name='id' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='source' type='zstring' modifier='reference' const='false' />
+    <param name='id' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Log a success message to the console.</description>
   </function>
   <function name='_format'>
-    <param name='id' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='source' type='zstring' modifier='reference' const='false' />
+    <param name='id' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <returns type='string' modifier='value' />
     <private />

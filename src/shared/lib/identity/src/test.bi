@@ -54,7 +54,7 @@ sub test3 cdecl (done as Tester.doneFn)
 
 	_reverseByteOrder(@dest, @source, len(source) - 1)
 
-	_tester->expectStr(dest, result, "Result of reversal is incorrect")
+	_tester->expectStr(@dest, @result, "Result of reversal is incorrect")
 
 	done()
 end sub
@@ -74,7 +74,7 @@ sub test4 cdecl (done as Tester.doneFn)
 	encode(@binaryId, @id)
 	decode(@id, @result)
 
-	_tester->expectStr(id, expected, "Identifier encoded incorrectly")
+	_tester->expectStr(@id, @expected, "Identifier encoded incorrectly")
 	_tester->expect(result.v(0), binaryId.v(0), message)
 	_tester->expect(result.v(1), binaryId.v(1), message)
 	_tester->expect(result.v(2), binaryId.v(2), message)

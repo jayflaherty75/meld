@@ -7,9 +7,9 @@
     <property name='code' type='ushort' modifier='value' const='false' />
   </class>
   <typedef name='Handler' type='function' modifier='value'>
-    <param name='errName' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='filename' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='filename' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
   </typedef>
   <function name='startup'>
@@ -21,7 +21,7 @@
     <description>Application main routine.</description>
   </function>
   <function name='registerType'>
-    <param name='errName' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
     <throws type='InternalSystemError' />
     <description>Registers a new error type and returns the assigned error code.</description>
@@ -33,7 +33,7 @@
     <description>Assigns a handler for a specific registered error type.</description>
   </function>
   <function name='getCode'>
-    <param name='errName' type='zstring' modifier='value' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
     <returns type='short' modifier='value'>
       <description>Error code or -1 if none found</description>
     </returns>
@@ -43,11 +43,11 @@
     <param name='errCode' type='integer' modifier='value' const='false'>
       <description>Error code deciding what error handler will be 	triggered, can be retrieved with getCode</description>
     </param>
-    <param name='errName' type='zstring' modifier='value' const='false' />
-    <param name='message' type='zstring' modifier='value' const='false'>
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false'>
       <description>Contains full error message</description>
     </param>
-    <param name='filename' type='zstring' modifier='value' const='false'>
+    <param name='filename' type='zstring' modifier='pointer' const='false'>
       <description>Pointer to a string containing the current 	filename.  Can be set to a constant containing __FILE__.</description>
     </param>
     <param name='lineNum' type='integer' modifier='value' const='false'>
@@ -56,23 +56,23 @@
     <description>Pass an error to be handled.  Make sure you do trust exercises with whoever writes your error handlers.</description>
   </function>
   <function name='defaultFatalHandler'>
-    <param name='errName' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='filename' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='filename' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Default error handler for fatal errors.</description>
   </function>
   <function name='defaultErrorHandler'>
-    <param name='errName' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='filename' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='filename' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Default error handler for non-fatal errors.</description>
   </function>
   <function name='defaultWarningHandler'>
-    <param name='errName' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
-    <param name='filename' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
+    <param name='filename' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Handler for logging warnings.</description>
   </function>

@@ -28,7 +28,7 @@ namespace ErrorHandling
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare sub _assignHandler cdecl (_fault as Fault.Interface ptr, errCodePtr as integer ptr, byref errName as zstring, handler as Fault.handler)
+declare sub _assignHandler cdecl (_fault as Fault.Interface ptr, errCodePtr as integer ptr, errName as zstring ptr, handler as Fault.handler)
 
 end namespace
 

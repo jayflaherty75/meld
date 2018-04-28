@@ -23,9 +23,9 @@ namespace Fault
 
 /''
  ' @typedef {function} Handler
- ' @param {byref zstring} errName
- ' @param {byref zstring} message
- ' @param {byref zstring} filename
+ ' @param {zstring ptr} errName
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} filename
  ' @param {integer} lineNum
  '/
 
@@ -94,11 +94,11 @@ end function
 /''
  ' Registers a new error type and returns the assigned error code.
  ' @function registerType
- ' @param {byref zstring} errName
+ ' @param {zstring ptr} errName
  ' @returns {short}
  ' @throws {InternalSystemError}
  '/
-function registerType cdecl (byref errName as zstring) as short
+function registerType cdecl (errName as zstring ptr) as short
 	dim as short errCode = -1
 	dim as Fault.Header ptr errPtr
 
@@ -107,7 +107,7 @@ function registerType cdecl (byref errName as zstring) as short
 		errState.errorCount += 1
 
 		errPtr = @errState.errors(errCode)
-		errPtr->name = errName
+		errPtr->name = *errName
 		errPtr->code = errCode
 	else
 		throw(_
@@ -142,15 +142,15 @@ end function
 /''
  ' Returns the error code for the registered error name
  ' @function getCode
- ' @param {zstring} errName
+ ' @param {zstring ptr} errName
  ' @returns {short} - Error code or -1 if none found
  '/
-function getCode cdecl (byref errName as zstring) as short
+function getCode cdecl (errName as zstring ptr) as short
 	dim as short result = -1
 	dim as short index = 0
 
 	while (result = -1 ANDALSO index < errState.errorCount)
-		if errState.errors(index).name = errName then
+		if errState.errors(index).name = *errName then
 			result = index
 		end if
 		index += 1
@@ -165,14 +165,14 @@ end function
  ' @function throw
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
- ' @param {zstring} errName
- ' @param {zstring} message - Contains full error message
- ' @param {zstring} filename - Pointer to a string containing the current
+ ' @param {zstring ptr} errName
+ ' @param {zstring ptr} message - Contains full error message
+ ' @param {zstring ptr} filename - Pointer to a string containing the current
  '	filename.  Can be set to a constant containing __FILE__.
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw cdecl (errCode as integer, byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub throw cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 
@@ -187,12 +187,12 @@ end sub
 /''
  ' Default error handler for fatal errors.
  ' @function defaultFatalHandler
- ' @param {byref zstring} errName
- ' @param {byref zstring} message
- ' @param {byref zstring} filename
+ ' @param {zstring ptr} errName
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} filename
  ' @param {integer} lineNum
  '/
-sub defaultFatalHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultFatalHandler cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 	'_core->shutdown(1)
 end sub
@@ -200,24 +200,24 @@ end sub
 /''
  ' Default error handler for non-fatal errors.
  ' @function defaultErrorHandler
- ' @param {byref zstring} errName
- ' @param {byref zstring} message
- ' @param {byref zstring} filename
+ ' @param {zstring ptr} errName
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} filename
  ' @param {integer} lineNum
  '/
-sub defaultErrorHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultErrorHandler cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	_console->logError(errName, message, filename, lineNum)
 end sub
 
 /''
  ' Handler for logging warnings.
  ' @function defaultWarningHandler
- ' @param {byref zstring} errName
- ' @param {byref zstring} message
- ' @param {byref zstring} filename
+ ' @param {zstring ptr} errName
+ ' @param {zstring ptr} message
+ ' @param {zstring ptr} filename
  ' @param {integer} lineNum
  '/
-sub defaultWarningHandler cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+sub defaultWarningHandler cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	_console->logWarning(errName, message, filename, lineNum)
 end sub
 

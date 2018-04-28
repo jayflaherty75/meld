@@ -92,10 +92,10 @@ end function
 
 /''
  ' @function getMacAddress
- ' @param {byref zstring} addr
+ ' @param {zstring ptr} addr
  '/
-sub getMacAddress cdecl (byref addr as zstring)
-	addr = state.macAddress
+sub getMacAddress cdecl (addr as zstring ptr)
+	*addr = state.macAddress
 end sub
 
 /''
