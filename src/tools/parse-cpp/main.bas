@@ -9,7 +9,7 @@ Function main() As Integer
 
 	Parser.Initialize(moduleName, @ParserXmlWriter.startup)
 	Parser.addTypeMapping("void", "any")
-	Parser.addTypeMapping("char", "byte")
+	Parser.addTypeMapping("char", "zstring")
 	Parser.addTypeMapping("unsigned char", "ubyte")
 	Parser.addTypeMapping("unsigned short", "ushort")
 	Parser.addTypeMapping("unsigned long", "ulong")
