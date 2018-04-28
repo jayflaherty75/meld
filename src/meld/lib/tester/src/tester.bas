@@ -27,7 +27,7 @@ namespace Tester
 
 /''
  ' @typedef {function} itCallback
- ' @param {byref zstring} description
+ ' @param {zstring ptr} description
  ' @param {testFunc} test
  ' @returns {short}
  '/
@@ -40,7 +40,7 @@ namespace Tester
 
 /''
  ' @typedef {function} describeCallback
- ' @param {byref zstring} description
+ ' @param {zstring ptr} description
  ' @param {suiteFunc} callback
  ' @returns {short}
  '/
@@ -124,14 +124,14 @@ end function
 /''
  ' Passed to the test module so the module can provide a description.
  ' @function describe
- ' @param {zstring} description
+ ' @param {zstring ptr} description
  ' @param {suiteFunc} callback
  ' @returns {short}
  '/
-function describe cdecl (byref description as zstring, callback as suiteFunc) as short
+function describe cdecl (description as zstring ptr, callback as suiteFunc) as short
 	state.result = true
 
-	_console->logMessage(description & "...")
+	_console->logMessage(*description & "...")
 
 	if callback = NULL then
 		_console->logMessage("Tester.describe: WARNING! Null test function found.")
@@ -144,14 +144,14 @@ end function
 /''
  ' Passed to the test so the test can describe and run each individual testunit.
  ' @function suite
- ' @param {zstring} description
+ ' @param {zstring ptr} description
  ' @param {testFunc} testFn
  ' @returns {short}
  '/
-function suite cdecl (byref description as zstring, testFn as testFunc) as short
+function suite cdecl (description as zstring ptr, testFn as testFunc) as short
 	dim as integer waitTime = 0
 
-	_console->logMessage("  ..." & description)
+	_console->logMessage("  ..." & *description)
 
 	if testFn = NULL then
 		_console->logMessage("Tester.suite: WARNING! Null test function found.")
@@ -179,11 +179,11 @@ end function
  ' @function expect
  ' @param {long} result
  ' @param {long} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} message
  '/
-sub expect cdecl (result as long, expected as long, byref message as zstring)
+sub expect cdecl (result as long, expected as long, message as zstring ptr)
 	if result <> expected then
-		_console->logMessage("    - " & message)
+		_console->logMessage("    - " & *message)
 		_console->logMessage("      Expected: " & expected)
 		_console->logMessage("      Actual:   " & result)
 
@@ -195,11 +195,11 @@ end sub
  ' @function expectNot
  ' @param {long} result
  ' @param {long} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} message
  '/
-sub expectNot cdecl (result as long, expected as long, byref message as zstring)
+sub expectNot cdecl (result as long, expected as long, message as zstring ptr)
 	if result = expected then
-		_console->logMessage("    - " & message)
+		_console->logMessage("    - " & *message)
 		_console->logMessage("      Expected Not: " & expected)
 		_console->logMessage("      Actual:   " & result)
 
@@ -209,15 +209,15 @@ end sub
 
 /''
  ' @function expectStr 
- ' @param {byref zstring} result
- ' @param {byref zstring} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} result
+ ' @param {zstring ptr} expected
+ ' @param {zstring ptr} message
  '/
-sub expectStr cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-	if result <> expected then
-		_console->logMessage("    - " & message)
-		_console->logMessage("      Expected: " & expected)
-		_console->logMessage("      Actual:   " & result)
+sub expectStr cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+	if *result <> *expected then
+		_console->logMessage("    - " & *message)
+		_console->logMessage("      Expected: " & *expected)
+		_console->logMessage("      Actual:   " & *result)
 
 		state.result = false
 	end if
@@ -225,15 +225,15 @@ end sub
 
 /''
  ' @function expectStrNot
- ' @param {byref zstring} result
- ' @param {byref zstring} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} result
+ ' @param {zstring ptr} expected
+ ' @param {zstring ptr} message
  '/
-sub expectStrNot cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-	if result = expected then
-		_console->logMessage("    - " & message)
-		_console->logMessage("      Expected Not: " & expected)
-		_console->logMessage("      Actual:   " & result)
+sub expectStrNot cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+	if *result = *expected then
+		_console->logMessage("    - " & *message)
+		_console->logMessage("      Expected Not: " & *expected)
+		_console->logMessage("      Actual:   " & *result)
 
 		state.result = false
 	end if
@@ -243,11 +243,11 @@ end sub
  ' @function expectPtr
  ' @param {any ptr} result
  ' @param {any ptr} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} message
  '/
-sub expectPtr cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+sub expectPtr cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
 	if result <> expected then
-		_console->logMessage("    - " & message)
+		_console->logMessage("    - " & *message)
 		_console->logMessage("      Expected: " & expected)
 		_console->logMessage("      Actual:   " & result)
 
@@ -259,11 +259,11 @@ end sub
  ' @function expectPtrNot
  ' @param {any ptr} result
  ' @param {any ptr} expected
- ' @param {byref zstring} message
+ ' @param {zstring ptr} message
  '/
-sub expectPtrNot cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+sub expectPtrNot cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
 	if result = expected then
-		_console->logMessage("    - " & message)
+		_console->logMessage("    - " & *message)
 		_console->logMessage("      Expected Not: " & expected)
 		_console->logMessage("      Actual:   " & result)
 

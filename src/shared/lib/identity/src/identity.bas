@@ -308,18 +308,18 @@ end sub
  ' Converts a network MAC address into a number value.  Used for determining
  ' the "space" portion of the unique identifier.
  ' @function _convertMacAddress
- ' @param {byref zstring} source
+ ' @param {zstring ptr} source
  ' @returns {ulongint}
  ' @private
  '/
-function _convertMacAddress cdecl (byref source as zstring) as ulongint
+function _convertMacAddress cdecl (source as zstring ptr) as ulongint
 	dim as ulongint result = 0
 	dim as ulongint multiplier = 1
 	dim as short index
 	dim as ubyte char
 
 	for index = 0 to 16
-		char = _convertHex(mid(source, index + 1, 1))
+		char = _convertHex(mid(*source, index + 1, 1))
 
 		if char > 0 then
 			result += multiplier * char
@@ -333,12 +333,12 @@ end function
 /''
  ' Returns a 0-15 value for a single hexidecimal character.
  ' @function _convertHex
- ' @param {byref zstring} char
+ ' @param {zstring ptr} char
  ' @returns {ubyte}
  ' @private
  '/
-function _convertHex cdecl (byref char as zstring) as ubyte
-	dim as ubyte ascii = asc(left(char, 1))
+function _convertHex cdecl (char as zstring ptr) as ubyte
+	dim as ubyte ascii = asc(left(*char, 1))
 
 	if ascii >= 97 andalso ascii < 103 then
 		return ascii - 87

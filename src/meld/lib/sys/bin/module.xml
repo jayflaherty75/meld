@@ -22,7 +22,7 @@
     <returns type='ulongint' modifier='value' />
   </function>
   <function name='getMacAddress'>
-    <param name='addr' type='zstring' modifier='reference' const='false' />
+    <param name='addr' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='_loadMacAddress'>
     <private />

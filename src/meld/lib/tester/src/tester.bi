@@ -30,14 +30,14 @@ declare function startup cdecl () as short
 declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as any ptr) as short
 declare function run cdecl (tests as testModule ptr, count as short) as short
-declare function describe cdecl (description as zstring, callback as suiteFunc) as short
-declare function suite cdecl (description as zstring, testFn as testFunc) as short
-declare sub expect cdecl (result as long, expected as long, byref message as zstring)
-declare sub expectNot cdecl (result as long, expected as long, byref message as zstring)
-declare sub expectStr cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-declare sub expectStrNot cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-declare sub expectPtr cdecl (result as any ptr, expected as any ptr, byref message as zstring)
-declare sub expectPtrNot cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+declare function describe cdecl (description as zstring ptr, callback as suiteFunc) as short
+declare function suite cdecl (description as zstring ptr, testFn as testFunc) as short
+declare sub expect cdecl (result as long, expected as long, message as zstring ptr)
+declare sub expectNot cdecl (result as long, expected as long, message as zstring ptr)
+declare sub expectStr cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+declare sub expectStrNot cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+declare sub expectPtr cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
+declare sub expectPtrNot cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
 declare sub _done cdecl ()
 
 end namespace

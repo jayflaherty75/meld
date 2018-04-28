@@ -28,11 +28,11 @@ namespace Console
 
 declare function startup cdecl () as short
 declare function shutdown cdecl () as short
-declare sub logMessage cdecl (byref message as zstring)
-declare sub logWarning cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
-declare sub logError cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
-declare sub logSuccess cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
-declare function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer) as string
+declare sub logMessage cdecl (message as zstring ptr)
+declare sub logWarning cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
+declare sub logError cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
+declare sub logSuccess cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
+declare function _format cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer) as string
 
 end namespace
 

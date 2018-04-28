@@ -79,13 +79,13 @@
     <description>Distributes generated values to be search-friendly.</description>
   </function>
   <function name='_convertMacAddress'>
-    <param name='source' type='zstring' modifier='reference' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <returns type='ulongint' modifier='value' />
     <private />
     <description>Converts a network MAC address into a number value.  Used for determining the "space" portion of the unique identifier.</description>
   </function>
   <function name='_convertHex'>
-    <param name='char' type='zstring' modifier='reference' const='false' />
+    <param name='char' type='zstring' modifier='pointer' const='false' />
     <returns type='ubyte' modifier='value' />
     <private />
     <description>Returns a 0-15 value for a single hexidecimal character.</description>

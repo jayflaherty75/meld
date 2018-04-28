@@ -13,10 +13,10 @@ type Interface
 	destruct as any ptr
 	update as any ptr
 	test as any ptr
-	logMessage as sub cdecl (byref message as zstring)
-	logWarning as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
-	logError as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
-	logSuccess as sub cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as integer)
+	logMessage as sub cdecl (message as zstring ptr)
+	logWarning as sub cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
+	logError as sub cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
+	logSuccess as sub cdecl (id as zstring ptr, message as zstring ptr, source as zstring ptr, lineNum as integer)
 end type
 
 end namespace

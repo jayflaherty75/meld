@@ -17,7 +17,7 @@ type Interface
 	getDirsep as function cdecl () as zstring ptr
 	getModuleExt as function cdecl () as zstring ptr
 	getTimestamp as function cdecl () as ulongint
-	getMacAddress as sub cdecl (byref addr as zstring)
+	getMacAddress as sub cdecl (addr as zstring ptr)
 end type
 
 end namespace

@@ -6,7 +6,7 @@
 
 namespace Fault
 
-type Handler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+type Handler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 
 type Header
 	name as zstring*64
@@ -20,13 +20,13 @@ type Interface
 	destruct as any ptr
 	update as any ptr
 	test as any ptr
-	registerType as function cdecl (byref errName as zstring) as short
+	registerType as function cdecl (errName as zstring ptr) as short
 	assignHandler as function cdecl (errCode as short, handler as Handler) as short
-	getCode as function cdecl (errName as zstring) as short
-	throw as sub cdecl (errCode as integer, errName as zstring, message as zstring, filename as zstring, lineNum as integer)
-	defaultFatalHandler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
-	defaultErrorHandler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
-	defaultWarningHandler as sub cdecl (byref errName as zstring, byref message as zstring, byref filename as zstring, lineNum as integer)
+	getCode as function cdecl (errName as zstring ptr) as short
+	throw as sub cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
+	defaultFatalHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
+	defaultErrorHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
+	defaultWarningHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 end type
 
 end namespace

@@ -9,7 +9,7 @@
     <param name='done' type='doneFn' modifier='value' const='false' />
   </typedef>
   <typedef name='itCallback' type='function' modifier='value'>
-    <param name='description' type='zstring' modifier='reference' const='false' />
+    <param name='description' type='zstring' modifier='pointer' const='false' />
     <param name='test' type='testFunc' modifier='value' const='false' />
     <returns type='short' modifier='value' />
   </typedef>
@@ -18,7 +18,7 @@
     <returns type='short' modifier='value' />
   </typedef>
   <typedef name='describeCallback' type='function' modifier='value'>
-    <param name='description' type='zstring' modifier='reference' const='false' />
+    <param name='description' type='zstring' modifier='pointer' const='false' />
     <param name='callback' type='suiteFunc' modifier='value' const='false' />
     <returns type='short' modifier='value' />
   </typedef>
@@ -46,13 +46,13 @@
     <description>Given a pointer to an array of test modules and a count, runs all tests up until a first failure and returns true if all passed or false if any one fails.</description>
   </function>
   <function name='describe'>
-    <param name='description' type='zstring' modifier='value' const='false' />
+    <param name='description' type='zstring' modifier='pointer' const='false' />
     <param name='callback' type='suiteFunc' modifier='value' const='false' />
     <returns type='short' modifier='value' />
     <description>Passed to the test module so the module can provide a description.</description>
   </function>
   <function name='suite'>
-    <param name='description' type='zstring' modifier='value' const='false' />
+    <param name='description' type='zstring' modifier='pointer' const='false' />
     <param name='testFn' type='testFunc' modifier='value' const='false' />
     <returns type='short' modifier='value' />
     <description>Passed to the test so the test can describe and run each individual testunit.</description>
@@ -60,32 +60,32 @@
   <function name='expect'>
     <param name='result' type='long' modifier='value' const='false' />
     <param name='expected' type='long' modifier='value' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='expectNot'>
     <param name='result' type='long' modifier='value' const='false' />
     <param name='expected' type='long' modifier='value' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='expectStr'>
-    <param name='result' type='zstring' modifier='reference' const='false' />
-    <param name='expected' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='result' type='zstring' modifier='pointer' const='false' />
+    <param name='expected' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='expectStrNot'>
-    <param name='result' type='zstring' modifier='reference' const='false' />
-    <param name='expected' type='zstring' modifier='reference' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='result' type='zstring' modifier='pointer' const='false' />
+    <param name='expected' type='zstring' modifier='pointer' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='expectPtr'>
     <param name='result' type='any' modifier='pointer' const='false' />
     <param name='expected' type='any' modifier='pointer' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='expectPtrNot'>
     <param name='result' type='any' modifier='pointer' const='false' />
     <param name='expected' type='any' modifier='pointer' const='false' />
-    <param name='message' type='zstring' modifier='reference' const='false' />
+    <param name='message' type='zstring' modifier='pointer' const='false' />
   </function>
   <function name='_done'>
     <private />

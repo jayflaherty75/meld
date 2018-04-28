@@ -145,10 +145,10 @@ end sub
 /''
  ' Returns a pointer to the required interface.
  ' @function require
- ' @param {byref zstring} moduleName
+ ' @param {zstring ptr} moduleName
  ' @returns {any ptr}
  '/
-function require cdecl (byref moduleName as zstring) as any ptr
+function require cdecl (moduleName as zstring ptr) as any ptr
 	dim as function cdecl (modulePtr as Interface ptr) as short loadFn
 	dim as function cdecl () as any ptr exportsFn
 	dim as function cdecl () as short startupFn
@@ -158,22 +158,22 @@ function require cdecl (byref moduleName as zstring) as any ptr
 	dim as LibraryEntry ptr entryPtr
 	dim as Interface safeApi = api
 
-	if moduleName = "" then
+	if *moduleName = "" then
 		print("**** Module.require: Missing moduleName argument")
 		return NULL
 	end if
 
-	filename = Version.resolve(moduleName)
+	filename = Version.resolve(*moduleName)
 
 	if filename = "" then
-		print("**** Module.require: Could not resolve " & moduleName)
+		print("**** Module.require: Could not resolve " & *moduleName)
 		return NULL
 	end if
 
 	fullName = Version.formatModule(_
-		Version.getModule(moduleName), _
+		Version.getModule(*moduleName), _
 		Version.getVersion(fileName), _
-		Version.getExtra(moduleName) _
+		Version.getExtra(*moduleName) _
 	)
 
 	entryPtr = _findEntry(fullName)
@@ -183,20 +183,20 @@ function require cdecl (byref moduleName as zstring) as any ptr
 
 	entryPtr = @state.libraries(state.libraryCount)
 	entryPtr->moduleId = fullName
-	entryPtr->moduleName = Version.getModule(moduleName)
+	entryPtr->moduleName = Version.getModule(*moduleName)
 	entryPtr->moduleVersion = Version.getVersion(fileName)
-	entryPtr->moduleFullName = moduleName
+	entryPtr->moduleFullName = *moduleName
 	entryPtr->filename = filename
 	entryPtr->unload = state.unloadHandler
 
 	if not state.preloadHandler(entryPtr) then
-		print("**** Module.require: Module not found: " & moduleName)
+		print("**** Module.require: Module not found: " & *moduleName)
 		return NULL
 	end if
 
 	entryPtr->library = dylibload(entryPtr->filename)
 	if entryPtr->library = NULL then
-		print("**** Module.require: Failed to load module: " & moduleName)
+		print("**** Module.require: Failed to load module: " & *moduleName)
 		return NULL
 	end if
 
@@ -204,30 +204,30 @@ function require cdecl (byref moduleName as zstring) as any ptr
 
 	exportsFn = dylibsymbol(entryPtr->library, "exports")
 	if exportsFn = NULL then
-		print("**** Module.require: Missing exports function: " & moduleName)
+		print("**** Module.require: Missing exports function: " & *moduleName)
 		return NULL
 	end if
 
 	entryPtr->interfacePtr = exportsFn()
 	if entryPtr->interfacePtr = NULL then
-		print("**** Module.require: Missing interface: " & moduleName)
+		print("**** Module.require: Missing interface: " & *moduleName)
 		return NULL
 	end if
 
 	loadFn = dylibsymbol(entryPtr->library, "load")
 	if loadFn = NULL then
-		print("**** Module.require: Missing load function: " & moduleName)
+		print("**** Module.require: Missing load function: " & *moduleName)
 		return false
 	end if
 
 	if not loadFn(@safeApi) then
-		print("**** Module.require: Call to load() method failed: " & moduleName)
+		print("**** Module.require: Call to load() method failed: " & *moduleName)
 		return false
 	end if
 
 	startupFn = dylibsymbol(entryPtr->library, "startup")
 	if startupFn <> NULL andalso not startupFn() then
-		print("**** Module.require: Call to startup() method failed: " & moduleName)
+		print("**** Module.require: Call to startup() method failed: " & *moduleName)
 		return false
 	end if
 
@@ -237,31 +237,31 @@ end function
 /''
  ' Manually shut down and unload a module
  ' @function unload
- ' @param {byref zstring} moduleName
+ ' @param {zstring ptr} moduleName
  ' @returns {short}
  '/
-function unload cdecl (byref moduleName as zstring) as short
+function unload cdecl (moduleName as zstring ptr) as short
 	dim as function cdecl () as short unloadFn
 
 	dim as LibraryEntry ptr entryPtr
 
-	if moduleName = "" then
+	if *moduleName = "" then
 		print("**** Module.unload: Missing moduleName argument")
 		return false
 	end if
 
 	entryPtr = _findEntry(Version.formatModule(_
-		Version.getModule(moduleName), _
-		Version.getVersion(Version.resolve(moduleName)), _
-		Version.getExtra(moduleName) _
+		Version.getModule(*moduleName), _
+		Version.getVersion(Version.resolve(*moduleName)), _
+		Version.getExtra(*moduleName) _
 	))
 	if entryPtr = NULL then
-		print("**** Module.unload: Not a loaded module: " & moduleName)
+		print("**** Module.unload: Not a loaded module: " & *moduleName)
 		return false
 	end if
 
 	if entryPtr->library = NULL then
-		print("**** Module.unload: Module already unloaded: " & moduleName)
+		print("**** Module.unload: Module already unloaded: " & *moduleName)
 		return false
 	end if
 
@@ -283,21 +283,21 @@ end function
 /''
  ' Manually shut down and unload a module
  ' @function testModule
- ' @param {byref zstring} moduleName
+ ' @param {zstring ptr} moduleName
  ' @returns {short}
  '/
-function testModule cdecl (byref moduleName as zstring) as short
+function testModule cdecl (moduleName as zstring ptr) as short
 	dim as function cdecl () as short testFn
 	dim as LibraryEntry ptr entryPtr
 
-	if moduleName = "" then
+	if *moduleName = "" then
 		return false
 	end if
 
 	entryPtr = _findEntry(Version.formatModule(_
-		Version.getModule(moduleName), _
-		Version.getVersion(Version.resolve(moduleName)), _
-		Version.getExtra(moduleName) _
+		Version.getModule(*moduleName), _
+		Version.getVersion(Version.resolve(*moduleName)), _
+		Version.getExtra(*moduleName) _
 	))
 	if entryPtr = NULL then
 		return false
@@ -341,16 +341,16 @@ end function
  ' Sequential search of loaded modules.  Searches in reverse so that the latest
  ' version loaded is found first.
  ' @function _findEntry
- ' @param {byref zstring} moduleName
+ ' @param {zstring ptr} moduleName
  ' @returns {LibraryEntry ptr}
  ' @private
  '/
-function _findEntry(byref moduleName as zstring) as LibraryEntry ptr
+function _findEntry(moduleName as zstring ptr) as LibraryEntry ptr
 	dim as LibraryEntry ptr entryPtr = NULL
 	dim as long index = state.libraryCount - 1
 
 	do while entryPtr = NULL andalso index >= 0
-		if state.libraries(index).moduleId = moduleName then
+		if state.libraries(index).moduleId = *moduleName then
 			entryPtr = @state.libraries(index)
 		end if
 

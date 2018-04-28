@@ -14,7 +14,7 @@
   <function name='_assignHandler'>
     <param name='_fault' type='Fault.Interface' modifier='pointer' const='false' />
     <param name='errCodePtr' type='integer' modifier='pointer' const='false' />
-    <param name='errName' type='zstring' modifier='reference' const='false' />
+    <param name='errName' type='zstring' modifier='pointer' const='false' />
     <param name='handler' type='Fault.handler' modifier='value' const='false' />
     <private />
     <description>Helper function to assign a handler to an error code.</description>

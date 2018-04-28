@@ -51,8 +51,8 @@ declare sub _reverseByteOrder cdecl (dest as ubyte ptr, source as ubyte ptr, len
 declare sub _mapEncoding cdecl (index as ubyte, ascii as ubyte)
 declare sub _generateEncodeMapping cdecl ()
 declare sub _generateBinDistMapping cdecl ()
-declare function _convertMacAddress cdecl (byref source as zstring) as ulongint
-declare function _convertHex cdecl (byref char as zstring) as ubyte
+declare function _convertMacAddress cdecl (source as zstring ptr) as ulongint
+declare function _convertHex cdecl (char as zstring ptr) as ubyte
 declare sub _copy cdecl (source as ubyte ptr, dest as ubyte ptr, length as long)
 
 end namespace
