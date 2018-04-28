@@ -9,8 +9,8 @@
 namespace ConsoleC {
 
 struct Interface {
-	short (*startup) ();
-	short (*shutdown) ();
+	short (__cdecl *startup) ();
+	short (__cdecl *shutdown) ();
 	void* construct;
 	void* destruct;
 	void* update;

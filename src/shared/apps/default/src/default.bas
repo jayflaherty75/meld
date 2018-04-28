@@ -21,7 +21,6 @@ namespace Default
  ' Application main routine.
  ' @function startup
  ' @returns {short}
- ' @throws {GeneralError}
  '/
 function startup cdecl () as short
 	_console->logMessage("Starting default module")
@@ -45,6 +44,7 @@ end function
  ' @function update
  ' @param {any ptr} instancePtr
  ' @returns {short}
+ ' @throws {GeneralError}
  '/
 function update cdecl (instancePtr as any ptr) as short
 	dim as Tester.Interface ptr _otherTester = _module->require("tester_v0.1.0")
