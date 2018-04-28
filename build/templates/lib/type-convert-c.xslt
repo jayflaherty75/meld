@@ -7,6 +7,7 @@
 
 	<xsl:choose>
 		<xsl:when test="$type='any'">void</xsl:when>
+		<xsl:when test="$type='zstring'">char</xsl:when>
 		<xsl:when test="$type='byte'">char</xsl:when>
 		<xsl:when test="$type='ubyte'">unsigned char</xsl:when>
 		<xsl:when test="$type='ushort'">unsigned short</xsl:when>

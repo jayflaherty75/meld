@@ -20,7 +20,7 @@
 		<xsl:otherwise>void </xsl:otherwise>
 	</xsl:choose>
 
-	<xsl:text> (*</xsl:text>
+	<xsl:text> (__cdecl *</xsl:text>
 	<xsl:value-of select="@name" />
 	<xsl:text>) (</xsl:text>
 

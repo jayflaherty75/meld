@@ -16,6 +16,9 @@
 
 	<xsl:call-template name="warningMessage" />
 
+	<xsl:text>#pragma once</xsl:text>
+	<xsl:text>&#xa;&#xa;</xsl:text>
+
 	<xsl:text>namespace </xsl:text>
 	<xsl:value-of select="$namespace" />
 	<xsl:text> {&#xa;&#xa;</xsl:text>
@@ -58,8 +61,8 @@
 	</xsl:for-each>
 
 	<xsl:text>struct Interface {&#xa;</xsl:text>
-		<xsl:text>&#x9;short (*startup) ();&#xa;</xsl:text>
-		<xsl:text>&#x9;short (*shutdown) ();&#xa;</xsl:text>
+		<xsl:text>&#x9;short (__cdecl *startup) ();&#xa;</xsl:text>
+		<xsl:text>&#x9;short (__cdecl *shutdown) ();&#xa;</xsl:text>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='construct']) &gt; 0">
 				<xsl:text>&#x9;Instance* (*construct) ();&#xa;</xsl:text>
