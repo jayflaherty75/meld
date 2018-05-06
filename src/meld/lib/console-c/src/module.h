@@ -5,7 +5,7 @@
  */
 
 
-#include <stdout>
+#include <stdio>
 #include "headers/console_v0.1.0.bi"
 #include "console.bi"
 

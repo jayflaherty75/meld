@@ -1,0 +1,47 @@
+#!/bin/bash
+
+MELD_DIR=$1
+MODULE_NAME=$2
+
+# Create source and build directories if they don't already exist
+if [ ! -d "./.meld" ]; then
+	mkdir "./.meld"
+	touch "./.meld/.gitkeep"
+	touch "./.meld/deps"
+fi
+
+if [ ! -d "./src" ]; then
+	mkdir "./src"
+fi
+
+if [ ! -d "./src/headers" ]; then
+	mkdir "./src/headers"
+	touch "./src/headers/.gitkeep"
+fi
+
+if [ ! -d "./bin" ]; then
+	mkdir "./bin"
+fi
+
+if [ ! -L "./meld_modules" ]; then
+	ln -s $MELD_DIR/modules/local ./meld_modules
+fi
+
+# Initialize XML file for templates to build from
+if [ ! -f ./bin/module.xml ]; then
+	echo -n "<?xml version=\"1.0\" encoding=\"UTF-8\"?><module name=\"$MODULE_NAME\"><namespace>" >> ./bin/module.xml
+	"$MELD_DIR/build/kebab-to-pascal" $MODULE_NAME >> ./bin/module.xml
+	echo "</namespace><version>0.1.0</version></module>" >> ./bin/module.xml
+fi
+
+# Generate one-time, user modifiable boilerplate
+if [ ! -f ./src/$MODULE_NAME.c ]; then
+	xsltproc -o ./src/$MODULE_NAME.c "$MELD_DIR/build/templates/source-c.xslt" ./bin/module.xml
+	xsltproc -o ./src/test.h "$MELD_DIR/build/templates/test-c.xslt" ./bin/module.xml
+	xsltproc -o ./src/errors.h "$MELD_DIR/build/templates/errors-c.xslt" ./bin/module.xml
+fi
+
+# Generate dynamic source files, not modifiable by the user
+#xsltproc -o ./src/module.h "$MELD_DIR/build/templates/module-c.xslt" ./bin/module.xml
+#xsltproc -o ./src/$MODULE_NAME.h "$MELD_DIR/build/templates/include-c.xslt" ./bin/module.xml
+xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml

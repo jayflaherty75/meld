@@ -43,7 +43,6 @@
 		<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:for-each>
 
-	<xsl:text>);</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
+	<xsl:text>)</xsl:text>
 </xsl:template>
 </xsl:stylesheet>

@@ -37,11 +37,11 @@
 					<xsl:with-param name="type" select="@type" />
 					<xsl:with-param name="modifier" select="@modifier" />
 				</xsl:call-template>
-				<xsl:text>&#xa;</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:text>;&#xa;</xsl:text>
 	</xsl:for-each>
+	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:for-each select="class">
 		<xsl:text>struct </xsl:text>
@@ -102,6 +102,7 @@
 					<xsl:call-template name="function">
 						<xsl:with-param name="function" select="." />
 					</xsl:call-template>
+					<xsl:text>;&#xa;</xsl:text>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
