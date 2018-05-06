@@ -2,7 +2,6 @@
 
 MELD_DIR=$1
 MODULE_NAME=$2
-MODULE_VERSION=$(<./.meld/version)
 SEP="_v"
 
 compileExternal () {
@@ -21,6 +20,8 @@ fi
 cat "./src/$MODULE_NAME.bas" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
 
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
+
+MODULE_VERSION=$(<./.meld/version)
 
 xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/module.xml
 

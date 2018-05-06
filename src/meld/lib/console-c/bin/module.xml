@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module name="console-c">
-  <requires module='' version='' />
-  <requires module='' version='' />
+  <requires module='fault' version='0.1.0' />
+  <requires module='sys' version='0.1.0' />
   <version>0.1.0</version>
   <function name='startup'>
     <returns type='short' modifier='value' />
@@ -41,6 +41,7 @@
     <param name='message' type='zstring' modifier='pointer' const='false' />
     <param name='source' type='zstring' modifier='pointer' const='false' />
     <param name='lineNum' type='integer' modifier='value' const='false' />
+    <param name='source' type='zstring' modifier='pointer' const='false' />
     <returns type='string' modifier='value' />
     <private />
     <description>Write all messages to a standard format.</description>

@@ -54,7 +54,7 @@ void __cdecl logMessage (char*  message ) {
  * @param {char *} source
  * @param {int} lineNum
  */
-void __cdecl logWarning (char*  id , char*  message , char*  source , int lineNum ) {
+void __cdecl logWarning (char * id , char *  message , char*  source , int lineNum ) {
 	//dim as ulong oldcol = color()
 
 	//color 14
@@ -101,6 +101,7 @@ void __cdecl logSuccess (char*  id , char*  message , char*  source, int lineNum
  * @param {char *} message
  * @param {char *} source
  * @param {int} lineNum
+ * @param {char *} source
  * @returns {string}
  * @private
  */
