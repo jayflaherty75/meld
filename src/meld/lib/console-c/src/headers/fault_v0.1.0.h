@@ -8,7 +8,7 @@
 
 namespace Fault {
 
-typedef void  (__cdecl *Handler) (char*  errName , char*  message , char*  filename , int lineNum );
+typedef void  (*Handler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 
 struct Header { 
 	zstring*64 name;
@@ -16,19 +16,19 @@ struct Header {
 };
 
 struct Interface {
-	short (__cdecl *startup) ();
-	short (__cdecl *shutdown) ();
+	short (*startup) () __attribute__((cdecl));
+	short (*shutdown) () __attribute__((cdecl));
 	void* construct;
 	void* destruct;
 	void* update;
 	void* test;
-	short (__cdecl *registerType) (char*  errName );
-	short (__cdecl *assignHandler) (short errCode , Handler handler );
-	short (__cdecl *getCode) (char*  errName );
-	void  (__cdecl *throw) (int errCode , char*  errName , char*  message , char*  filename , int lineNum );
-	void  (__cdecl *defaultFatalHandler) (char*  errName , char*  message , char*  filename , int lineNum );
-	void  (__cdecl *defaultErrorHandler) (char*  errName , char*  message , char*  filename , int lineNum );
-	void  (__cdecl *defaultWarningHandler) (char*  errName , char*  message , char*  filename , int lineNum );
+	short (*registerType) (char*  errName ) __attribute__((cdecl));
+	short (*assignHandler) (short errCode , Handler handler ) __attribute__((cdecl));
+	short (*getCode) (char*  errName ) __attribute__((cdecl));
+	void  (*throw) (int errCode , char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
+	void  (*defaultFatalHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
+	void  (*defaultErrorHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
+	void  (*defaultWarningHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 };
 
 }

@@ -4,10 +4,11 @@ MELD_DIR=$1
 MODULE_NAME=$2
 SEP="_v"
 
-#compileExternal () {
-#	fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
-#		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
-#}
+compileExternal () {
+	#fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
+	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wattributes -Wl,--whole-archive -lAlgatorc -Wl,--no-whole-archive \
+		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
+}
 
 if [ -f "./bin/module.xml" ]; then
 	rm ./bin/module.xml
@@ -43,4 +44,4 @@ xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.h "$MELD_DIR/build/tem
 
 #xsltproc -o ./src/$MODULE_NAME.h "$MELD_DIR/build/templates/include-c.xslt" ./bin/module.xml
 
-#compileExternal $MODULE_NAME
+compileExternal $MODULE_NAME

@@ -4,31 +4,36 @@
  * during the next build.
  */
 
-#include "headers/module_v0.1.0.bi"
-#include "headers/fault_v0.1.0.bi"
-#include "headers/sys_v0.1.0.bi"
-#include "headers/console_v0.1.0.bi"
+#ifndef NULL
+#define NULL	0
+#endif
 
-#define NULL 0
+#ifndef String
+#define String 	char*
+#endif
+
+#include "headers/module_v0.1.0.h"
+#include "headers/fault_v0.1.0.h"
+#include "headers/sys_v0.1.0.h"
 
 struct ModuleStateType {
-	Console.Interface methods
+	ConsoleC.Interface methods
 	short isLoaded
 	short isStarted
 }
 
 Module.Interface* _module
-Console.Interface* _console
+ConsoleC.Interface* _console
 Fault.Interface* _fault
 Sys.Interface* _sys
 ModuleStateType moduleState
 
-namespace Console {
-	short __cdecl *startup ();
-	short __cdecl *shutdown ();
-	void __cdecl *logMessage (char* message);
-	void __cdecl *logWarning (char* id, char* message, char* source, int lineNum);
-	void __cdecl *logError (char* id, char* message, char* source, int lineNum);
-	void __cdecl *logSuccess (char* id, char* message, char* source, int lineNum);
+namespace ConsoleC {
+	short *startup () __attribute__((cdecl));
+	short *shutdown () __attribute__((cdecl));
+	void *logMessage (char* message) __attribute__((cdecl));
+	void *logWarning (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	void *logError (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	void *logSuccess (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
 }
 

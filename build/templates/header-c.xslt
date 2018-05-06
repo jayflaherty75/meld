@@ -61,8 +61,8 @@
 	</xsl:for-each>
 
 	<xsl:text>struct Interface {&#xa;</xsl:text>
-		<xsl:text>&#x9;short (__cdecl *startup) ();&#xa;</xsl:text>
-		<xsl:text>&#x9;short (__cdecl *shutdown) ();&#xa;</xsl:text>
+		<xsl:text>&#x9;short (*startup) () __attribute__((cdecl));&#xa;</xsl:text>
+		<xsl:text>&#x9;short (*shutdown) () __attribute__((cdecl));&#xa;</xsl:text>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='construct']) &gt; 0">
 				<xsl:text>&#x9;Instance* (*construct) ();&#xa;</xsl:text>
@@ -73,7 +73,7 @@
 		</xsl:choose>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='destruct']) &gt; 0">
-				<xsl:text>&#x9;void (*destruct) (Instance* instancePtr);&#xa;</xsl:text>
+				<xsl:text>&#x9;void (*destruct) (Instance* instancePtr) __attribute__((cdecl));&#xa;</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>&#x9;void* destruct;&#xa;</xsl:text>
@@ -81,7 +81,7 @@
 		</xsl:choose>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='update']) &gt; 0">
-				<xsl:text>&#x9;short (*update) (void* instancePtr);&#xa;</xsl:text>
+				<xsl:text>&#x9;short (*update) (void* instancePtr) __attribute__((cdecl));&#xa;</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>&#x9;void* update;&#xa;</xsl:text>
@@ -89,7 +89,7 @@
 		</xsl:choose>
 		<xsl:choose>
 			<xsl:when test="count(function[@name='test']) &gt; 0">
-				<xsl:text>&#x9;short (*test) (void* describeFn);&#xa;</xsl:text>
+				<xsl:text>&#x9;short (*test) (void* describeFn) __attribute__((cdecl));&#xa;</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>&#x9;void* test;&#xa;</xsl:text>

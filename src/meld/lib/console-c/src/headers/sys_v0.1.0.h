@@ -10,17 +10,17 @@ namespace Sys {
 
 
 struct Interface {
-	short (__cdecl *startup) ();
-	short (__cdecl *shutdown) ();
+	short (*startup) () __attribute__((cdecl));
+	short (*shutdown) () __attribute__((cdecl));
 	void* construct;
 	void* destruct;
 	void* update;
 	void* test;
-	char* (__cdecl *getNewline) ();
-	char* (__cdecl *getDirsep) ();
-	char* (__cdecl *getModuleExt) ();
-	unsigned long long (__cdecl *getTimestamp) ();
-	void  (__cdecl *getMacAddress) (char*  addr );
+	char* (*getNewline) () __attribute__((cdecl));
+	char* (*getDirsep) () __attribute__((cdecl));
+	char* (*getModuleExt) () __attribute__((cdecl));
+	unsigned long long (*getTimestamp) () __attribute__((cdecl));
+	void  (*getMacAddress) (char*  addr ) __attribute__((cdecl));
 };
 
 }

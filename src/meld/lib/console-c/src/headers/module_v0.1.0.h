@@ -8,8 +8,8 @@
 
 namespace Module {
 
-typedef short (__cdecl *ModuleWillLoadFn) (void*  entryPtr );
-typedef short (__cdecl *ModuleHasUnloadedFn) (void*  entryPtr );
+typedef short (*ModuleWillLoadFn) (void*  entryPtr ) __attribute__((cdecl));
+typedef short (*ModuleHasUnloadedFn) (void*  entryPtr ) __attribute__((cdecl));
 
 struct LibraryEntry { 
 	void* library;
@@ -23,21 +23,21 @@ struct LibraryEntry {
 };
 
 struct Interface {
-	short (__cdecl *startup) ();
-	short (__cdecl *shutdown) ();
+	short (*startup) () __attribute__((cdecl));
+	short (*shutdown) () __attribute__((cdecl));
 	void* construct;
 	void* destruct;
 	void* update;
 	void* test;
-	short (__cdecl *initialize) (int _argc , void*  _argv );
-	short (__cdecl *uninitialize) ();
-	void  (__cdecl *setModuleWillLoad) (ModuleWillLoadFn handler );
-	void  (__cdecl *setModuleHasUnloaded) (ModuleHasUnloadedFn handler );
-	void* (__cdecl *require) (char*  moduleName );
-	short (__cdecl *unload) (char*  moduleName );
-	short (__cdecl *testModule) (char*  moduleName );
-	char* (__cdecl *argv) (unsigned long index );
-	long (__cdecl *argc) ();
+	short (*initialize) (int _argc , void*  _argv ) __attribute__((cdecl));
+	short (*uninitialize) () __attribute__((cdecl));
+	void  (*setModuleWillLoad) (ModuleWillLoadFn handler ) __attribute__((cdecl));
+	void  (*setModuleHasUnloaded) (ModuleHasUnloadedFn handler ) __attribute__((cdecl));
+	void* (*require) (char*  moduleName ) __attribute__((cdecl));
+	short (*unload) (char*  moduleName ) __attribute__((cdecl));
+	short (*testModule) (char*  moduleName ) __attribute__((cdecl));
+	char* (*argv) (unsigned long index ) __attribute__((cdecl));
+	long (*argc) () __attribute__((cdecl));
 };
 
 }
