@@ -5,19 +5,19 @@
  */
 
 
-#include <stdio>
-#include "headers/console_v0.1.0.bi"
-#include "console.bi"
+#include <stdio.h>
+//#include "headers/console_v0.1.0.h"
+#include "console-c.h"
 
-Module.Interface _moduleLocal
+Module.Interface _moduleLocal;
 
-extern "C" __cdecl (dllexport) void* exports ();
-extern "C" __cdecl (dllexport) short load (Module.Interface * modulePtr);
-extern "C" __cdecl (dllexport) short unload ();
-extern "C" __cdecl (dllexport) short startup ();
-extern "C" __cdecl (dllexport) short shutdown ();
+extern "C" void* exports () __attribute__((cdecl));
+extern "C" short load (Module.Interface * modulePtr) __attribute__((cdecl));
+extern "C" short unload () __attribute__((cdecl));
+extern "C" short startup () __attribute__((cdecl));
+extern "C" short shutdown () __attribute__((cdecl));
 
-extern "C" __cdecl (dllexport) void* exports () {
+extern "C" void* exports () __attribute__((cdecl)) {
 	moduleState.methods.startup = Console.startup
 	moduleState.methods.shutdown = Console.shutdown
 	moduleState.methods.logMessage = Console.logMessage
@@ -28,7 +28,7 @@ extern "C" __cdecl (dllexport) void* exports () {
 	return &moduleState.methods
 }
 
-extern "C" __cdecl (dllexport) short load (Module.Interface * modulePtr) {
+extern "C" short load (Module.Interface * modulePtr) __attribute__((cdecl)) {
 	if (modulePtr == NULL) {
 		printf("**** Console.load: Invalid Module interface pointer\n")
 		return false
@@ -59,7 +59,7 @@ extern "C" __cdecl (dllexport) short load (Module.Interface * modulePtr) {
 	return true
 }
 
-extern "C" __cdecl (dllexport) short unload () {
+extern "C" short unload () __attribute__((cdecl)) {
 	if (moduleState.isStarted) {
 		if (moduleState.methods.shutdown != NULL) {
 			if (!moduleState.methods.shutdown()) {
@@ -76,7 +76,7 @@ extern "C" __cdecl (dllexport) short unload () {
 	return true
 }
 
-extern "C" __cdecl (dllexport) short startup () {
+extern "C" short startup () __attribute__((cdecl)) {
 	if (!moduleState.isStarted) {
 		if (moduleState.methods.startup != NULL) {
 			if (!moduleState.methods.startup()) {
@@ -91,7 +91,7 @@ extern "C" __cdecl (dllexport) short startup () {
 	return true
 }
 
-extern "C" __cdecl (dllexport) short shutdown () {
+extern "C" short shutdown () __attribute__((cdecl)) {
 	if (moduleState.isStarted) {
 		if (moduleState.methods.shutdown != NULL) {
 			if (!moduleState.methods.shutdown()) {

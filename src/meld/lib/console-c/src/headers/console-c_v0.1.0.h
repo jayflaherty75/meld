@@ -10,16 +10,16 @@ namespace ConsoleC {
 
 
 struct Interface {
-	short (__cdecl *startup) ();
-	short (__cdecl *shutdown) ();
+	short (*startup) () __attribute__((cdecl));
+	short (*shutdown) () __attribute__((cdecl));
 	void* construct;
 	void* destruct;
 	void* update;
 	void* test;
-	void  (__cdecl *logMessage) (char*  message );
-	void  (__cdecl *logWarning) (char*  id , char*  message , char*  source , int lineNum );
-	void  (__cdecl *logError) (char*  id , char*  message , char*  source , int lineNum );
-	void  (__cdecl *logSuccess) (char*  id , char*  message , char*  source , int lineNum );
+	void  (*logMessage) (char*  message ) __attribute__((cdecl));
+	void  (*logWarning) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
+	void  (*logError) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
+	void  (*logSuccess) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
 };
 
 }

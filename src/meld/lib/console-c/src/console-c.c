@@ -20,7 +20,7 @@ namespace ConsoleC {
  * @function startup
  * @returns {short}
  */
-short __cdecl startup () {
+short startup () __attribute__((cdecl)) {
 	//_console->logMessage("Starting console module")
 
 	return true
@@ -31,7 +31,7 @@ short __cdecl startup () {
  * @function shutdown
  * @returns {short}
  */
-short __cdecl shutdown () {
+short shutdown () __attribute__((cdecl)) {
 	//_console->logMessage("Shutting down console module")
 
 	return true
@@ -42,7 +42,7 @@ short __cdecl shutdown () {
  * @function logMessage
  * @param {char *} message
  */
-void __cdecl logMessage (char*  message ) {
+void logMessage (char*  message ) __attribute__((cdecl)) {
 	//printf(!"%s - %s\n", Time(), message)
 }
 
@@ -54,7 +54,7 @@ void __cdecl logMessage (char*  message ) {
  * @param {char *} source
  * @param {int} lineNum
  */
-void __cdecl logWarning (char * id , char *  message , char*  source , int lineNum ) {
+void logWarning (char * id , char *  message , char*  source , int lineNum ) __attribute__((cdecl)) {
 	//dim as ulong oldcol = color()
 
 	//color 14
@@ -70,7 +70,7 @@ void __cdecl logWarning (char * id , char *  message , char*  source , int lineN
  * @param {char *} source
  * @param {int} lineNum
  */
-void __cdecl logError (char*  id , char*  message , char*  source , int lineNum ) {
+void logError (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl)) {
 	//dim as ulong oldcol = color()
 
 	//color 4
@@ -86,7 +86,7 @@ void __cdecl logError (char*  id , char*  message , char*  source , int lineNum 
  * @param {char *} source
  * @param {int} lineNum
  */
-void __cdecl logSuccess (char*  id , char*  message , char*  source, int lineNum ) {
+void logSuccess (char*  id , char*  message , char*  source, int lineNum ) __attribute__((cdecl)) {
 	//dim as ulong oldcol = color()
 
 	//color 2

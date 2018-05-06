@@ -20,7 +20,7 @@
 		<xsl:otherwise>void </xsl:otherwise>
 	</xsl:choose>
 
-	<xsl:text> (__cdecl *</xsl:text>
+	<xsl:text> (*</xsl:text>
 	<xsl:value-of select="@name" />
 	<xsl:text>) (</xsl:text>
 
@@ -43,6 +43,6 @@
 		<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:for-each>
 
-	<xsl:text>)</xsl:text>
+	<xsl:text>) __attribute__((cdecl))</xsl:text>
 </xsl:template>
 </xsl:stylesheet>

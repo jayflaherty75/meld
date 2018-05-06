@@ -14,12 +14,12 @@ struct Instance {
 };
 
 struct Interface {
-	short (__cdecl *startup) ();
-	short (__cdecl *shutdown) ();
+	short (*startup) () __attribute__((cdecl));
+	short (*shutdown) () __attribute__((cdecl));
 	Instance* (*construct) ();
-	void (*destruct) (Instance* instancePtr);
-	short (*update) (void* instancePtr);
-	short (*test) (void* describeFn);
+	void (*destruct) (Instance* instancePtr) __attribute__((cdecl));
+	short (*update) (void* instancePtr) __attribute__((cdecl));
+	short (*test) (void* describeFn) __attribute__((cdecl));
 };
 
 }
