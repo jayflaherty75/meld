@@ -23,7 +23,7 @@ namespace ConsoleC {
 short startup () {
 	//_console->logMessage("Starting console module")
 
-	return true;
+	return TRUE;
 }
 
 /**
@@ -34,7 +34,7 @@ short startup () {
 short shutdown () {
 	//_console->logMessage("Shutting down console module")
 
-	return true;
+	return TRUE;
 }
 
 /**

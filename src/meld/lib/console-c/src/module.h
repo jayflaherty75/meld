@@ -36,14 +36,16 @@ extern "C" void* exports () {
 }
 
 extern "C" short load (Module::Interface * modulePtr) {
+	printf("\n");
+
 	if (modulePtr == NULL) {
 		printf("**** ConsoleC::load: Invalid Module interface pointer\n");
-		return false;
+		return FALSE;
 	}
 
 	if (!moduleState.isLoaded) {
-		moduleState.isStarted = false;
-		moduleState.isLoaded = true;
+		moduleState.isStarted = FALSE;
+		moduleState.isLoaded = TRUE;
 
 		_moduleLocal = *modulePtr;
 		_module = &_moduleLocal;
@@ -53,17 +55,17 @@ extern "C" short load (Module::Interface * modulePtr) {
 		_fault = static_cast<Fault::Interface*>((*modulePtr->require)("fault_v0.1.0"));
 		if (_fault == NULL) {
 			printf("**** ConsoleC::load: Failed to load fault dependency");
-			return false;
+			return FALSE;
 		}
 
 		_sys = static_cast<Sys::Interface*>((*modulePtr->require)("sys_v0.1.0"));
 		if (_sys == NULL) {
 			printf("**** ConsoleC::load: Failed to load sys dependency");
-			return false;
+			return FALSE;
 		}
 	}
 
-	return true;
+	return TRUE;
 }
 
 extern "C" short unload () {
@@ -71,16 +73,16 @@ extern "C" short unload () {
 		if (moduleState.methods.shutdown != NULL) {
 			if (!moduleState.methods.shutdown()) {
 				printf("**** ConsoleC::unload: Module shutdown handler failed\n");
-				return false;
+				return FALSE;
 			}
 		}
 
-		moduleState.isStarted = false;
+		moduleState.isStarted = FALSE;
 	}
 
-	moduleState.isLoaded = false;
+	moduleState.isLoaded = FALSE;
 
-	return true;
+	return TRUE;
 }
 
 extern "C" short startup () {
@@ -88,14 +90,14 @@ extern "C" short startup () {
 		if (moduleState.methods.startup != NULL) {
 			if (!moduleState.methods.startup()) {
 				printf("**** ConsoleC::startup: Module startup handler failed\n");
-				return false;
+				return FALSE;
 			}
 		}
 
-		moduleState.isStarted = true;
+		moduleState.isStarted = TRUE;
 	}
 
-	return true;
+	return TRUE;
 }
 
 extern "C" short shutdown () {
@@ -106,8 +108,8 @@ extern "C" short shutdown () {
 			}
 		}
 
-		moduleState.isStarted = false;
+		moduleState.isStarted = FALSE;
 	}
 
-	return true;
+	return TRUE;
 }
