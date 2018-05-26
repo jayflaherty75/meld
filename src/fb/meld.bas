@@ -11,30 +11,30 @@ function main(argc As Integer, argv As ZString Ptr Ptr) As Integer
 	end if
 
 	if not Module.initialize(argc, argv) then
-		printf(!"**** main: Failed to initialize Module\n")
+		printf("**** main: Failed to initialize Module" & NEW_LINE)
 		return 1
 	end if
 
 	appPtr = Module.require(app)
 
 	if appPtr = NULL then
-		printf(!"**** main: Failed to obtain " & app & " interface\n")
+		printf("**** main: Failed to obtain " & app & " interface" & NEW_LINE)
 		return 1
 	end if
 
 	if not Module.testModule(app) then
-		printf(!"**** main: " & app & " unit test failed\n")
+		printf("**** main: " & app & " unit test failed\n")
 		Module.uninitialize()
 		return 1
 	end if
 
 	if appPtr->update <> NULL andalso not appPtr->update(NULL) then
-		printf("**** main: An error occurred while running " & app & !"\n")
+		printf("**** main: An error occurred while running " & app & NEW_LINE)
 		return 1
 	end if
 
 	if not Module.uninitialize() then
-		printf(!"**** main: An error occurred while attempting to uninitialize Meld\n")
+		printf("**** main: An error occurred while attempting to uninitialize Meld" & NEW_LINE)
 		return 1
 	end if
 
