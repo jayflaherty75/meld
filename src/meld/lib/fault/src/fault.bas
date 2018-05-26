@@ -15,11 +15,16 @@
  '/
 namespace Fault
 
-/''
+/'
  ' @class Header
  ' @property {zstring*64} name
  ' @property {ushort} code
+ ' @private
  '/
+type Header
+	name as zstring*64
+	code as ushort
+end type
 
 /''
  ' @typedef {function} Handler
@@ -110,7 +115,7 @@ function registerType cdecl (errName as zstring ptr) as short
 		errPtr->name = *errName
 		errPtr->code = errCode
 	else
-		throw(_
+		throwErr(_
 			errState.errs.internalSystemError, _
 			internalSystemError, errState.typeLimitErrorMsg, _
 			__FILE__, __LINE__ _
@@ -162,7 +167,7 @@ end function
 /''
  ' Pass an error to be handled.  Make sure you do trust exercises with whoever
  ' writes your error handlers.
- ' @function throw
+ ' @function throwErr
  ' @param {integer} errCode - Error code deciding what error handler will be
  '	triggered, can be retrieved with getCode
  ' @param {zstring ptr} errName
@@ -172,7 +177,7 @@ end function
  ' @param {integer} lineNum - Line number where error occurred.  Can be set
  '	with __LINE__.
  '/
-sub throw cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
+sub throwErr cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	if errCode < ERROR_MAX_TYPES andalso errState.errors(errCode).code _
 		andalso errState.handlers(errCode) then
 

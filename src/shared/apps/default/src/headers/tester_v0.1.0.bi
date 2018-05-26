@@ -10,11 +10,11 @@ type doneFn as sub cdecl ()
 
 type testFunc as sub cdecl (done as doneFn)
 
-type itCallback as function cdecl (byref description as zstring, test as testFunc) as short
+type itCallback as function cdecl (description as zstring ptr, test as testFunc) as short
 
 type suiteFunc as function cdecl (it as itCallback) as short
 
-type describeCallback as function cdecl (byref description as zstring, callback as suiteFunc) as short
+type describeCallback as function cdecl (description as zstring ptr, callback as suiteFunc) as short
 
 type testModule as function cdecl (describeFn as any ptr) as short
 
@@ -26,14 +26,14 @@ type Interface
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
 	run as function cdecl (tests as testModule ptr, count as short) as short
-	describe as function cdecl (description as zstring, callback as suiteFunc) as short
-	suite as function cdecl (description as zstring, testFn as testFunc) as short
-	expect as sub cdecl (result as long, expected as long, byref message as zstring)
-	expectNot as sub cdecl (result as long, expected as long, byref message as zstring)
-	expectStr as sub cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-	expectStrNot as sub cdecl (byref result as zstring, byref expected as zstring, byref message as zstring)
-	expectPtr as sub cdecl (result as any ptr, expected as any ptr, byref message as zstring)
-	expectPtrNot as sub cdecl (result as any ptr, expected as any ptr, byref message as zstring)
+	describe as function cdecl (description as zstring ptr, callback as suiteFunc) as short
+	suite as function cdecl (description as zstring ptr, testFn as testFunc) as short
+	expect as sub cdecl (result as long, expected as long, message as zstring ptr)
+	expectNot as sub cdecl (result as long, expected as long, message as zstring ptr)
+	expectStr as sub cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+	expectStrNot as sub cdecl (result as zstring ptr, expected as zstring ptr, message as zstring ptr)
+	expectPtr as sub cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
+	expectPtrNot as sub cdecl (result as any ptr, expected as any ptr, message as zstring ptr)
 end type
 
 end namespace

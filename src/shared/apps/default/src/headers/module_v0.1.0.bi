@@ -32,9 +32,9 @@ type Interface
 	uninitialize as function cdecl () as short
 	setModuleWillLoad as sub cdecl (handler as ModuleWillLoadFn)
 	setModuleHasUnloaded as sub cdecl (handler as ModuleHasUnloadedFn)
-	require as function cdecl (byref moduleName as zstring) as any ptr
-	unload as function cdecl (byref moduleName as zstring) as short
-	testModule as function cdecl (byref moduleName as zstring) as short
+	require as function cdecl (moduleName as zstring ptr) as any ptr
+	unload as function cdecl (moduleName as zstring ptr) as short
+	testModule as function cdecl (moduleName as zstring ptr) as short
 	argv as function cdecl (index as ulong) as zstring ptr
 	argc as function cdecl () as long
 end type

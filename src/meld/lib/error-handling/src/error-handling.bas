@@ -88,7 +88,7 @@ sub _assignHandler cdecl (_fault as Fault.Interface ptr, errCodePtr as integer p
 	dim as integer errCode = _fault->registerType(errName)
 
 	if not _fault->assignHandler(errCode, handler) then
-		_fault->throw(0, errName, "Failed to assign " & errName & " handler", __FILE__, __LINE__)
+		_fault->throwErr(0, errName, "Failed to assign " & errName & " handler", __FILE__, __LINE__)
 	end if
 
 	*errCodePtr = errCode

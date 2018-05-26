@@ -14,7 +14,7 @@ declare sub _throwResContReleaseResourceError (byref filename as zstring, lineNu
 declare sub _throwResContGetPtrNullReferenceError (byref filename as zstring, lineNum as integer)
 
 sub _throwResContAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"ResContAllocationError", "Failed to allocate new ResourceContainer instance", _
 		filename, lineNum _
@@ -22,7 +22,7 @@ sub _throwResContAllocationError (byref filename as zstring, lineNum as integer)
 end sub
 
 sub _throwResContDestructNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ResContDestructNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
 		filename, lineNum _
@@ -30,7 +30,7 @@ sub _throwResContDestructNullReferenceError (byref filename as zstring, lineNum 
 end sub
 
 sub _throwResContInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ResContInvalidArgumentError", "Attempt to reference a NULL ResourceContainer", _
 		filename, lineNum _
@@ -38,7 +38,7 @@ sub _throwResContInvalidArgumentError (byref filename as zstring, lineNum as int
 end sub
 
 sub _throwResContResourceAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"ResContResourceAllocationError", "Failed to create paged array", _
 		filename, lineNum _
@@ -46,7 +46,7 @@ sub _throwResContResourceAllocationError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwResContStackAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"ResContStackAllocationError", "Failed to create paged array for stack", _
 		filename, lineNum _
@@ -54,7 +54,7 @@ sub _throwResContStackAllocationError (byref filename as zstring, lineNum as int
 end sub
 
 sub _throwResContRequestNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ResContRequestNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
 		filename, lineNum _
@@ -62,7 +62,7 @@ sub _throwResContRequestNullReferenceError (byref filename as zstring, lineNum a
 end sub
 
 sub _throwResContRequestResourceMissingError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceMissingError, _
 		"ResContRequestResourceMissingError", "Failed to reuse resource from stack", _
 		filename, lineNum _
@@ -70,7 +70,7 @@ sub _throwResContRequestResourceMissingError (byref filename as zstring, lineNum
 end sub
 
 sub _throwResContReleaseNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ResContReleaseNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
 		filename, lineNum _
@@ -78,7 +78,7 @@ sub _throwResContReleaseNullReferenceError (byref filename as zstring, lineNum a
 end sub
 
 sub _throwResContReleaseInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"ResContReleaseInvalidArgumentError", "Invalid 2nd Argument: resourceId must be greater than or equal zero", _
 		filename, lineNum _
@@ -86,7 +86,7 @@ sub _throwResContReleaseInvalidArgumentError (byref filename as zstring, lineNum
 end sub
 
 sub _throwResContReleaseResourceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.releaseResourceError, _
 		"ResContReleaseResourceError", "Failed to release resource back to container", _
 		filename, lineNum _
@@ -94,7 +94,7 @@ sub _throwResContReleaseResourceError (byref filename as zstring, lineNum as int
 end sub
 
 sub _throwResContGetPtrNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ResContGetPtrNullReferenceError", "Attempt to reference a NULL ResourceContainer", _
 		filename, lineNum _
