@@ -10,11 +10,6 @@ namespace Fault {
 
 typedef void  (*Handler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 
-struct Header { 
-	zstring*64 name;
-	unsigned short code;
-};
-
 struct Interface {
 	short (*startup) () __attribute__((cdecl));
 	short (*shutdown) () __attribute__((cdecl));
@@ -25,7 +20,7 @@ struct Interface {
 	short (*registerType) (char*  errName ) __attribute__((cdecl));
 	short (*assignHandler) (short errCode , Handler handler ) __attribute__((cdecl));
 	short (*getCode) (char*  errName ) __attribute__((cdecl));
-	void  (*throw) (int errCode , char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
+	void  (*throwErr) (int errCode , char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 	void  (*defaultFatalHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 	void  (*defaultErrorHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));
 	void  (*defaultWarningHandler) (char*  errName , char*  message , char*  filename , int lineNum ) __attribute__((cdecl));

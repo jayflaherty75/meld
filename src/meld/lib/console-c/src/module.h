@@ -4,103 +4,110 @@
  * during the next build.
  */
 
+#pragma once
 
 #include <stdio.h>
-//#include "headers/console_v0.1.0.h"
+#include "headers/console-c_v0.1.0.h"
 #include "console-c.h"
 
-Module.Interface _moduleLocal;
+struct ModuleStateType {
+	ConsoleC::Interface methods;
+	short isLoaded;
+	short isStarted;
+} moduleState;
+
+Module::Interface _moduleLocal;
 
 extern "C" void* exports () __attribute__((cdecl));
-extern "C" short load (Module.Interface * modulePtr) __attribute__((cdecl));
+extern "C" short load (Module::Interface * modulePtr) __attribute__((cdecl));
 extern "C" short unload () __attribute__((cdecl));
 extern "C" short startup () __attribute__((cdecl));
 extern "C" short shutdown () __attribute__((cdecl));
 
-extern "C" void* exports () __attribute__((cdecl)) {
-	moduleState.methods.startup = Console.startup
-	moduleState.methods.shutdown = Console.shutdown
-	moduleState.methods.logMessage = Console.logMessage
-	moduleState.methods.logWarning = Console.logWarning
-	moduleState.methods.logError = Console.logError
-	moduleState.methods.logSuccess = Console.logSuccess
+extern "C" void* exports () {
+	moduleState.methods.startup = ConsoleC::startup;
+	moduleState.methods.shutdown = ConsoleC::shutdown;
+	moduleState.methods.logMessage = ConsoleC::logMessage;
+	moduleState.methods.logWarning = ConsoleC::logWarning;
+	moduleState.methods.logError = ConsoleC::logError;
+	moduleState.methods.logSuccess = ConsoleC::logSuccess;
 
-	return &moduleState.methods
+	return &moduleState.methods;
 }
 
-extern "C" short load (Module.Interface * modulePtr) __attribute__((cdecl)) {
+extern "C" short load (Module::Interface * modulePtr) {
 	if (modulePtr == NULL) {
-		printf("**** Console.load: Invalid Module interface pointer\n")
-		return false
+		printf("**** ConsoleC::load: Invalid Module interface pointer\n");
+		return false;
 	}
 
 	if (!moduleState.isLoaded) {
-		moduleState.isStarted = false
-		moduleState.isLoaded = true
+		moduleState.isStarted = false;
+		moduleState.isLoaded = true;
 
-		_moduleLocal = *modulePtr
-		_module = &_moduleLocal
+		_moduleLocal = *modulePtr;
+		_module = &_moduleLocal;
 
-		_console = exports()
+		_console = static_cast<ConsoleC::Interface*>(exports());
 
-		_fault = (*modulePtr->require)("fault_v0.1.0")
+		_fault = static_cast<Fault::Interface*>((*modulePtr->require)("fault_v0.1.0"));
 		if (_fault == NULL) {
-			printf("**** Console.load: Failed to load fault dependency")
-			return false
+			printf("**** ConsoleC::load: Failed to load fault dependency");
+			return false;
 		}
 
-		_sys = (*modulePtr->require)("sys_v0.1.0")
+		_sys = static_cast<Sys::Interface*>((*modulePtr->require)("sys_v0.1.0"));
 		if (_sys == NULL) {
-			printf("**** Console.load: Failed to load sys dependency")
-			return false
+			printf("**** ConsoleC::load: Failed to load sys dependency");
+			return false;
 		}
 	}
 
-	return true
+	return true;
 }
 
-extern "C" short unload () __attribute__((cdecl)) {
+extern "C" short unload () {
 	if (moduleState.isStarted) {
 		if (moduleState.methods.shutdown != NULL) {
 			if (!moduleState.methods.shutdown()) {
-				printf("**** Console.unload: Module shutdown handler failed\n")
-				return false
+				printf("**** ConsoleC::unload: Module shutdown handler failed\n");
+				return false;
 			}
 		}
 
-		moduleState.isStarted = false
+		moduleState.isStarted = false;
 	}
 
-	moduleState.isLoaded = false
+	moduleState.isLoaded = false;
 
-	return true
+	return true;
 }
 
-extern "C" short startup () __attribute__((cdecl)) {
+extern "C" short startup () {
 	if (!moduleState.isStarted) {
 		if (moduleState.methods.startup != NULL) {
 			if (!moduleState.methods.startup()) {
-				printf("**** Console.startup: Module startup handler failed\n")
-				return false
+				printf("**** ConsoleC::startup: Module startup handler failed\n");
+				return false;
 			}
 		}
 
-		moduleState.isStarted = true
+		moduleState.isStarted = true;
 	}
 
-	return true
+	return true;
 }
 
-extern "C" short shutdown () __attribute__((cdecl)) {
+extern "C" short shutdown () {
 	if (moduleState.isStarted) {
 		if (moduleState.methods.shutdown != NULL) {
 			if (!moduleState.methods.shutdown()) {
-				printf("**** Console.shutdown: Module shutdown handler failed\n")
+				printf("**** ConsoleC::shutdown: Module shutdown handler failed\n");
 			}
 		}
 
-		moduleState.isStarted = false
+		moduleState.isStarted = false;
 	}
 
-	return true
+	return true;
 }

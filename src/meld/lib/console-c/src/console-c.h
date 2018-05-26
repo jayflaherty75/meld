@@ -4,6 +4,8 @@
  * during the next build.
  */
 
+#pragma once
+
 #ifndef NULL
 #define NULL	0
 #endif
@@ -12,28 +14,22 @@
 #define String 	char*
 #endif
 
+#include "headers/console-c_v0.1.0.h"
 #include "headers/module_v0.1.0.h"
 #include "headers/fault_v0.1.0.h"
 #include "headers/sys_v0.1.0.h"
 
-struct ModuleStateType {
-	ConsoleC.Interface methods
-	short isLoaded
-	short isStarted
-}
-
-Module.Interface* _module
-ConsoleC.Interface* _console
-Fault.Interface* _fault
-Sys.Interface* _sys
-ModuleStateType moduleState
+Module::Interface* _module;
+ConsoleC::Interface* _console;
+Fault::Interface* _fault;
+Sys::Interface* _sys;
 
 namespace ConsoleC {
-	short *startup () __attribute__((cdecl));
-	short *shutdown () __attribute__((cdecl));
-	void *logMessage (char* message) __attribute__((cdecl));
-	void *logWarning (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
-	void *logError (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
-	void *logSuccess (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	short startup () __attribute__((cdecl));
+	short shutdown () __attribute__((cdecl));
+	void logMessage (char* message) __attribute__((cdecl));
+	void logWarning (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	void logError (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	void logSuccess (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
 }
 

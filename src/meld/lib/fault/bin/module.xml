@@ -2,10 +2,6 @@
 <module name="fault">
   <requires module='console' version='0.1.0' />
   <version>0.1.0</version>
-  <class name='Header'>
-    <property name='name' type='zstring*64' modifier='value' const='false' />
-    <property name='code' type='ushort' modifier='value' const='false' />
-  </class>
   <typedef name='Handler' type='function' modifier='value'>
     <param name='errName' type='zstring' modifier='pointer' const='false' />
     <param name='message' type='zstring' modifier='pointer' const='false' />
@@ -39,7 +35,7 @@
     </returns>
     <description>Returns the error code for the registered error name</description>
   </function>
-  <function name='throw'>
+  <function name='throwErr'>
     <param name='errCode' type='integer' modifier='value' const='false'>
       <description>Error code deciding what error handler will be 	triggered, can be retrieved with getCode</description>
     </param>

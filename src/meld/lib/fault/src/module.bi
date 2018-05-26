@@ -18,7 +18,7 @@ Function exports cdecl Alias "exports" () As any ptr export
 	moduleState.methods.registerType = @Fault.registerType
 	moduleState.methods.assignHandler = @Fault.assignHandler
 	moduleState.methods.getCode = @Fault.getCode
-	moduleState.methods.throw = @Fault.throw
+	moduleState.methods.throwErr = @Fault.throwErr
 	moduleState.methods.defaultFatalHandler = @Fault.defaultFatalHandler
 	moduleState.methods.defaultErrorHandler = @Fault.defaultErrorHandler
 	moduleState.methods.defaultWarningHandler = @Fault.defaultWarningHandler

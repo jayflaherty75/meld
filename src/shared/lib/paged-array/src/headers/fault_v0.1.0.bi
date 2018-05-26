@@ -8,11 +8,6 @@ namespace Fault
 
 type Handler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 
-type Header
-	name as zstring*64
-	code as ushort
-end type
-
 type Interface
 	startup as function cdecl () as short
 	shutdown as function cdecl () as short
@@ -23,7 +18,7 @@ type Interface
 	registerType as function cdecl (errName as zstring ptr) as short
 	assignHandler as function cdecl (errCode as short, handler as Handler) as short
 	getCode as function cdecl (errName as zstring ptr) as short
-	throw as sub cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
+	throwErr as sub cdecl (errCode as integer, errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	defaultFatalHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	defaultErrorHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)
 	defaultWarningHandler as sub cdecl (errName as zstring ptr, message as zstring ptr, filename as zstring ptr, lineNum as integer)

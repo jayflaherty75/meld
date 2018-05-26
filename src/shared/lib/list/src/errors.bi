@@ -18,7 +18,7 @@ declare sub _throwListSearchInvalidArgumentError (byref filename as zstring, lin
 declare sub _throwListGetIteratorNullReferenceError (byref filename as zstring, lineNum as integer)
 
 sub _throwListAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"ListAllocationError", "Failed to allocate List instance", _
 		filename, lineNum _
@@ -26,7 +26,7 @@ sub _throwListAllocationError (byref filename as zstring, lineNum as integer)
 end sub
 
 sub _throwListDestructNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListDestructNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -34,7 +34,7 @@ sub _throwListDestructNullReferenceError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwListReleaseError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.releaseResourceError, _
 		"ReleaseListError", "Failed to correctly release all resources from List", _
 		filename, lineNum _
@@ -42,7 +42,7 @@ sub _throwListReleaseError (byref filename as zstring, lineNum as integer)
 end sub
 
 sub _throwListInsertNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListInsertNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -50,7 +50,7 @@ sub _throwListInsertNullReferenceError (byref filename as zstring, lineNum as in
 end sub
 
 sub _throwListInsertInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"ListInsertInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
 		filename, lineNum _
@@ -58,7 +58,7 @@ sub _throwListInsertInvalidArgumentError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwListNodeAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"ListNodeAllocationError", "Failed to allocate List node", _
 		filename, lineNum _
@@ -66,7 +66,7 @@ sub _throwListNodeAllocationError (byref filename as zstring, lineNum as integer
 end sub
 
 sub _throwListRemoveNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListRemoveNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -74,7 +74,7 @@ sub _throwListRemoveNullReferenceError (byref filename as zstring, lineNum as in
 end sub
 
 sub _throwListRemoveInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"ListRemoveInvalidArgumentError", "Invalid 2nd Argument: node must not be NULL", _
 		filename, lineNum _
@@ -82,7 +82,7 @@ sub _throwListRemoveInvalidArgumentError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwListGetFirstNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListGetFirstNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -90,7 +90,7 @@ sub _throwListGetFirstNullReferenceError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwListGetLastNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListGetLastNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -98,7 +98,7 @@ sub _throwListGetLastNullReferenceError (byref filename as zstring, lineNum as i
 end sub
 
 sub _throwListGetNextNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListGetNextNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -106,7 +106,7 @@ sub _throwListGetNextNullReferenceError (byref filename as zstring, lineNum as i
 end sub
 
 sub _throwListGetLengthNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListGetLengthNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -114,7 +114,7 @@ sub _throwListGetLengthNullReferenceError (byref filename as zstring, lineNum as
 end sub
 
 sub _throwListSearchNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListSearchNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _
@@ -122,7 +122,7 @@ sub _throwListSearchNullReferenceError (byref filename as zstring, lineNum as in
 end sub
 
 sub _throwListSearchInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"ListSearchInvalidArgumentError", "Invalid 2nd Argument: element must not be NULL", _
 		filename, lineNum _
@@ -130,7 +130,7 @@ sub _throwListSearchInvalidArgumentError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwListGetIteratorNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"ListGetIteratorNullReferenceError", "Attempt to reference a NULL List", _
 		filename, lineNum _

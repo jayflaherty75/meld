@@ -17,7 +17,7 @@ declare sub _throwMapRequestNullReferenceError (byref filename as zstring, lineN
 declare sub _throwMapRequestResourceMissingError (byref filename as zstring, lineNum as integer)
 
 sub _throwMapConstructAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.allocationError, _
 		"MapConstructAllocationError", "Failed to construct Map instance", _
 		filename, lineNum _
@@ -25,7 +25,7 @@ sub _throwMapConstructAllocationError (byref filename as zstring, lineNum as int
 end sub
 
 sub _throwMapConstructResourceAllocationError (byref detail as zstring, byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"MapConstructResourceAllocationError", "Failed to allocate resource: " & detail, _
 		filename, lineNum _
@@ -33,7 +33,7 @@ sub _throwMapConstructResourceAllocationError (byref detail as zstring, byref fi
 end sub
 
 sub _throwMapConstructResourceInitializationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceInitializationError, _
 		"MapConstructResourceInitializationError", "Failed to initialize container", _
 		filename, lineNum _
@@ -41,7 +41,7 @@ sub _throwMapConstructResourceInitializationError (byref filename as zstring, li
 end sub
 
 sub _throwMapDestructNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapDestructNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -49,7 +49,7 @@ sub _throwMapDestructNullReferenceError (byref filename as zstring, lineNum as i
 end sub
 
 sub _throwMapUnassignNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapUnassignNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -57,7 +57,7 @@ sub _throwMapUnassignNullReferenceError (byref filename as zstring, lineNum as i
 end sub
 
 sub _throwMapUnassignResourceMissingError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceMissingError, _
 		"MapUnassignResourceMissingError", "Encountered missing node element", _
 		filename, lineNum _
@@ -65,7 +65,7 @@ sub _throwMapUnassignResourceMissingError (byref filename as zstring, lineNum as
 end sub
 
 sub _throwMapGetLengthNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapGetLengthNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -73,7 +73,7 @@ sub _throwMapGetLengthNullReferenceError (byref filename as zstring, lineNum as 
 end sub
 
 sub _throwMapPurgeNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapPurgeNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -81,7 +81,7 @@ sub _throwMapPurgeNullReferenceError (byref filename as zstring, lineNum as inte
 end sub
 
 sub _throwMapGetIteratorNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapGetIteratorNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -89,7 +89,7 @@ sub _throwMapGetIteratorNullReferenceError (byref filename as zstring, lineNum a
 end sub
 
 sub _throwMapGetIteratorResourceAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"MapGetIteratorResourceAllocationError", "Failed to create iterator instance", _
 		filename, lineNum _
@@ -97,7 +97,7 @@ sub _throwMapGetIteratorResourceAllocationError (byref filename as zstring, line
 end sub
 
 sub _throwMapAssignNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapAssignNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -105,7 +105,7 @@ sub _throwMapAssignNullReferenceError (byref filename as zstring, lineNum as int
 end sub
 
 sub _throwMapAssignResourceMissingError (byref detail as zstring, byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceMissingError, _
 		"MapAssignResourceMissingError", "Missing resource: " & detail, _
 		filename, lineNum _
@@ -113,7 +113,7 @@ sub _throwMapAssignResourceMissingError (byref detail as zstring, byref filename
 end sub
 
 sub _throwMapRequestNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"MapRequestNullReferenceError", "Invalid Map pointer", _
 		filename, lineNum _
@@ -121,7 +121,7 @@ sub _throwMapRequestNullReferenceError (byref filename as zstring, lineNum as in
 end sub
 
 sub _throwMapRequestResourceMissingError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceMissingError, _
 		"MapRequestResourceMissingError", "Encountered missing node element", _
 		filename, lineNum _

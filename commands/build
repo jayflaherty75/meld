@@ -9,6 +9,11 @@ compileExternal () {
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
 
+if [ ! -f "./src/$MODULE_NAME.bas" ]; then
+	echo Could not find ./src/$MODULE_NAME.bas;
+	exit 1;
+fi
+
 if [ -f "./bin/module.xml" ]; then
 	rm ./bin/module.xml
 fi

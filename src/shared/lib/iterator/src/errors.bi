@@ -11,7 +11,7 @@ declare sub _throwIteratorGetNextInvalidArgumentError (byref filename as zstring
 declare sub _throwIteratorResetNullReferenceError (byref filename as zstring, lineNum as integer)
 
 sub _throwIteratorAllocationError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.resourceAllocationError, _
 		"IteratorAllocationError", "Failed to allocate Iterator instance", _
 		filename, lineNum _
@@ -19,7 +19,7 @@ sub _throwIteratorAllocationError (byref filename as zstring, lineNum as integer
 end sub
 
 sub _throwIteratorDestructNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"IteratorDestructNullReferenceError", "Attempt to reference a NULL Iterator", _
 		filename, lineNum _
@@ -27,7 +27,7 @@ sub _throwIteratorDestructNullReferenceError (byref filename as zstring, lineNum
 end sub
 
 sub _throwIteratorSetHandlerNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"IteratorSetHandlerNullReferenceError", "Attempt to reference a NULL Iterator", _
 		filename, lineNum _
@@ -35,7 +35,7 @@ sub _throwIteratorSetHandlerNullReferenceError (byref filename as zstring, lineN
 end sub
 
 sub _throwIteratorSetHandlerInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"IteratorSetHandlerInvalidArgumentError", "Invalid 2nd Argument: cb must be a function", _
 		filename, lineNum _
@@ -43,7 +43,7 @@ sub _throwIteratorSetHandlerInvalidArgumentError (byref filename as zstring, lin
 end sub
 
 sub _throwIteratorSetDataNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"IteratorSetDataNullReferenceError", "Attempt to reference a NULL Iterator", _
 		filename, lineNum _
@@ -51,7 +51,7 @@ sub _throwIteratorSetDataNullReferenceError (byref filename as zstring, lineNum 
 end sub
 
 sub _throwIteratorGetNextNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"IteratorGetNextNullReferenceError", "Attempt to reference a NULL Iterator", _
 		filename, lineNum _
@@ -59,7 +59,7 @@ sub _throwIteratorGetNextNullReferenceError (byref filename as zstring, lineNum 
 end sub
 
 sub _throwIteratorGetNextInvalidArgumentError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.invalidArgumentError, _
 		"IteratorGetNextInvalidArgumentError", "Invalid 2nd Argument: target must not be NULL", _
 		filename, lineNum _
@@ -67,7 +67,7 @@ sub _throwIteratorGetNextInvalidArgumentError (byref filename as zstring, lineNu
 end sub
 
 sub _throwIteratorResetNullReferenceError (byref filename as zstring, lineNum as integer)
-	_fault->throw(_
+	_fault->throwErr(_
 		errors.nullReferenceError, _
 		"IteratorResetNullReferenceError", "Attempt to reference a NULL Iterator", _
 		filename, lineNum _

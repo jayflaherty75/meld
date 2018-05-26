@@ -6,9 +6,14 @@ SEP="_v"
 
 compileExternal () {
 	#fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
-	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wattributes -Wl,--whole-archive -lAlgatorc -Wl,--no-whole-archive \
+	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wattributes -Wl,--whole-archive -Wl,--no-whole-archive \
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
+
+if [ ! -f "./src/$MODULE_NAME.c" ] && [ ! -f "./src/$MODULE_NAME.cpp" ]; then
+	echo Could not find ./src/$MODULE_NAME.c or ./src/$MODULE_NAME.cpp;
+	exit 1;
+fi
 
 if [ -f "./bin/module.xml" ]; then
 	rm ./bin/module.xml
