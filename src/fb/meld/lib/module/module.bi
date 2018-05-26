@@ -10,9 +10,11 @@
 #IFDEF __FB_WIN32__
 	#define EXTERNAL_MODULE_EXTENSION		"dll"
 	#define DIR_SEP							!"\\"
+	#define NEW_LINE						!"\r\n"
 #ELSE
 	#define EXTERNAL_MODULE_EXTENSION		"so"
 	#define DIR_SEP							"/"
+	#define NEW_LINE						!"\n"
 #ENDIF
 
 #define NULL	0
