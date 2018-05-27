@@ -6,7 +6,7 @@ SEP="_v"
 
 compileExternal () {
 	#fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
-	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wattributes -Wl,--whole-archive -Wl,--no-whole-archive \
+	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wno-attributes -Wno-write-strings -Wl,--whole-archive -Wl,--no-whole-archive \
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
 
