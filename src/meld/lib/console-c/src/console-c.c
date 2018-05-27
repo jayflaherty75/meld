@@ -3,6 +3,7 @@
 /**
  * @requires fault_v0.*
  * @requires sys_v0.*
+ * @requires tester_v0.*
  */
 
 #include <stdio.h>
@@ -10,6 +11,7 @@
 #include "module.h"
 #include "console-c.h"
 #include "errors.h"
+#include "test.h"
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -45,6 +47,21 @@ short shutdown () {
 	_consoleC->logMessage("Shutting down console-c module");
 
 	return TRUE;
+}
+
+/**
+ * Standard test runner for modules.
+ * @function test
+ * @param {any ptr} describeFn
+ * @returns {short}
+ */
+short test (void *describeFn) {
+	Tester::describeCallback describePtr = reinterpret_cast<Tester::describeCallback>(describeFn);
+	short result = TRUE;
+
+	result = result && describePtr ("The ConsoleC module", testCreate);
+
+	return result;
 }
 
 /**
