@@ -2,15 +2,13 @@
 #pragma once
 
 namespace ConsoleC {
-	/*
-	void _throwDefaultGeneralError (char *filename, int lineNum) {
+	void _throwConsoleCGeneralError (char *filename, int lineNum) {
 		(*_fault->throwErr)(
 			errors.generalError,
-			"DefaultGeneralError", "Testing errors",
+			"ConcoleCGeneralError", "Testing errors",
 			filename, lineNum
 		);
 	}
-	*/
 }
 
 

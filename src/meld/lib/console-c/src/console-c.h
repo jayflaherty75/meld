@@ -34,6 +34,16 @@ Fault::Interface* _fault;
 Tester::Interface *_tester;
 Sys::Interface* _sys;
 
+struct ModuleStateType {
+	ConsoleC::Interface methods;
+	short isLoaded;
+	short isStarted;
+} moduleState;
+
+struct ErrorCodes {
+	int generalError;
+} errors;
+
 namespace ConsoleC {
 	short startup () __attribute__((cdecl));
 	short shutdown () __attribute__((cdecl));

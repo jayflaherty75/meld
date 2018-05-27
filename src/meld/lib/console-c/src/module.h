@@ -11,12 +11,6 @@
 #include "headers/console-c_v0.1.0.h"
 #include "console-c.h"
 
-struct ModuleStateType {
-	ConsoleC::Interface methods;
-	short isLoaded;
-	short isStarted;
-} moduleState;
-
 Module::Interface _moduleLocal;
 
 extern "C" void* exports () __attribute__((cdecl));
@@ -56,19 +50,25 @@ extern "C" short load (Module::Interface * modulePtr) {
 
 		_fault = static_cast<Fault::Interface*>((*modulePtr->require)("fault_v0.1.0"));
 		if (_fault == NULL) {
-			printf("**** ConsoleC::load: Failed to load fault dependency");
+			printf("**** ConsoleC::load: Failed to load fault dependency\n");
 			return FALSE;
 		}
 
 		_sys = static_cast<Sys::Interface*>((*modulePtr->require)("sys_v0.1.0"));
 		if (_sys == NULL) {
-			printf("**** ConsoleC::load: Failed to load sys dependency");
+			printf("**** ConsoleC::load: Failed to load sys dependency\n");
 			return FALSE;
 		}
 
 		_tester = static_cast<Tester::Interface*>((*modulePtr->require)("tester_v0.1.0"));
 		if (_tester == NULL) {
-			printf("**** ConsoleC::load: Failed to load tester dependency");
+			printf("**** ConsoleC::load: Failed to load tester dependency\n");
+			return FALSE;
+		}
+
+		errors.generalError = _fault->getCode("GeneralError");
+		if (errors.generalError == NULL) {
+			printf("**** Default.load: Missing error definition for GeneralError\n");
 			return FALSE;
 		}
 	}
