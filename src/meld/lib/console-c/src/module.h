@@ -67,7 +67,7 @@ extern "C" short load (Module::Interface * modulePtr) {
 		}
 
 		errors.generalError = _fault->getCode("GeneralError");
-		if (errors.generalError == NULL) {
+		if (errors.generalError == 0) {
 			printf("**** Default.load: Missing error definition for GeneralError\n");
 			return FALSE;
 		}
