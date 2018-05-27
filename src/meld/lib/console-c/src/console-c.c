@@ -45,6 +45,7 @@ short startup () {
  */
 short shutdown () {
 	_consoleC->logMessage("Shutting down console-c module");
+	_throwConsoleCGeneralError(__FILE__, __LINE__);
 
 	return TRUE;
 }
