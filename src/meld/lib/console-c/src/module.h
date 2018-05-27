@@ -50,7 +50,7 @@ extern "C" short load (Module::Interface * modulePtr) {
 		_moduleLocal = *modulePtr;
 		_module = &_moduleLocal;
 
-		_console = static_cast<ConsoleC::Interface*>(exports());
+		_consoleC = static_cast<ConsoleC::Interface*>(exports());
 
 		_fault = static_cast<Fault::Interface*>((*modulePtr->require)("fault_v0.1.0"));
 		if (_fault == NULL) {

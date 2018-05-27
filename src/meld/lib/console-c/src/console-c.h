@@ -28,7 +28,7 @@
 #include "headers/sys_v0.1.0.h"
 
 Module::Interface* _module;
-ConsoleC::Interface* _console;
+ConsoleC::Interface* _consoleC;
 Fault::Interface* _fault;
 Sys::Interface* _sys;
 
@@ -39,5 +39,6 @@ namespace ConsoleC {
 	void logWarning (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
 	void logError (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
 	void logSuccess (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
+	char * _time (char *buffer) __attribute__((cdecl));
 }
 

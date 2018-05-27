@@ -6,8 +6,18 @@
  */
 
 #include <stdio.h>
+#include <time.h>
 #include "module.h"
+#include "console-c.h"
 #include "errors.h"
+
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 /**
  * @namespace ConsoleC
@@ -21,7 +31,7 @@ namespace ConsoleC {
  * @returns {short}
  */
 short startup () {
-	//_console->logMessage("Starting console module")
+	_consoleC->logMessage("Starting console-c module");
 
 	return TRUE;
 }
@@ -32,7 +42,7 @@ short startup () {
  * @returns {short}
  */
 short shutdown () {
-	//_console->logMessage("Shutting down console module")
+	_consoleC->logMessage("Shutting down console-c module");
 
 	return TRUE;
 }
@@ -43,7 +53,9 @@ short shutdown () {
  * @param {char *} message
  */
 void logMessage (char*  message ) {
-	//printf(!"%s - %s\n", Time(), message)
+	char buffer[16];
+
+	printf("%s - %s%s", _time(buffer), message, _sys->getNewline());
 }
 
 /**
@@ -55,11 +67,21 @@ void logMessage (char*  message ) {
  * @param {int} lineNum
  */
 void logWarning (char * id , char *  message , char*  source , int lineNum ) {
-	//dim as ulong oldcol = color()
+	char buffer[16];
 
-	//color 14
-	//printf(_format(id, message, source, lineNum))
-	//color (oldcol)
+	printf(
+		ANSI_COLOR_YELLOW "%s - %s(%d)" ANSI_COLOR_RESET "%s",
+		_time(buffer),
+		source,
+		lineNum,
+		_sys->getNewline()
+	);
+	printf(
+		ANSI_COLOR_YELLOW "%s: %s" ANSI_COLOR_RESET "%s",
+		id,
+		message,
+		_sys->getNewline()
+	);
 }
 
 /**
@@ -71,11 +93,21 @@ void logWarning (char * id , char *  message , char*  source , int lineNum ) {
  * @param {int} lineNum
  */
 void logError (char*  id , char*  message , char*  source , int lineNum ) {
-	//dim as ulong oldcol = color()
+	char buffer[16];
 
-	//color 4
-	//printf(_format(id, message, source, lineNum))
-	//color (oldcol)
+	printf(
+		ANSI_COLOR_RED "%s - %s(%d)" ANSI_COLOR_RESET "%s",
+		_time(buffer),
+		source,
+		lineNum,
+		_sys->getNewline()
+	);
+	printf(
+		ANSI_COLOR_RED "%s: %s" ANSI_COLOR_RESET "%s",
+		id,
+		message,
+		_sys->getNewline()
+	);
 }
 
 /**
@@ -87,27 +119,38 @@ void logError (char*  id , char*  message , char*  source , int lineNum ) {
  * @param {int} lineNum
  */
 void logSuccess (char*  id , char*  message , char*  source, int lineNum ) {
-	//dim as ulong oldcol = color()
+	char buffer[16];
 
-	//color 2
-	//printf(_format(id, message, source, lineNum))
-	//color (oldcol)
+	printf(
+		ANSI_COLOR_GREEN "%s - %s(%d)" ANSI_COLOR_RESET "%s",
+		_time(buffer),
+		source,
+		lineNum,
+		_sys->getNewline()
+	);
+	printf(
+		ANSI_COLOR_GREEN "%s: %s" ANSI_COLOR_RESET "%s",
+		id,
+		message,
+		_sys->getNewline()
+	);
 }
 
 /**
- * Write all messages to a standard format.
- * @function _format
- * @param {char *} id
- * @param {char *} message
- * @param {char *} source
- * @param {int} lineNum
- * @param {char *} source
- * @returns {string}
+ * @function _time
+ * @param {char *} buffer
+ * @returns {char *} Simply returns the buffer pointer for chaining
  * @private
  */
-//function _format cdecl (byref id as zstring, byref message as zstring, byref source as zstring, lineNum as int) as string
-//	return Time () & " - " & source & "(" & lineNum & ") " & *_sys->getNewline() & id & ": " & message & !"\n"
-//end function
+char * _time (char *buffer) {
+	time_t rawtime;
+	struct tm * timeinfo;
 
+	time (&rawtime);
+	timeinfo = localtime (&rawtime);
+	strftime(buffer, 16, "%H:%M:%S", timeinfo);
+
+	return buffer;
 }
 
+}

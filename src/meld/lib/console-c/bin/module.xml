@@ -36,15 +36,12 @@
     <param name='lineNum' type='integer' modifier='value' const='false' />
     <description>Log a success message to the console.</description>
   </function>
-  <function name='_format'>
-    <param name='id' type='zstring' modifier='pointer' const='false' />
-    <param name='message' type='zstring' modifier='pointer' const='false' />
-    <param name='source' type='zstring' modifier='pointer' const='false' />
-    <param name='lineNum' type='integer' modifier='value' const='false' />
-    <param name='source' type='zstring' modifier='pointer' const='false' />
-    <returns type='string' modifier='value' />
+  <function name='_time'>
+    <param name='buffer' type='zstring' modifier='pointer' const='false' />
+    <returns type='zstring' modifier='pointer'>
+      <description>Simply returns the buffer pointer for chaining</description>
+    </returns>
     <private />
-    <description>Write all messages to a standard format.</description>
   </function>
   <namespace>ConsoleC</namespace>
 </module>
