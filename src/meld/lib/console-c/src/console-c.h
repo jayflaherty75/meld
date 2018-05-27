@@ -25,16 +25,20 @@
 #include "headers/console-c_v0.1.0.h"
 #include "headers/module_v0.1.0.h"
 #include "headers/fault_v0.1.0.h"
+#include "headers/tester_v0.1.0.h"
 #include "headers/sys_v0.1.0.h"
 
 Module::Interface* _module;
 ConsoleC::Interface* _consoleC;
 Fault::Interface* _fault;
+Tester::Interface *_tester;
 Sys::Interface* _sys;
 
 namespace ConsoleC {
 	short startup () __attribute__((cdecl));
 	short shutdown () __attribute__((cdecl));
+	short shutdown () __attribute__((cdecl));
+	short test (void *describeFn);
 	void logMessage (char* message) __attribute__((cdecl));
 	void logWarning (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));
 	void logError (char* id, char* message, char* source, int lineNum) __attribute__((cdecl));

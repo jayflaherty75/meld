@@ -8,7 +8,7 @@ namespace ConsoleC {
 			errors.generalError,
 			"DefaultGeneralError", "Testing errors",
 			filename, lineNum
-		)
+		);
 	}
 	*/
 }

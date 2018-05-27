@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdio.h>
+#include "headers/tester_v0.1.0.h"
 #include "headers/console-c_v0.1.0.h"
 #include "console-c.h"
 
@@ -31,6 +32,7 @@ extern "C" void* exports () {
 	moduleState.methods.logWarning = ConsoleC::logWarning;
 	moduleState.methods.logError = ConsoleC::logError;
 	moduleState.methods.logSuccess = ConsoleC::logSuccess;
+	moduleState.methods.test = ConsoleC::test;
 
 	return &moduleState.methods;
 }
@@ -63,6 +65,12 @@ extern "C" short load (Module::Interface * modulePtr) {
 			printf("**** ConsoleC::load: Failed to load sys dependency");
 			return FALSE;
 		}
+
+		_tester = static_cast<Tester::Interface*>((*modulePtr->require)("tester_v0.1.0"));
+		if (_tester == NULL) {
+			printf("**** ConsoleC::load: Failed to load tester dependency");
+			return FALSE;
+		}
 	}
 
 	return TRUE;
@@ -81,6 +89,23 @@ extern "C" short unload () {
 	}
 
 	moduleState.isLoaded = FALSE;
+
+	return TRUE;
+}
+
+extern "C" short test () {
+	ConsoleC::Interface *interfacePtr = _consoleC;
+	Tester::testModule tests[1];
+
+	if (interfacePtr->test == NULL) {
+		return TRUE;
+	}
+
+	tests[0] = interfacePtr->test;
+
+	if (!_tester->run(tests, 1)) {
+		return FALSE;
+	}
 
 	return TRUE;
 }

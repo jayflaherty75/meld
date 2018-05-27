@@ -15,7 +15,7 @@ struct Interface {
 	void* construct;
 	void* destruct;
 	void* update;
-	void* test;
+	short (*test) (void* describeFn) __attribute__((cdecl));
 	void  (*logMessage) (char*  message ) __attribute__((cdecl));
 	void  (*logWarning) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
 	void  (*logError) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
