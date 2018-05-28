@@ -43,6 +43,6 @@
 		<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:for-each>
 
-	<xsl:text>) __attribute__((cdecl))</xsl:text>
+	<xsl:text>)</xsl:text>
 </xsl:template>
 </xsl:stylesheet>
