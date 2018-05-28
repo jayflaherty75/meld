@@ -6,6 +6,12 @@
 
 #pragma once
 
+#include "headers/module_v0.1.0.h"
+#include "headers/fault_v0.1.0.h"
+#include "headers/tester_v0.1.0.h"
+#include "headers/sys_v0.1.0.h"
+#include "headers/console-c_v0.1.0.h"
+
 #ifndef NULL
 #define NULL	0
 #endif
@@ -21,12 +27,6 @@
 #ifndef String
 #define String 	char*
 #endif
-
-#include "headers/console-c_v0.1.0.h"
-#include "headers/module_v0.1.0.h"
-#include "headers/fault_v0.1.0.h"
-#include "headers/tester_v0.1.0.h"
-#include "headers/sys_v0.1.0.h"
 
 Module::Interface* _module;
 ConsoleC::Interface* _consoleC;

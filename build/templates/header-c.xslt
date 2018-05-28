@@ -102,7 +102,7 @@
 					<xsl:call-template name="function">
 						<xsl:with-param name="function" select="." />
 					</xsl:call-template>
-					<xsl:text>;&#xa;</xsl:text>
+					<xsl:text> __attribute__((cdecl));&#xa;</xsl:text>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:for-each>
