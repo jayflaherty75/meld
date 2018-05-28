@@ -66,6 +66,12 @@ Function load cdecl Alias "load" (modulePtr As Module.Interface ptr) As short ex
 			Return false
 		End If
 
+		_testC = modulePtr->require("test-c_v0.1.0")
+		If _testC = NULL then
+			printf("**** Default.load: Failed to load test-c dependency")
+			Return false
+		End If
+
 
 		errors.generalError = _fault->getCode("GeneralError")
 		If errors.generalError = NULL then

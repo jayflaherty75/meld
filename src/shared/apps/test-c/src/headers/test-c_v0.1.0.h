@@ -16,6 +16,7 @@ struct Interface {
 	void* destruct;
 	void* update;
 	short (*test) (void* describeFn) __attribute__((cdecl));
+	short (*sayHello) (char*  name ) __attribute__((cdecl));
 };
 
 }

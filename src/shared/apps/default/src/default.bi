@@ -10,6 +10,7 @@
 #include once "headers/console_v0.1.0.bi"
 #include once "headers/fault_v0.1.0.bi"
 #include once "headers/tester_v0.1.0.bi"
+#include once "headers/test-c_v0.1.0.bi"
 #include once "headers/default_v0.1.0.bi"
 
 #define NULL 0
@@ -21,6 +22,7 @@ dim shared _sys as Sys.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _tester as Tester.Interface ptr
+dim shared _testC as TestC.Interface ptr
 
 type ModuleStateType
 	methods as Default.Interface

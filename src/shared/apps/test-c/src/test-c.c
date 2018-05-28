@@ -54,4 +54,16 @@ short test (void *describeFn) {
 	return result;
 }
 
+/**
+ * @function sayHello
+ * @param {char *} name
+ * @returns {short}
+ */
+short sayHello (char *name) {
+	_console->logMessage("Hello from C++");
+	_console->logMessage(name);
+
+	return TRUE;
+}
+
 }

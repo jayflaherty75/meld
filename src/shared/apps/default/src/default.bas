@@ -5,6 +5,7 @@
  ' @requires console_v0.1.0
  ' @requires fault_v0.1.0
  ' @requires tester_v0.1.0
+ ' @requires test-c_v0.1.0
  '/
 
 #include once "module.bi"
@@ -51,6 +52,8 @@ function update cdecl (instancePtr as any ptr) as short
 
 	_console->logMessage("Loading versioned tester module... " & _otherTester)
 	_throwDefaultGeneralError("99992v67nwte97vt6gwn47sergfniseg6", __FILE__, __LINE__)
+
+	_testC->sayHello("  to you fine fella!")
 
 	return true
 end function

@@ -32,7 +32,7 @@
 	<xsl:text>&#x9;&#x9;</xsl:text>
 	<xsl:text>if (_</xsl:text>
 	<xsl:value-of select="$var-name" />
-	<xsl:text> = NULL) {&#xa;</xsl:text>
+	<xsl:text> == NULL) {&#xa;</xsl:text>
 	<xsl:text>&#x9;&#x9;&#x9;</xsl:text>
 	<xsl:text>printf("**** </xsl:text>
 	<xsl:value-of select="/module/namespace" />
