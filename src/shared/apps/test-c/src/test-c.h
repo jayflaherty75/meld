@@ -6,27 +6,35 @@
 
 #pragma once
 
-#include "headers/module_v0.1.0.h"
-#include "headers/test-c_v0.1.0.h"
+#ifndef String
+#define String char*
+#endif
 
 #ifndef NULL
 #define NULL 0
 #endif
 
-#ifndef NULL
+#ifndef FALSE
 #define FALSE 0
 #endif
 
-#ifndef NULL
+#ifndef TRUE
 #define TRUE -1
 #endif
 
-#ifndef NULL
-#define String char*
-#endif
+#include "headers/module_v0.1.0.h"
+#include "headers/sys_v0.1.0.h"
+#include "headers/console_v0.1.0.h"
+#include "headers/fault_v0.1.0.h"
+#include "headers/tester_v0.1.0.h"
+#include "headers/test-c_v0.1.0.h"
 
 Module::Interface* _module;
-Testc::Interface* _testc;
+TestC::Interface* _testC;
+Sys::Interface* _sys;
+Console::Interface* _console;
+Fault::Interface* _fault;
+Tester::Interface* _tester;
 
 struct ModuleStateType {
 	TestC::Interface methods;
@@ -36,6 +44,9 @@ struct ModuleStateType {
 
 namespace TestC {
 
+short (*startup) () __attribute__((cdecl));
+short (*shutdown) () __attribute__((cdecl));
+short (*test) (void*  describeFn ) __attribute__((cdecl));
 
 }
 

@@ -15,8 +15,8 @@
 
 	<xsl:call-template name="warningMessage" />
 #include &lt;stdio.h&gt;
-#include once "headers/<xsl:value-of select="$module" />_v<xsl:value-of select="$version" />.bi"
-#include once "<xsl:value-of select="$module" />.bi"
+#include "headers/<xsl:value-of select="$module" />_v<xsl:value-of select="$version" />.h"
+#include "<xsl:value-of select="$module" />.h"
 
 Module::Interface _moduleLocal;
 
@@ -138,7 +138,7 @@ extern "C" short unload () {
 
 <xsl:if test="count(requires[@module='tester']) &gt; 0 or $namespace='Tester'">
 extern "C" short test () {
-	<xsl:value-of select="$namespace" />::Interface *interfacePtr = _consoleC;
+	<xsl:value-of select="$namespace" />::Interface *interfacePtr = static_cast&lt;<xsl:value-of select="$namespace" />::Interface*&gt;(exports());
 	Tester::testModule tests[1];
 
 	if (interfacePtr-&gt;test == NULL) {

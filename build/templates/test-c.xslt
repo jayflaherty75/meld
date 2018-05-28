@@ -6,7 +6,7 @@
 
 	<xsl:text>&#xa;</xsl:text>
 
-	<xsl:text>#include once "</xsl:text>
+	<xsl:text>#include "</xsl:text>
 	<xsl:value-of select="@name" />
 	<xsl:text>.h"</xsl:text>
 	<xsl:text>&#xa;&#xa;</xsl:text>

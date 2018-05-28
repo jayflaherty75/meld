@@ -41,7 +41,7 @@
 		<xsl:with-param name="module" select="'module'" />
 	</xsl:call-template>
 	<xsl:call-template name="declareInterface">
-		<xsl:with-param name="module" select="$namespace" />
+		<xsl:with-param name="module" select="@name" />
 	</xsl:call-template>
 	<xsl:for-each select="requires">
 		<xsl:call-template name="declareInterface">

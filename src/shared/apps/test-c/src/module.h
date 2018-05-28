@@ -6,8 +6,8 @@
 
 
 #include <stdio.h>
-#include once "headers/test-c_v0.1.0.bi"
-#include once "test-c.bi"
+#include "headers/test-c_v0.1.0.h"
+#include "test-c.h"
 
 Module::Interface _moduleLocal;
 
@@ -15,11 +15,16 @@ extern "C" void* exports () __attribute__((cdecl));
 extern "C" short load (Module::Interface * modulePtr) __attribute__((cdecl));
 extern "C" short unload () __attribute__((cdecl));
 
+extern "C" short test () __attribute__((cdecl));
+
 extern "C" short startup () __attribute__((cdecl));
 extern "C" short shutdown () __attribute__((cdecl));
 
 extern "C" void* exports () {
 	
+	moduleState.methods.startup = TestC::startup;
+	moduleState.methods.shutdown = TestC::shutdown;
+	moduleState.methods.test = TestC::test;
 
 	return &moduleState.methods;
 }
@@ -38,6 +43,30 @@ extern "C" short load (Module::Interface * modulePtr) {
 		_module = &_moduleLocal;
 
 		_testC = static_cast<TestC::Interface*>(exports());
+
+		_sys = static_cast<Fault::Interface*>((*modulePtr->require)("sys_v0.1.0"));
+		if (_sys = NULL) {
+			printf("**** TestC.load: Failed to load sys dependency\n");
+			return FALSE;
+		}
+
+		_console = static_cast<Fault::Interface*>((*modulePtr->require)("console_v0.1.0"));
+		if (_console = NULL) {
+			printf("**** TestC.load: Failed to load console dependency\n");
+			return FALSE;
+		}
+
+		_fault = static_cast<Fault::Interface*>((*modulePtr->require)("fault_v0.1.0"));
+		if (_fault = NULL) {
+			printf("**** TestC.load: Failed to load fault dependency\n");
+			return FALSE;
+		}
+
+		_tester = static_cast<Fault::Interface*>((*modulePtr->require)("tester_v0.1.0"));
+		if (_tester = NULL) {
+			printf("**** TestC.load: Failed to load tester dependency\n");
+			return FALSE;
+		}
 
 
 
@@ -63,6 +92,23 @@ extern "C" short unload () {
 	return TRUE;
 }
 
+
+extern "C" short test () {
+	TestC::Interface *interfacePtr = static_cast<TestC::Interface*>(exports());
+	Tester::testModule tests[1];
+
+	if (interfacePtr->test == NULL) {
+		return TRUE;
+	}
+
+	tests[0] = interfacePtr->test;
+
+	if (!_tester->run(tests, 1)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
 
 
 extern "C" short startup () {

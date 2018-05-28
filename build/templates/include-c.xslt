@@ -7,6 +7,7 @@
 <xsl:include href="lib/capitalize.xslt" />
 <xsl:include href="lib/declare-interface-c.xslt" />
 <xsl:include href="lib/warning-message-c.xslt" />
+<xsl:include href="lib/type-convert-c.xslt" />
 <xsl:include href="lib/function-c.xslt" />
 <xsl:include href="lib/include-c.xslt" />
 
@@ -17,6 +18,26 @@
 	<xsl:call-template name="warningMessage" />
 
 	<xsl:text>#pragma once&#xa;</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
+
+	<xsl:text>#ifndef String&#xa;</xsl:text>
+	<xsl:text>#define String char*&#xa;</xsl:text>
+	<xsl:text>#endif&#xa;</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
+
+	<xsl:text>#ifndef NULL&#xa;</xsl:text>
+	<xsl:text>#define NULL 0&#xa;</xsl:text>
+	<xsl:text>#endif&#xa;</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
+
+	<xsl:text>#ifndef FALSE&#xa;</xsl:text>
+	<xsl:text>#define FALSE 0&#xa;</xsl:text>
+	<xsl:text>#endif&#xa;</xsl:text>
+	<xsl:text>&#xa;</xsl:text>
+
+	<xsl:text>#ifndef TRUE&#xa;</xsl:text>
+	<xsl:text>#define TRUE -1&#xa;</xsl:text>
+	<xsl:text>#endif&#xa;</xsl:text>
 	<xsl:text>&#xa;</xsl:text>
 
 	<xsl:if test="@name != 'module'">
@@ -37,31 +58,11 @@
 	</xsl:call-template>
 	<xsl:text>&#xa;</xsl:text>
 
-	<xsl:text>#ifndef NULL&#xa;</xsl:text>
-	<xsl:text>#define NULL 0&#xa;</xsl:text>
-	<xsl:text>#endif&#xa;</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
-
-	<xsl:text>#ifndef NULL&#xa;</xsl:text>
-	<xsl:text>#define FALSE 0&#xa;</xsl:text>
-	<xsl:text>#endif&#xa;</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
-
-	<xsl:text>#ifndef NULL&#xa;</xsl:text>
-	<xsl:text>#define TRUE -1&#xa;</xsl:text>
-	<xsl:text>#endif&#xa;</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
-
-	<xsl:text>#ifndef NULL&#xa;</xsl:text>
-	<xsl:text>#define String char*&#xa;</xsl:text>
-	<xsl:text>#endif&#xa;</xsl:text>
-	<xsl:text>&#xa;</xsl:text>
-
 	<xsl:call-template name="declareInterface">
 		<xsl:with-param name="module" select="'module'" />
 	</xsl:call-template>
 	<xsl:call-template name="declareInterface">
-		<xsl:with-param name="module" select="$namespace" />
+		<xsl:with-param name="module" select="@name" />
 	</xsl:call-template>
 	<xsl:for-each select="requires">
 		<xsl:call-template name="declareInterface">
