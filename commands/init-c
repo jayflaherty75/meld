@@ -42,6 +42,6 @@ if [ ! -f ./src/$MODULE_NAME.c ]; then
 fi
 
 # Generate dynamic source files, not modifiable by the user
-#xsltproc -o ./src/module.h "$MELD_DIR/build/templates/module-c.xslt" ./bin/module.xml
+xsltproc -o ./src/module.h "$MELD_DIR/build/templates/module-c.xslt" ./bin/module.xml
 #xsltproc -o ./src/$MODULE_NAME.h "$MELD_DIR/build/templates/include-c.xslt" ./bin/module.xml
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
