@@ -1,8 +1,9 @@
 
 /**
- * @requires fault_v0.*
- * @requires sys_v0.*
- * @requires tester_v0.*
+ * @requires sys_v0.1.0
+ * @requires console_v0.1.0
+ * @requires fault_v0.1.0
+ * @requires tester_v0.1.0
  */
 
 #include "module.h"
@@ -22,7 +23,7 @@ namespace TestC {
  * @returns {short}
  */
 short startup () {
-	_consoleC->logMessage("Starting test-c module");
+	_console->logMessage("Starting test-c module");
 
 	return TRUE;
 }
@@ -33,7 +34,7 @@ short startup () {
  * @returns {short}
  */
 short shutdown () {
-	_consoleC->logMessage("Shutting down test-c module");
+	_console->logMessage("Shutting down test-c module");
 
 	return TRUE;
 }
@@ -41,7 +42,7 @@ short shutdown () {
 /**
  * Standard test runner for modules.
  * @function test
- * @param {any ptr} describeFn
+ * @param {void *} describeFn
  * @returns {short}
  */
 short test (void *describeFn) {

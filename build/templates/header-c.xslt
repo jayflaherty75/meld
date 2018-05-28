@@ -5,8 +5,8 @@
 
 <xsl:include href="lib/warning-message-c.xslt" />
 <xsl:include href="lib/type-c.xslt" />
-<xsl:include href="lib/function-c.xslt" />
 <xsl:include href="lib/type-convert-c.xslt" />
+<xsl:include href="lib/function-c.xslt" />
 
 <xsl:variable name="lifecycle" select="' startup shutdown construct destruct update test '" />
 

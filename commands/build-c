@@ -5,7 +5,6 @@ MODULE_NAME=$2
 SEP="_v"
 
 compileExternal () {
-	#fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
 	g++ -fPIC "./src/$1.c" -shared -o "./bin/module.so" -Wno-attributes -Wno-write-strings -Wl,--whole-archive -Wl,--no-whole-archive \
 		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
 }
@@ -45,8 +44,8 @@ xsltproc -o ./src/headers/module_v0.1.0.h "$MELD_DIR/build/templates/header-c.xs
 
 xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.h "$MELD_DIR/build/templates/header-c.xslt" ./bin/module.xml
 
-#xsltproc -o ./src/module.h "$MELD_DIR/build/templates/module-c.xslt" ./bin/module.xml
+xsltproc -o ./src/module.h "$MELD_DIR/build/templates/module-c.xslt" ./bin/module.xml
 
-#xsltproc -o ./src/$MODULE_NAME.h "$MELD_DIR/build/templates/include-c.xslt" ./bin/module.xml
+xsltproc -o ./src/$MODULE_NAME.h "$MELD_DIR/build/templates/include-c.xslt" ./bin/module.xml
 
 compileExternal $MODULE_NAME

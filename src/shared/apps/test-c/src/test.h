@@ -1,5 +1,5 @@
 
-#include once "test-c.h"
+#include "test-c.h"
 
 namespace TestC {
 
