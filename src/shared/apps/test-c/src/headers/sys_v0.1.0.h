@@ -20,7 +20,7 @@ struct Interface {
 	char* (*getDirsep) () __attribute__((cdecl));
 	char* (*getModuleExt) () __attribute__((cdecl));
 	unsigned long long (*getTimestamp) () __attribute__((cdecl));
-	void  (*getMacAddress) (char*  addr ) __attribute__((cdecl));
+	void (*getMacAddress) (char*  addr ) __attribute__((cdecl));
 };
 
 }

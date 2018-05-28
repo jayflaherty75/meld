@@ -44,9 +44,9 @@ struct ModuleStateType {
 
 namespace TestC {
 
-short (*startup) () __attribute__((cdecl));
-short (*shutdown) () __attribute__((cdecl));
-short (*test) (void*  describeFn ) __attribute__((cdecl));
+short startup () __attribute__((cdecl));
+short shutdown () __attribute__((cdecl));
+short test (void*  describeFn ) __attribute__((cdecl));
 
 }
 

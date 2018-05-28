@@ -31,8 +31,8 @@ struct Interface {
 	void* test;
 	short (*initialize) (int _argc , void*  _argv ) __attribute__((cdecl));
 	short (*uninitialize) () __attribute__((cdecl));
-	void  (*setModuleWillLoad) (ModuleWillLoadFn handler ) __attribute__((cdecl));
-	void  (*setModuleHasUnloaded) (ModuleHasUnloadedFn handler ) __attribute__((cdecl));
+	void (*setModuleWillLoad) (ModuleWillLoadFn handler ) __attribute__((cdecl));
+	void (*setModuleHasUnloaded) (ModuleHasUnloadedFn handler ) __attribute__((cdecl));
 	void* (*require) (char*  moduleName ) __attribute__((cdecl));
 	short (*unload) (char*  moduleName ) __attribute__((cdecl));
 	short (*testModule) (char*  moduleName ) __attribute__((cdecl));

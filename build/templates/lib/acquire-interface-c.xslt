@@ -12,10 +12,19 @@
 		</xsl:call-template>
 	</xsl:variable>
 
+	<xsl:variable name="namespace">
+		<xsl:call-template name="convertCase">
+			<xsl:with-param name="text" select="$module" />
+			<xsl:with-param name="pascal" select="1" />
+		</xsl:call-template>
+	</xsl:variable>
+
 	<xsl:text>&#x9;&#x9;</xsl:text>
 	<xsl:text>_</xsl:text>
 	<xsl:value-of select="$var-name" />
-	<xsl:text> = static_cast&lt;Fault::Interface*&gt;((*modulePtr->require)("</xsl:text>
+	<xsl:text> = static_cast&lt;</xsl:text>
+	<xsl:value-of select="$namespace" />
+	<xsl:text>::Interface*&gt;((*modulePtr->require)("</xsl:text>
 	<xsl:value-of select="$module" />
 	<xsl:text>_v</xsl:text>
 	<xsl:value-of select="$version" />

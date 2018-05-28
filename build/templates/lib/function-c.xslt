@@ -17,13 +17,21 @@
 				<xsl:when test="returns/@modifier='pointer3'">***</xsl:when>
 			</xsl:choose>
 		</xsl:when>
-		<xsl:otherwise>void </xsl:otherwise>
+		<xsl:otherwise>
+			<xsl:text>void</xsl:text>
+		</xsl:otherwise>
 	</xsl:choose>
 
-	<xsl:text> (*</xsl:text>
+	<xsl:text> </xsl:text>
+	<xsl:if test="@name and $isStatic = 0">
+	<xsl:text>(*</xsl:text>
+	</xsl:if>
 	<xsl:value-of select="@name" />
-	<xsl:text>) (</xsl:text>
+	<xsl:if test="@name and $isStatic = 0">
+	<xsl:text>)</xsl:text>
+	</xsl:if>
 
+	<xsl:text> (</xsl:text>
 	<xsl:for-each select="param">
 		<xsl:if test="@const='true'">
 			<xsl:text>const </xsl:text>
