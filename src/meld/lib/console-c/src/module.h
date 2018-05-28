@@ -7,7 +7,6 @@
 #pragma once
 
 #include <stdio.h>
-#include "headers/tester_v0.1.0.h"
 #include "headers/console-c_v0.1.0.h"
 #include "console-c.h"
 
@@ -16,6 +15,7 @@ Module::Interface _moduleLocal;
 extern "C" void* exports () __attribute__((cdecl));
 extern "C" short load (Module::Interface * modulePtr) __attribute__((cdecl));
 extern "C" short unload () __attribute__((cdecl));
+extern "C" short test () __attribute__((cdecl));
 extern "C" short startup () __attribute__((cdecl));
 extern "C" short shutdown () __attribute__((cdecl));
 
