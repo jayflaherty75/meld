@@ -32,8 +32,6 @@ extern "C" void* exports () {
 }
 
 extern "C" short load (Module::Interface * modulePtr) {
-	printf("\n");
-
 	if (modulePtr == NULL) {
 		printf("**** ConsoleC::load: Invalid Module interface pointer\n");
 		return FALSE;
