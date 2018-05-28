@@ -18,5 +18,9 @@
     <returns type='short' modifier='value' />
     <description>Standard test runner for modules.</description>
   </function>
+  <function name='sayHello'>
+    <param name='name' type='zstring' modifier='pointer' const='false' />
+    <returns type='short' modifier='value' />
+  </function>
   <namespace>TestC</namespace>
 </module>
