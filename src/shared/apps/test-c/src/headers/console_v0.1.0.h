@@ -16,10 +16,10 @@ struct Interface {
 	void* destruct;
 	void* update;
 	void* test;
-	void  (*logMessage) (char*  message ) __attribute__((cdecl));
-	void  (*logWarning) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
-	void  (*logError) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
-	void  (*logSuccess) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
+	void (*logMessage) (char*  message ) __attribute__((cdecl));
+	void (*logWarning) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
+	void (*logError) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
+	void (*logSuccess) (char*  id , char*  message , char*  source , int lineNum ) __attribute__((cdecl));
 };
 
 }

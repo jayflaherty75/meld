@@ -44,13 +44,13 @@ extern "C" short load (Module::Interface * modulePtr) {
 
 		_testC = static_cast<TestC::Interface*>(exports());
 
-		_sys = static_cast<Fault::Interface*>((*modulePtr->require)("sys_v0.1.0"));
+		_sys = static_cast<Sys::Interface*>((*modulePtr->require)("sys_v0.1.0"));
 		if (_sys = NULL) {
 			printf("**** TestC.load: Failed to load sys dependency\n");
 			return FALSE;
 		}
 
-		_console = static_cast<Fault::Interface*>((*modulePtr->require)("console_v0.1.0"));
+		_console = static_cast<Console::Interface*>((*modulePtr->require)("console_v0.1.0"));
 		if (_console = NULL) {
 			printf("**** TestC.load: Failed to load console dependency\n");
 			return FALSE;
@@ -62,7 +62,7 @@ extern "C" short load (Module::Interface * modulePtr) {
 			return FALSE;
 		}
 
-		_tester = static_cast<Fault::Interface*>((*modulePtr->require)("tester_v0.1.0"));
+		_tester = static_cast<Tester::Interface*>((*modulePtr->require)("tester_v0.1.0"));
 		if (_tester = NULL) {
 			printf("**** TestC.load: Failed to load tester dependency\n");
 			return FALSE;

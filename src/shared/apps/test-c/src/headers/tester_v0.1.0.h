@@ -8,8 +8,8 @@
 
 namespace Tester {
 
-typedef void  (*doneFn) ();
-typedef void  (*testFunc) (doneFn done );
+typedef void (*doneFn) ();
+typedef void (*testFunc) (doneFn done );
 typedef short (*itCallback) (char*  description , testFunc test );
 typedef short (*suiteFunc) (itCallback it );
 typedef short (*describeCallback) (char*  description , suiteFunc callback );
@@ -25,12 +25,12 @@ struct Interface {
 	short (*run) (testModule*  tests , short count ) __attribute__((cdecl));
 	short (*describe) (char*  description , suiteFunc callback ) __attribute__((cdecl));
 	short (*suite) (char*  description , testFunc testFn ) __attribute__((cdecl));
-	void  (*expect) (long result , long expected , char*  message ) __attribute__((cdecl));
-	void  (*expectNot) (long result , long expected , char*  message ) __attribute__((cdecl));
-	void  (*expectStr) (char*  result , char*  expected , char*  message ) __attribute__((cdecl));
-	void  (*expectStrNot) (char*  result , char*  expected , char*  message ) __attribute__((cdecl));
-	void  (*expectPtr) (void*  result , void*  expected , char*  message ) __attribute__((cdecl));
-	void  (*expectPtrNot) (void*  result , void*  expected , char*  message ) __attribute__((cdecl));
+	void (*expect) (long result , long expected , char*  message ) __attribute__((cdecl));
+	void (*expectNot) (long result , long expected , char*  message ) __attribute__((cdecl));
+	void (*expectStr) (char*  result , char*  expected , char*  message ) __attribute__((cdecl));
+	void (*expectStrNot) (char*  result , char*  expected , char*  message ) __attribute__((cdecl));
+	void (*expectPtr) (void*  result , void*  expected , char*  message ) __attribute__((cdecl));
+	void (*expectPtrNot) (void*  result , void*  expected , char*  message ) __attribute__((cdecl));
 };
 
 }
