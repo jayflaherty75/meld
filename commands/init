@@ -1,7 +1,32 @@
 #!/bin/bash
 
+# Config
+source "$1/config/lang"
+
+# Setup variables
 MELD_DIR=$1
 MODULE_NAME=$2
+
+if [ -n "$3" ]; then
+	LANG_SELECT=$3
+else
+	LANG_SELECT=$LANG_DEFAULT
+fi
+
+LANG_DIR="${LANG["$LANG_SELECT"]}"
+
+# Check for selected source language
+if [ ! -f "$MELD_DIR/$LANG_DIR/ext.cfg" ]; then
+	echo Invalid source language: $LANG_SELECT;
+	exit 1;
+fi
+
+# Load source language file extensions
+while IFS=',' read -r LANG_SOURCE_EXT LANG_HEADER_EXT
+do
+	echo "$LANG_SOURCE_EXT";
+	echo "$LANG_HEADER_EXT";
+done < "$MELD_DIR/$LANG_DIR/ext.cfg"
 
 # Create source and build directories if they don't already exist
 if [ ! -d "./.meld" ]; then
@@ -35,13 +60,13 @@ if [ ! -f ./bin/module.xml ]; then
 fi
 
 # Generate one-time, user modifiable boilerplate
-if [ ! -f ./src/$MODULE_NAME.bas ]; then
-	xsltproc -o ./src/$MODULE_NAME.bas "$MELD_DIR/build/templates/source-fb.xslt" ./bin/module.xml
-	xsltproc -o ./src/test.bi "$MELD_DIR/build/templates/test-fb.xslt" ./bin/module.xml
-	xsltproc -o ./src/errors.bi "$MELD_DIR/build/templates/errors-fb.xslt" ./bin/module.xml
+if [ ! -f ./src/$MODULE_NAME.$LANG_SOURCE_EXT ]; then
+	xsltproc -o ./src/$MODULE_NAME.$LANG_SOURCE_EXT "$MELD_DIR/$LANG_DIR/templates/source.xslt" ./bin/module.xml
+	xsltproc -o ./src/test.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/test.xslt" ./bin/module.xml
+	xsltproc -o ./src/errors.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/errors.xslt" ./bin/module.xml
 fi
 
 # Generate dynamic source files, not modifiable by the user
-xsltproc -o ./src/module.bi "$MELD_DIR/build/templates/module-fb.xslt" ./bin/module.xml
-xsltproc -o ./src/$MODULE_NAME.bi "$MELD_DIR/build/templates/include-fb.xslt" ./bin/module.xml
+xsltproc -o ./src/module.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/module.xslt" ./bin/module.xml
+xsltproc -o ./src/$MODULE_NAME.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/include.xslt" ./bin/module.xml
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
