@@ -14,7 +14,7 @@
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
-dim shared _pagedarray as Pagedarray.Interface ptr
+dim shared _pagedArray as PagedArray.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
