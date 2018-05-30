@@ -42,7 +42,8 @@ luac.out
 .meld
 meld_modules
 /commands/launch
-/build/parse-*
+/build/lang/fb/bin/parse
+/build/lang/cpp/bin/parse
 /build/kebab-to-pascal
 /build/resolve-version
 /modules/local/*

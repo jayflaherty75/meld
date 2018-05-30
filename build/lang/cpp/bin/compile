@@ -1,0 +1,2 @@
+
+g++ -fPIC "./src/$1.cpp" -shared -o "./bin/module.so" -Wno-attributes -Wno-write-strings -Wl,--whole-archive -Wl,--no-whole-archive
