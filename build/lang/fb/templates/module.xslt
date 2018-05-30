@@ -5,8 +5,8 @@
 
 <xsl:include href="lib/convert-case.xslt" />
 <xsl:include href="lib/capitalize.xslt" />
-<xsl:include href="lib/acquire-interface-fb.xslt" />
-<xsl:include href="lib/warning-message-fb.xslt" />
+<xsl:include href="includes/acquire-interface.xslt" />
+<xsl:include href="includes/warning-message.xslt" />
 
 <xsl:template match="module">
 	<xsl:variable name="module" select="@name" />

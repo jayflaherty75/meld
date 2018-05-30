@@ -5,10 +5,10 @@
 
 <xsl:include href="lib/convert-case.xslt" />
 <xsl:include href="lib/capitalize.xslt" />
-<xsl:include href="lib/declare-interface-fb.xslt" />
-<xsl:include href="lib/warning-message-fb.xslt" />
-<xsl:include href="lib/function-fb.xslt" />
-<xsl:include href="lib/include-fb.xslt" />
+<xsl:include href="includes/declare-interface.xslt" />
+<xsl:include href="includes/warning-message.xslt" />
+<xsl:include href="includes/function.xslt" />
+<xsl:include href="includes/include.xslt" />
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />

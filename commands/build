@@ -1,32 +1,56 @@
 #!/bin/bash
 
+# Config
+source "$1/config/lang"
+
+# Setup variables
 MELD_DIR=$1
 MODULE_NAME=$2
 SEP="_v"
 
-compileExternal () {
-	fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so" \
-		|| { echo; echo Failed to compile $1 module, build terminated; exit 1; }
-}
+if [ -n "$3" ]; then
+	LANG_SELECT=$3
+else
+	LANG_SELECT=$LANG_DEFAULT
+fi
 
-if [ ! -f "./src/$MODULE_NAME.bas" ]; then
-	echo Could not find ./src/$MODULE_NAME.bas;
+LANG_DIR="${LANG["$LANG_SELECT"]}"
+
+# Check for selected source language
+if [ ! -f "$MELD_DIR/$LANG_DIR/ext.cfg" ]; then
+	echo Invalid source language: $LANG_SELECT;
 	exit 1;
 fi
 
+# Load source language file extensions
+while IFS=',' read -r LANG_SOURCE_EXT LANG_HEADER_EXT
+do
+	echo "$LANG_SOURCE_EXT";
+	echo "$LANG_HEADER_EXT";
+done < "$MELD_DIR/$LANG_DIR/ext.cfg"
+
+# Check for main source file
+if [ ! -f "./src/$MODULE_NAME.$LANG_SOURCE_EXT" ]; then
+	echo Could not find ./src/$MODULE_NAME.$LANG_SOURCE_EXT;
+	exit 1;
+fi
+
+# Parse the main source file to generate an updated XML module definition
 if [ -f "./bin/module.xml" ]; then
 	rm ./bin/module.xml
 fi
 
-if [ -f "./.meld/deps" ]; then
-	rm ./.meld/deps
-fi
+cat "./src/$MODULE_NAME.$LANG_SOURCE_EXT" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
 
-cat "./src/$MODULE_NAME.bas" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
-
+# Update the version file
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml
 
 MODULE_VERSION=$(<./.meld/version)
+
+# Update dependency listing and resolve versions
+if [ -f "./.meld/deps" ]; then
+	rm ./.meld/deps
+fi
 
 xsltproc -o ./.meld/deps "$MELD_DIR/build/templates/dependencies.xslt" ./bin/module.xml
 
@@ -35,17 +59,21 @@ if [ -f "./.meld/deps" ]; then
 
 	while read -r REQUIRE; do
 		RESOLVED=`$MELD_DIR/build/resolve-version $REQUIRE`
-		xsltproc -o ./src/headers/$RESOLVED.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/$RESOLVED/module.xml"
+		xsltproc -o ./src/headers/$RESOLVED.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/header.xslt" "./meld_modules/$RESOLVED/module.xml"
 	done <<< "$MODULE_DEPS"
 fi
 
-xsltproc -o ./src/headers/meld_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/meld_v0.1.0/module.xml"
-xsltproc -o ./src/headers/module_v0.1.0.bi "$MELD_DIR/build/templates/header-fb.xslt" "./meld_modules/module_v0.1.0/module.xml"
+# Generate all source files
+xsltproc -o ./src/headers/meld_v0.1.0.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/header.xslt" "./meld_modules/meld_v0.1.0/module.xml"
 
-xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.bi "$MELD_DIR/build/templates/header-fb.xslt" ./bin/module.xml
+xsltproc -o ./src/headers/module_v0.1.0.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/header.xslt" "./meld_modules/module_v0.1.0/module.xml"
 
-xsltproc -o ./src/module.bi "$MELD_DIR/build/templates/module-fb.xslt" ./bin/module.xml
+xsltproc -o ./src/headers/$MODULE_NAME$SEP$MODULE_VERSION.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/header.xslt" ./bin/module.xml
 
-xsltproc -o ./src/$MODULE_NAME.bi "$MELD_DIR/build/templates/include-fb.xslt" ./bin/module.xml
+xsltproc -o ./src/module.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/module.xslt" ./bin/module.xml
 
-compileExternal $MODULE_NAME
+xsltproc -o ./src/$MODULE_NAME.$LANG_HEADER_EXT "$MELD_DIR/$LANG_DIR/templates/include.xslt" ./bin/module.xml
+
+# Compile!
+"$MELD_DIR/$LANG_DIR/bin/compile" $MODULE_NAME \
+	|| { echo; echo Failed to compile $MODULE_NAME module, build terminated; exit 1; }
