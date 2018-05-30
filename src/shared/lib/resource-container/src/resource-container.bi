@@ -15,7 +15,7 @@
 #define NULL 0
 
 dim shared _module as Module.Interface ptr
-dim shared _resourcecontainer as Resourcecontainer.Interface ptr
+dim shared _resourceContainer as ResourceContainer.Interface ptr
 dim shared _console as Console.Interface ptr
 dim shared _fault as Fault.Interface ptr
 dim shared _errorHandling as ErrorHandling.Interface ptr
