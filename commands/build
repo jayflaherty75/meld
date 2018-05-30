@@ -8,12 +8,13 @@ MELD_DIR=$1
 MODULE_NAME=$2
 SEP="_v"
 
-if [ -n "$3" ]; then
-	LANG_SELECT=$3
-else
-	LANG_SELECT=$LANG_DEFAULT
+# Setup source language selection
+if [ ! -f "./.meld/lang" ]; then
+	echo Module not properly initialized, missing language setup;
+	exit 1;
 fi
 
+LANG_SELECT=$(<./.meld/lang)
 LANG_DIR="${LANG["$LANG_SELECT"]}"
 
 # Check for selected source language
