@@ -40,7 +40,7 @@ if [ -f "./bin/module.xml" ]; then
 	rm ./bin/module.xml
 fi
 
-cat "./src/$MODULE_NAME.$LANG_SOURCE_EXT" | $MELD_DIR/build/parse-fb $MODULE_NAME > ./bin/module.xml
+cat "./src/$MODULE_NAME.$LANG_SOURCE_EXT" | $MELD_DIR/$LANG_DIR/bin/parse $MODULE_NAME > ./bin/module.xml
 
 # Update the version file
 xsltproc -o ./.meld/version "$MELD_DIR/build/templates/version.xslt" ./bin/module.xml

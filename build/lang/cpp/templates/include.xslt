@@ -5,11 +5,11 @@
 
 <xsl:include href="lib/convert-case.xslt" />
 <xsl:include href="lib/capitalize.xslt" />
-<xsl:include href="lib/declare-interface-c.xslt" />
-<xsl:include href="lib/warning-message-c.xslt" />
-<xsl:include href="lib/type-convert-c.xslt" />
-<xsl:include href="lib/function-c.xslt" />
-<xsl:include href="lib/include-c.xslt" />
+<xsl:include href="includes/declare-interface.xslt" />
+<xsl:include href="includes/warning-message.xslt" />
+<xsl:include href="includes/type-convert.xslt" />
+<xsl:include href="includes/function.xslt" />
+<xsl:include href="includes/include.xslt" />
 
 <xsl:template match="module">
 	<xsl:variable name="namespace" select="normalize-space(namespace)" />

@@ -3,10 +3,10 @@
 
 <xsl:output method="text" indent="no" omit-xml-declaration="yes" />
 
-<xsl:include href="lib/warning-message-c.xslt" />
-<xsl:include href="lib/type-c.xslt" />
-<xsl:include href="lib/type-convert-c.xslt" />
-<xsl:include href="lib/function-c.xslt" />
+<xsl:include href="includes/warning-message.xslt" />
+<xsl:include href="includes/type.xslt" />
+<xsl:include href="includes/type-convert.xslt" />
+<xsl:include href="includes/function.xslt" />
 
 <xsl:variable name="lifecycle" select="' startup shutdown construct destruct update test '" />
 
