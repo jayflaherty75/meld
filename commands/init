@@ -7,7 +7,10 @@ source "$1/config/lang"
 MELD_DIR=$1
 MODULE_NAME=$2
 
-if [ -n "$3" ]; then
+# Setup source language selection
+if [ -f "./.meld/lang" ]; then
+	LANG_SELECT=$(<./.meld/lang)
+elif [ -n "$3" ]; then
 	LANG_SELECT=$3
 else
 	LANG_SELECT=$LANG_DEFAULT
@@ -51,6 +54,8 @@ fi
 if [ ! -L "./meld_modules" ]; then
 	ln -s $MELD_DIR/modules/local ./meld_modules
 fi
+
+echo -n "$LANG_SELECT" > "./.meld/lang"
 
 # Initialize XML file for templates to build from
 if [ ! -f ./bin/module.xml ]; then
