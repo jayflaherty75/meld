@@ -1,0 +1,6 @@
+declare -A LANG
+
+LANG_DEFAULT="fb"
+
+LANG["fb"]="build/lang/fb"
+LANG["cpp"]="build/lang/cpp"

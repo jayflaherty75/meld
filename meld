@@ -31,7 +31,7 @@ if [ "$1" == "run" ]; then
 		exit 1;
 	fi
 
-	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME" "$@"
+	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME" "$3"
 else
 	$MELD_DIR/commands/launch "$@"
 fi

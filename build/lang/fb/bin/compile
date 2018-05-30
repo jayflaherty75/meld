@@ -1,0 +1,2 @@
+
+fbc -mt -s console -dylib -export "./src/$1.bas" -x "./bin/module.so"
