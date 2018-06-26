@@ -281,7 +281,6 @@ function unload cdecl (moduleName as zstring ptr) as short
 end function
 
 /''
- ' Manually shut down and unload a module
  ' @function testModule
  ' @param {zstring ptr} moduleName
  ' @returns {short}
