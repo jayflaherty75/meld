@@ -3,6 +3,7 @@
 # Get root directory of Meld
 SOURCE="${BASH_SOURCE[0]}"
 
+# If a symlink or chain of symlinks, iterate back to original directory
 while [ -h "$SOURCE" ]; do
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
   SOURCE="$(readlink "$SOURCE")"
@@ -20,19 +21,19 @@ fi
 
 # If 'run' argument passed, launch from commands directory, otherwise launch
 # the given module passing all arguments to it
-if [ "$1" == "run" ]; then
-	if [ -z "$2" ]; then
-		echo "Missing run command"
-		exit 1;
-	fi
+if [ -z "$1" ]; then
+	echo "Missing run command"
+	exit 1;
+fi
 
-	if [ ! -f "$MELD_DIR/commands/$2" ]; then
-		echo "Not a valid command"
-		exit 1;
-	fi
+if [ ! -f "$MELD_DIR/commands/$1" ]; then
+	echo "Not a valid command"
+	exit 1;
+fi
 
-	$MELD_DIR/commands/$2 "$MELD_DIR" "$MODULE_NAME" "$3"
+if [ "$1" = "launch" ]; then
+	$MELD_DIR/commands/launch "$MODULE_NAME" "$@"
 else
-	$MELD_DIR/commands/launch "$@"
+	$MELD_DIR/commands/$1 "$MELD_DIR" "$MODULE_NAME" "$2"
 fi
 

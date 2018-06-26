@@ -38,7 +38,7 @@ namespace State
  ' @typedef {function} SelectorFn
  ' @param {any ptr} statePtr
  ' @param {any ptr} resPtr
- ' @param {any ptr} valuePtr
+ ' @param {any ptr} resultPtr
  ' @returns {short}
  '/
 
@@ -644,12 +644,12 @@ end function
  ' @function selectFrom
  ' @param {Instance ptr} statePtr
  ' @param {long} index
- ' @param {any ptr} valuePtr
+ ' @param {any ptr} resultPtr
  ' @param {SelectorFn} selector
  ' @returns {short}
  ' @throws {NullReferenceError|ResourceMissingError}
  '/
-function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
+function selectFrom cdecl (statePtr as Instance ptr, index as long, resultPtr as any ptr, selector as SelectorFn) as short
 	dim as ResourceEntry ptr resPtr
 
 	if statePtr = NULL then
@@ -663,7 +663,7 @@ function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as 
 		return false
 	end if
 
-	return selector (statePtr, resPtr->resourcePtr, valuePtr)
+	return selector (statePtr, resPtr->resourcePtr, resultPtr)
 end function
 
 /''
