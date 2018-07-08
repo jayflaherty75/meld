@@ -6,6 +6,13 @@ source "$1/config/lang"
 # Setup variables
 MELD_DIR=$1
 MODULE_NAME=$2
+SEP="_v"
+
+# Fail out if module name exists
+if ls $MELD_DIR/modules/local/$MODULE_NAME$SEP* 1> /dev/null 2>&1; then
+	echo "Module already exists"
+	exit 1;
+fi
 
 # Setup source language selection
 if [ -f "./.meld/lang" ]; then
