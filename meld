@@ -19,10 +19,25 @@ if [ $# -eq 0 ]; then
 	exit 0;
 fi
 
-# If 'run' argument passed, launch from commands directory, otherwise launch
-# the given module passing all arguments to it
+# Run script, passes the system meld_modules directory and module name
+if [ "$1" = "run" ]; then
+	if [ ! -f "$2" ]; then
+		echo "Script missing"
+		exit 1;
+	fi
+
+	$2 "$MELD_DIR" "$MODULE_NAME" "$@"
+
+	if [ ! $? -eq 0 ]; then
+		echo "Script returned error"
+	fi
+
+	exit $?;
+fi
+
+# Launch from directory or run corresponding script from commands directory
 if [ -z "$1" ]; then
-	echo "Missing run command"
+	echo "Missing command"
 	exit 1;
 fi
 
