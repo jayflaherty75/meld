@@ -34,9 +34,9 @@
   </function>
   <function name='initialize'>
     <param name='contPtr' type='Instance' modifier='pointer' const='false' />
-    <param name='size' type='short' modifier='value' const='false' />
-    <param name='pageLength' type='long' modifier='value' const='false' />
-    <param name='warnLimit' type='long' modifier='value' const='false' />
+    <param name='size' type='ulong' modifier='value' const='false' />
+    <param name='pageLength' type='ulong' modifier='value' const='false' />
+    <param name='warnLimit' type='ulong' modifier='value' const='false' />
     <returns type='short' modifier='value' />
     <throws type='NullReferenceError' />
     <throws type='ResourceAllocationError' />
