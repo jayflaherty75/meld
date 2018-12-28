@@ -159,6 +159,8 @@ function generate cdecl () as Unique
 	_copy(cptr(ubyte ptr, @idAutoinc), @result.v(0), 4)
 	_copy(cptr(ubyte ptr, @idTime), @result.v(4), 5)
 	_copy(cptr(ubyte ptr, @idMacAddress), @result.v(9), 6)
+
+	' Delimiter allowing code to treat all UIDs, binary or string, the same.
 	result.v(15) = 0
 
 	return result
