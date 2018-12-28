@@ -22,7 +22,7 @@
   <typedef name='SelectorFn' type='function' modifier='value'>
     <param name='statePtr' type='any' modifier='pointer' const='false' />
     <param name='resPtr' type='any' modifier='pointer' const='false' />
-    <param name='valuePtr' type='any' modifier='pointer' const='false' />
+    <param name='resultPtr' type='any' modifier='pointer' const='false' />
     <returns type='short' modifier='value' />
   </typedef>
   <typedef name='SelectorAtFn' type='function' modifier='value'>
@@ -175,7 +175,7 @@
   <function name='selectFrom'>
     <param name='statePtr' type='Instance' modifier='pointer' const='false' />
     <param name='index' type='long' modifier='value' const='false' />
-    <param name='valuePtr' type='any' modifier='pointer' const='false' />
+    <param name='resultPtr' type='any' modifier='pointer' const='false' />
     <param name='selector' type='SelectorFn' modifier='value' const='false' />
     <returns type='short' modifier='value' />
     <throws type='NullReferenceError' />

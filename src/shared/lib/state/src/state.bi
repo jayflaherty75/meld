@@ -68,7 +68,7 @@ declare function unassign cdecl (statePtr as Instance ptr, index as long) as sho
 declare function isAssigned cdecl (statePtr as Instance ptr, index as long) as short
 declare function setModifier cdecl (statePtr as Instance ptr, index as long, modifier as ModifierFn) as short
 declare function unsetModifier cdecl (statePtr as Instance ptr, index as long) as short
-declare function selectFrom cdecl (statePtr as Instance ptr, index as long, valuePtr as any ptr, selector as SelectorFn) as short
+declare function selectFrom cdecl (statePtr as Instance ptr, index as long, resultPtr as any ptr, selector as SelectorFn) as short
 declare function selectAt cdecl (statePtr as Instance ptr, stateIdx as long, resIdx as long, selector as SelectorAtFn) as long
 declare function dispatch cdecl (statePtr as Instance ptr, message as any ptr, isPrioritized as short = 0) as short
 declare function _directDispatch cdecl (statePtr as Instance ptr, message as any ptr) as short
