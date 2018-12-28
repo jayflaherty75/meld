@@ -112,11 +112,11 @@ end sub
  ' @param {Instance ptr} contPtr
  ' @param {ulong} size
  ' @param {ulong} pageLength
- ' @param {ulong} warnLimit
+ ' @param {ulong} [warnLimit=1024]
  ' @returns {short}
  ' @throws {NullReferenceError|ResourceAllocationError}
  '/
-function initialize cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
+function initialize cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong = 1024) as short
 	if contPtr = NULL then
 		_throwResContInvalidArgumentError(__FILE__, __LINE__)
 		return false
