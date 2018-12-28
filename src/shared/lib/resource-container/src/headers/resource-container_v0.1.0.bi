@@ -18,7 +18,7 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
-	initialize as function cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
+	initialize as function cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong = 1024) as short
 	request as function cdecl (contPtr as Instance ptr) as long
 	release as function cdecl (contPtr as Instance ptr, resourceId as long) as short
 	getPtr as function cdecl (contPtr as Instance ptr, resourceId as long) as any ptr

@@ -46,7 +46,7 @@ declare function shutdown cdecl () as short
 declare function test cdecl (describeFn as any ptr) as short
 declare function construct cdecl () as Instance ptr
 declare sub destruct cdecl (contPtr as Instance ptr)
-declare function initialize cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
+declare function initialize cdecl (contPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong = 1024) as short
 declare function request cdecl (contPtr as Instance ptr) as long
 declare function release cdecl (contPtr as Instance ptr, resourceId as long) as short
 declare function getPtr cdecl (contPtr as Instance ptr, resourceId as long) as any ptr

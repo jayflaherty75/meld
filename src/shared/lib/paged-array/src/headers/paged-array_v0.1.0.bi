@@ -24,7 +24,7 @@ type Interface
 	destruct as sub cdecl (instancePtr as Instance ptr)
 	update as any ptr
 	test as function cdecl (describeFn as any ptr) as short
-	initialize as function cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong) as short
+	initialize as function cdecl (arrayPtr as Instance ptr, size as ulong, pageLength as ulong, warnLimit as ulong = 1024) as short
 	createIndex as function cdecl (arrayPtr as Instance ptr) as ulong
 	getPtr as function cdecl (arrayPtr as Instance ptr, index as ulong) as any ptr
 	pop as function cdecl (arrayPtr as Instance ptr, dataPtr as any ptr) as short

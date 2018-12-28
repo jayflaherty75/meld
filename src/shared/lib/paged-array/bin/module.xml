@@ -42,7 +42,9 @@
     <param name='arrayPtr' type='Instance' modifier='pointer' const='false' />
     <param name='size' type='ulong' modifier='value' const='false' />
     <param name='pageLength' type='ulong' modifier='value' const='false' />
-    <param name='warnLimit' type='ulong' modifier='value' const='false' />
+    <param name='warnLimit' type='ulong' modifier='value' const='false'>
+      <default>1024</default>
+    </param>
     <returns type='short' modifier='value' />
     <throws type='NullReferenceError' />
     <throws type='ResourceAllocationError' />
