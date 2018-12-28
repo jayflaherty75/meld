@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#compileExternal () {
-#	echo $3
-#	fbc -mt -s console -dylib -export "./src/fb/$1/$2/$3/$3.bas" -x "modules/$3.so" \
-#		|| { echo; echo Failed to compile $3 module, build terminated; exit 1; }
-#}
-
 compile () {
 	echo $1
 
@@ -30,39 +24,7 @@ fi
 
 cat "./src/fb/meld/lib/meld/meld.bas" | ./build/lang/fb/bin/parse meld > ./modules/local/meld_v0.1.0/module.xml
 
-#echo Compiling modules...
-#echo
-
-#compileExternal meld lib console
-#compileExternal meld lib fault
-#compileExternal shared apps default
-#compileExternal meld core
-#compileExternal shared bst
-#compileExternal shared iterator
-#compileExternal shared list
-#compileExternal shared paged-array
-#compileExternal shared resource-container
-
 compile module lib meld
-#compile meld core
-#compile meld fault
-#compile meld error-handling
-#compile meld tester
-##compile shared bst
-#compile shared console
-#compile shared identity
-#compile shared iterator
-#compile shared list
-#compile shared map
-#compile shared paged-array
-#compile shared resource-container
-
-#fbc -mt -C "./src/fb/tester/tester.bas" -x "./tester" \
-#	|| { echo; echo Test compilation failed, build terminated; exit 1; }
-
-#echo "";
-
-#./tester || { echo; echo Test failed, build terminated; exit 1; }
 
 echo;
 echo Building Meld Core...;
