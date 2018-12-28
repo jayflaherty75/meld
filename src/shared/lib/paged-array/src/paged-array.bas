@@ -320,9 +320,9 @@ end function
  ' @private
  '/
 function _reallocatePageIndex cdecl (arrayPtr as Instance ptr) as short
-	dim as integer currentMax
+	dim as ulong currentMax
 	dim as any ptr ptr pageIndexPtr
-	dim as integer pageIndex
+	dim as ulong pageIndex
 
 	if arrayPtr->currentMax > 0 then
 		currentMax = arrayPtr->currentMax * 2
